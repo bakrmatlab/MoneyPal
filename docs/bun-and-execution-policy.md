@@ -1,0 +1,79 @@
+# Bun Package Management and Execution Policy
+
+## Package Management with Bun
+
+This project uses **Bun** as the package manager and runtime environment. The presence of [bun.lock](mdc:bun.lock) confirms this setup.
+
+### Package Installation Guidelines
+
+- **Always use Bun** for package installation, never npm or yarn
+- **Command format**: Use `bun add <package>` for dependencies
+- **Dev dependencies**: Use `bun add -d <package>` for development dependencies
+- **Global packages**: Use `bun add -g <package>` for global installations
+- **Package removal**: Use `bun remove <package>` to uninstall packages
+
+### Package Installation Examples
+
+```bash
+# Install runtime dependency
+bun add express
+
+# Install development dependency  
+bun add -d @types/node
+
+# Install multiple packages
+bun add lodash axios zod
+
+# Install specific version
+bun add express@4.18.0
+```
+
+### Project Dependencies
+
+The project dependencies are managed through [package.json](mdc:package.json) and locked in [bun.lock](mdc:bun.lock).
+
+## Execution Policy
+
+### Strict No-Execution Rule
+
+**CRITICAL**: Do not run, execute, build, or test any code unless explicitly requested by the user.
+
+This includes:
+- ❌ Do not run `bun run` commands
+- ❌ Do not execute `bun start`, `bun dev`, or `bun build`
+- ❌ Do not run tests with `bun test`
+- ❌ Do not execute any npm scripts defined in package.json
+- ❌ Do not run database migrations or seeds
+- ❌ Do not start development servers
+- ❌ Do not execute any shell commands that run the application
+
+### What You CAN Do
+
+- ✅ Install packages when needed for development
+- ✅ Read and analyze code files
+- ✅ Make code modifications and improvements
+- ✅ Suggest commands for the user to run
+- ✅ Create or modify configuration files
+- ✅ Generate code and documentation
+
+### When User Requests Execution
+
+Only when the user explicitly asks to run something:
+- Propose the command using the terminal tool
+- Wait for user approval before execution
+- Use appropriate Bun commands (not npm/yarn equivalents)
+
+### Example Appropriate Responses
+
+❌ **Wrong**: "Let me run the tests to check if this works..."
+✅ **Correct**: "You can test this by running: `bun test`"
+
+❌ **Wrong**: "I'll start the development server to verify..."
+✅ **Correct**: "To start the development server, use: `bun run dev`"
+
+## Installation Priority
+
+When suggesting package installations, prioritize:
+1. Official packages over community alternatives
+2. TypeScript-compatible packages
+3. Well-maintained packages with recent updates

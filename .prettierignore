@@ -1,0 +1,19 @@
+# Ignore everything
+/*
+/convex/_generated
+
+# Except these files & folders
+!/src
+!/convex
+!index.html
+!package.json
+!tailwind.config.js
+!tsconfig.json
+!tsconfig.node.json
+!vite.config.ts
+!.prettierrc
+!README.md
+!eslint.config.js
+
+# Ignore auto generated routeTree.gen.ts
+/src/routeTree.gen.ts
