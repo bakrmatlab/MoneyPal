@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { api } from '@convex/_generated/api';
+import { Id } from '@convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
 import { ArrowDownToLine, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { CategorySelector } from './category-selector';
 import { TransactionDialogProps } from './types';
 
 export const DepositDialog = ({ walletId, walletName }: TransactionDialogProps) => {
     const [open, setOpen] = useState(false);
     const [amount, setAmount] = useState('');
+    const [categoryId, setCategoryId] = useState<Id<'categories'> | undefined>();
     const [isPending, setIsPending] = useState(false);
     const deposit = useMutation(api.wallets.deposit);
 
@@ -21,8 +24,10 @@ export const DepositDialog = ({ walletId, walletName }: TransactionDialogProps) 
 
         setIsPending(true);
         try {
+            // TODO: Phase 1.3 - Pass categoryId to deposit mutation and create transaction
             await deposit({ walletId, amount: numAmount });
             setAmount('');
+            setCategoryId(undefined);
             setOpen(false);
         } finally {
             setIsPending(false);
@@ -43,21 +48,29 @@ export const DepositDialog = ({ walletId, walletName }: TransactionDialogProps) 
                         <DialogTitle>Deposit Funds</DialogTitle>
                         <DialogDescription>Add funds to {walletName ?? 'this wallet'}.</DialogDescription>
                     </DialogHeader>
-                    <div className='py-4'>
-                        <Label htmlFor='deposit-amount'>Amount</Label>
-                        <div className='relative mt-2'>
-                            <span className='text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2'>$</span>
-                            <Input
-                                id='deposit-amount'
-                                type='number'
-                                min='0.01'
-                                step='0.01'
-                                placeholder='0.00'
-                                value={amount}
-                                onChange={(e) => setAmount(e.target.value)}
-                                className='pl-7'
-                                autoFocus
-                            />
+                    <div className='space-y-4 py-4'>
+                        <div>
+                            <Label htmlFor='deposit-amount'>Amount</Label>
+                            <div className='relative mt-2'>
+                                <span className='text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2'>$</span>
+                                <Input
+                                    id='deposit-amount'
+                                    type='number'
+                                    min='0.01'
+                                    step='0.01'
+                                    placeholder='0.00'
+                                    value={amount}
+                                    onChange={(e) => setAmount(e.target.value)}
+                                    className='pl-7'
+                                    autoFocus
+                                />
+                            </div>
+                        </div>
+                        <div>
+                            <Label htmlFor='deposit-category'>Category (Optional)</Label>
+                            <div className='mt-2'>
+                                <CategorySelector type='income' value={categoryId} onChange={setCategoryId} placeholder='Select income category...' />
+                            </div>
                         </div>
                     </div>
                     <DialogFooter>

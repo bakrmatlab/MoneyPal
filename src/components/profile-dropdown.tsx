@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { useClerk, useUser as useClerkUser } from '@clerk/clerk-react';
 import { useConvexAuth } from 'convex/react';
-import { LogOut, UserCircle } from 'lucide-react';
+import { LogOut, Settings, UserCircle } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -70,6 +70,12 @@ export function ProfileDropdown() {
                     <DropdownMenuItem onClick={() => openUserProfile()}>
                         <UserCircle />
                         Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                        <Link to='/settings'>
+                            <Settings />
+                            Settings
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => setSignOutOpen(true)} variant='destructive'>
