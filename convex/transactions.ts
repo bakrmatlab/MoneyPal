@@ -2,7 +2,6 @@ import { v } from 'convex/values';
 import { query } from './_generated/server';
 import { getCurrentUserOrThrow } from './users';
 
-
 export const getTransactions = query({
     args: {
         walletId: v.optional(v.id('wallets')),
@@ -10,5 +9,5 @@ export const getTransactions = query({
     },
     handler: (ctx, args) => {
         const user = getCurrentUserOrThrow(ctx);
-    }
-})
+    },
+});

@@ -141,7 +141,8 @@ export function LandingPage() {
                         <p
                             className='animate-fade-in text-muted-foreground mb-10 max-w-2xl text-lg sm:text-xl'
                             style={{ animationDelay: '200ms', animationFillMode: 'backwards' }}>
-                            Manage multiple wallets, track expenses, set budgets, and gain insights into your spending habits. Take control of your money with real-time synchronization.
+                            Manage multiple wallets, track expenses, set budgets, and gain insights into your spending habits. Take control of your money with
+                            real-time synchronization.
                         </p>
 
                         <div className='animate-fade-in flex flex-col gap-4 sm:flex-row' style={{ animationDelay: '300ms', animationFillMode: 'backwards' }}>
@@ -236,7 +237,8 @@ export function LandingPage() {
                     <div className='container mx-auto px-4 text-center'>
                         <h2 className='mb-4 text-3xl font-bold tracking-tight sm:text-4xl'>Ready to take control of your finances?</h2>
                         <p className='text-muted-foreground mx-auto mb-8 max-w-xl'>
-                            Join Money-Pal today and start managing your money smarter. Create unlimited wallets, track every transaction, and achieve your financial goals.
+                            Join Money-Pal today and start managing your money smarter. Create unlimited wallets, track every transaction, and achieve your
+                            financial goals.
                         </p>
                         <div className='flex flex-col justify-center gap-4 sm:flex-row'>
                             <Button size='lg' asChild className='gap-2'>

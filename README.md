@@ -9,18 +9,20 @@ Money-Pal helps you take control of your finances by allowing you to manage mult
 ## Features
 
 ### Current Features ✅
+
 - **Multi-Wallet Management** - Create and manage unlimited wallets for different purposes
 - **Real-Time Sync** - Instant balance updates across all devices using Convex
 - **Secure Authentication** - Full Clerk integration with user profile management
 - **Wallet Operations**
-  - Deposit funds to any wallet
-  - Withdraw funds with balance validation
-  - Transfer money between your wallets
+    - Deposit funds to any wallet
+    - Withdraw funds with balance validation
+    - Transfer money between your wallets
 - **Dashboard Analytics** - View total balance, wallet count, and quick stats
 - **Beautiful UI** - Modern, responsive design with light/dark mode support
 - **Accessibility** - WCAG 2.1 AA compliant interface
 
 ### Coming Soon 🚀
+
 - Transaction history and detailed logs
 - Budget tracking and spending insights
 - Category-based expense tracking
@@ -101,6 +103,7 @@ CLERK_JWT_ISSUER_DOMAIN=https://your-app.clerk.accounts.dev
 7. **Set up Clerk webhooks**
 
 In Clerk Dashboard → Webhooks:
+
 - Endpoint URL: `{your_convex_url}/clerk-users-webhook`
 - Subscribe to events: `user.created`, `user.updated`, `user.deleted`
 - Copy the webhook secret and add it to Convex environment variables
@@ -172,6 +175,7 @@ money-pal/
 ## Data Models
 
 ### Users
+
 ```typescript
 {
   _id: Id<'users'>,
@@ -184,6 +188,7 @@ money-pal/
 ```
 
 ### Wallets
+
 ```typescript
 {
   _id: Id<'wallets'>,
@@ -213,7 +218,7 @@ function WalletList() {
   );
 
   if (isPending) return <div>Loading...</div>;
-  
+
   return (
     <div>
       {wallets?.map(wallet => (
@@ -240,7 +245,7 @@ function CreateWalletButton() {
   });
 
   return (
-    <button 
+    <button
       onClick={() => createWallet({ name: 'Savings' })}
       disabled={isPending}
     >
@@ -251,6 +256,7 @@ function CreateWalletButton() {
 ```
 
 **Key Benefits:**
+
 - No manual cache invalidation needed
 - Real-time updates across all clients
 - Optimistic updates supported
@@ -263,14 +269,14 @@ Money-Pal uses file-based routing with TanStack Router. Routes are automatically
 
 **Route Patterns:**
 
-| Pattern           | Purpose                    | Example                          |
-|-------------------|----------------------------|----------------------------------|
-| `__root.tsx`      | Root layout                | Global layout with header        |
-| `index.tsx`       | Index route                | Home/Landing page                |
-| `route.tsx`       | Layout wrapper             | Authenticated layout             |
-| `$param.tsx`      | Dynamic parameter          | `/users/$userId`                 |
-| `_prefix/`        | Layout group (in path)     | `/_authenticated/dashboard`      |
-| `(group)/`        | Pathless grouping          | `/(auth)/sign-in`                |
+| Pattern      | Purpose                | Example                     |
+| ------------ | ---------------------- | --------------------------- |
+| `__root.tsx` | Root layout            | Global layout with header   |
+| `index.tsx`  | Index route            | Home/Landing page           |
+| `route.tsx`  | Layout wrapper         | Authenticated layout        |
+| `$param.tsx` | Dynamic parameter      | `/users/$userId`            |
+| `_prefix/`   | Layout group (in path) | `/_authenticated/dashboard` |
+| `(group)/`   | Pathless grouping      | `/(auth)/sign-in`           |
 
 **Example Route:**
 
@@ -280,7 +286,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Dashboard } from '@/features/dashboard';
 
 export const Route = createFileRoute('/_authenticated/dashboard')({
-  component: Dashboard,
+    component: Dashboard,
 });
 ```
 
@@ -320,6 +326,7 @@ Please ensure your code follows the existing style and includes appropriate test
 See [docs/money-pal-feature-roadmap.md](docs/money-pal-feature-roadmap.md) for the complete development roadmap.
 
 ### Upcoming Features
+
 - **Phase 1**: Transaction history, wallet deletion, categories
 - **Phase 2**: Analytics dashboard, spending charts, data export
 - **Phase 3**: Budget tracking, savings goals, recurring transactions

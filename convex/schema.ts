@@ -25,7 +25,8 @@ export default defineSchema({
         categoryId: v.optional(v.id('categories')),
         toWalletId: v.optional(v.id('wallets')),
         isDeleted: v.boolean(),
-    }).index('by_userId', ['userId'])
+    })
+        .index('by_userId', ['userId'])
         .index('by_walletId', ['walletId'])
         .index('by_type', ['type'])
         .index('by_categoryId', ['categoryId']),
@@ -37,6 +38,8 @@ export default defineSchema({
         color: v.string(),
         icon: v.string(),
         isDefault: v.boolean(),
-    }).index('by_userId', ['userId'])
-
+        isHidden: v.boolean(),
+    })
+        .index('by_userId', ['userId'])
+        .index('by_userId_type', ['userId', 'type']),
 });

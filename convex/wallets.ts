@@ -1,6 +1,8 @@
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 import { getCurrentUserOrThrow } from './users';
+import { internal } from './_generated/api';
+
 
 export const getMyWallets = query({
     args: {},
@@ -41,6 +43,15 @@ export const createWallet = mutation({
     },
     handler: async (ctx, args) => {
         const user = await getCurrentUserOrThrow(ctx);
+
+        const existingWallets = await ctx.db
+            .query('wallets')
+            .withIndex('by_userId', (q) => q.eq('userId', user._id))
+            .first();
+
+            if (!existingWallets) {
+                await ctx.runMutation(internal.categories.seedDefaultCategories);
+            }
 
         const walletId = await ctx.db.insert('wallets', {
             userId: user._id,
