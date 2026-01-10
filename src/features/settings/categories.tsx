@@ -3,16 +3,20 @@ import { api } from '@/../convex/_generated/api';
 import { Id } from '@/../convex/_generated/dataModel';
 import { useQuery, useMutation } from 'convex/react';
 import { Eye, EyeOff, Plus, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { toast } from 'sonner';
 
 export const CategoriesSettings = () => {
     const categories = useQuery(api.categories.getCategories);
+
+    const createCategory = useMutation(api.categories.createCategory);
+    const deleteCategory = useMutation(api.categories.deleteCategory);
+    const toggleCategoryVisibility = useMutation(api.categories.toggleCategoryVisibility);
 
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
     const [newCategory, setNewCategory] = useState({
@@ -24,24 +28,37 @@ export const CategoriesSettings = () => {
 
     // TODO: Implement this function using useMutation
     const handleCreateCategory = async () => {
-        // TODO: Call createCategory mutation
-        // TODO: Show success toast
-        // TODO: Close dialog and reset form
-        console.log('Create category:', newCategory);
+        try {
+            await createCategory(newCategory);
+            toast.success('Category created successfully');
+            setIsCreateDialogOpen(false);
+            setNewCategory({
+                name: '',
+                type: 'expense',
+                icon: '📁',
+                color: '#6366f1',
+            });
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to create category');
+        }
     };
 
-    // TODO: Implement this function using useMutation
     const handleDeleteCategory = async (categoryId: Id<'categories'>) => {
-        // TODO: Call deleteCategory mutation
-        // TODO: Show success toast
-        console.log('Delete category:', categoryId);
+        try {
+            await deleteCategory({ categoryId });
+            toast.success('Category deleted successfully');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to delete category');
+        }
     };
 
-    // TODO: Implement this function using useMutation
     const handleToggleVisibility = async (categoryId: Id<'categories'>, isHidden: boolean) => {
-        // TODO: Call toggleCategoryVisibility mutation
-        // TODO: Show success toast
-        console.log('Toggle visibility:', categoryId, isHidden);
+        try {
+            await toggleCategoryVisibility({ categoryId, isHidden });
+            toast.success(isHidden ? 'Category hidden' : 'Category shown');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to update category');
+        }
     };
 
     const incomeCategories = categories?.filter((cat) => cat.type === 'income') ?? [];
