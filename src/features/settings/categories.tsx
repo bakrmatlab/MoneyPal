@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { api } from '@/../convex/_generated/api';
-import { Id } from '@/../convex/_generated/dataModel';
+import type { Id } from '@/../convex/_generated/dataModel';
 import { useQuery, useMutation } from 'convex/react';
+import EmojiPicker, { type EmojiClickData } from 'emoji-picker-react';
 import { Eye, EyeOff, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -9,16 +10,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export const CategoriesSettings = () => {
-    const categories = useQuery(api.categories.getCategories);
+    const categories = useQuery(api.categories.getCategories, {});
 
     const createCategory = useMutation(api.categories.createCategory);
     const deleteCategory = useMutation(api.categories.deleteCategory);
     const toggleCategoryVisibility = useMutation(api.categories.toggleCategoryVisibility);
 
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+    const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
     const [newCategory, setNewCategory] = useState({
         name: '',
         type: 'expense' as 'income' | 'expense',
@@ -32,6 +35,7 @@ export const CategoriesSettings = () => {
             await createCategory(newCategory);
             toast.success('Category created successfully');
             setIsCreateDialogOpen(false);
+            setIsEmojiPickerOpen(false);
             setNewCategory({
                 name: '',
                 type: 'expense',
@@ -41,6 +45,11 @@ export const CategoriesSettings = () => {
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Failed to create category');
         }
+    };
+
+    const handleEmojiSelect = (emojiData: EmojiClickData) => {
+        setNewCategory({ ...newCategory, icon: emojiData.emoji });
+        setIsEmojiPickerOpen(false);
     };
 
     const handleDeleteCategory = async (categoryId: Id<'categories'>) => {
@@ -119,13 +128,19 @@ export const CategoriesSettings = () => {
                             {/* Icon Emoji */}
                             <div className='space-y-2'>
                                 <Label htmlFor='icon'>Icon (Emoji)</Label>
-                                <Input
-                                    id='icon'
-                                    value={newCategory.icon}
-                                    onChange={(e) => setNewCategory({ ...newCategory, icon: e.target.value })}
-                                    placeholder='📁'
-                                    maxLength={2}
-                                />
+                                <div className='flex gap-2'>
+                                    <Popover open={isEmojiPickerOpen} onOpenChange={setIsEmojiPickerOpen}>
+                                        <PopoverTrigger asChild>
+                                            <Button variant='outline' className='h-10 w-full justify-start text-left font-normal'>
+                                                <span className='text-2xl'>{newCategory.icon}</span>
+                                                <span className='text-muted-foreground ml-2'>Click to select emoji</span>
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className='w-full p-0' align='start'>
+                                            <EmojiPicker onEmojiClick={handleEmojiSelect} width='100%' height={400} />
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
                             </div>
 
                             {/* Color Picker */}

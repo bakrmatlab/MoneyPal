@@ -7,7 +7,11 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-export const CreateWalletDialog = () => {
+type CreateWalletDialogProps = {
+    trigger?: React.ReactNode;
+};
+
+export const CreateWalletDialog = ({ trigger }: CreateWalletDialogProps) => {
     const [open, setOpen] = useState(false);
     const [name, setName] = useState('');
     const [isPending, setIsPending] = useState(false);
@@ -28,10 +32,12 @@ export const CreateWalletDialog = () => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button size='sm' className='gap-2'>
-                    <Plus className='size-4' />
-                    New Wallet
-                </Button>
+                {trigger || (
+                    <Button size='sm' className='gap-2'>
+                        <Plus className='size-4' />
+                        New Wallet
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleSubmit}>
