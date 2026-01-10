@@ -13,15 +13,13 @@ export const getCategories = query({
             return await ctx.db
                 .query('categories')
                 .withIndex('by_userId_type', (q) => q.eq('userId', user._id).eq('type', args.type as 'income' | 'expense'))
-                .filter((q) => q.eq(q.field('isHidden'), false))
                 .collect();
         }
 
-        // Get all categories
+        // Get all categories (including hidden ones)
         return await ctx.db
             .query('categories')
             .withIndex('by_userId', (q) => q.eq('userId', user._id))
-            .filter((q) => q.eq(q.field('isHidden'), false))
             .collect();
     },
 });
@@ -169,14 +167,14 @@ export const toggleCategoryVisibility = mutation({
 });
 
 export const seedDefaultCategories = internalMutation({
-    args: {},
+    args: {
+        userId: v.id('users'),
+    },
 
-    handler: async (ctx) => {
-        const user = await getCurrentUserOrThrow(ctx);
-
+    handler: async (ctx, args) => {
         const existingCategories = await ctx.db
             .query('categories')
-            .withIndex('by_userId', (q) => q.eq('userId', user._id))
+            .withIndex('by_userId', (q) => q.eq('userId', args.userId))
             .first();
 
         if (existingCategories) {
@@ -206,7 +204,7 @@ export const seedDefaultCategories = internalMutation({
 
         for (const cat of incomeCategories) {
             await ctx.db.insert('categories', {
-                userId: user._id,
+                userId: args.userId,  // Use the passed userId
                 name: cat.name,
                 type: 'income',
                 color: cat.color,
@@ -219,7 +217,7 @@ export const seedDefaultCategories = internalMutation({
 
         for (const cat of expenseCategories) {
             await ctx.db.insert('categories', {
-                userId: user._id,
+                userId: args.userId,  // Use the passed userId
                 name: cat.name,
                 type: 'expense',
                 color: cat.color,

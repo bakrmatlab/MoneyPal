@@ -185,7 +185,7 @@ export const CategoriesSettings = () => {
                                 <p className='text-muted-foreground text-center text-sm'>No income categories</p>
                             ) : (
                                 incomeCategories.map((category) => (
-                                    <div key={category._id} className='flex items-center justify-between rounded-lg border p-3'>
+                                    <div key={category._id} className={`flex items-center justify-between rounded-lg border p-3 ${category.isHidden ? 'opacity-50' : ''}`}>
                                         {/* Category Info */}
                                         <div className='flex items-center gap-3'>
                                             <span className='text-2xl'>{category.icon}</span>
@@ -234,7 +234,7 @@ export const CategoriesSettings = () => {
                                 <p className='text-muted-foreground text-center text-sm'>No expense categories</p>
                             ) : (
                                 expenseCategories.map((category) => (
-                                    <div key={category._id} className='flex items-center justify-between rounded-lg border p-3'>
+                                    <div key={category._id} className={`flex items-center justify-between rounded-lg border p-3 ${category.isHidden ? 'opacity-50' : ''}`}>
                                         {/* Category Info */}
                                         <div className='flex items-center gap-3'>
                                             <span className='text-2xl'>{category.icon}</span>

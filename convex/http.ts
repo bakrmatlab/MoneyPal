@@ -18,11 +18,19 @@ http.route({
         }
         switch (event.type) {
             case 'user.created': // intentional fallthrough
-            case 'user.updated':
-                await ctx.runMutation(internal.users.upsertFromClerk, {
+            case 'user.updated': {
+                const result = await ctx.runMutation(internal.users.upsertFromClerk, {
                     data: event.data as UserJSON,
                 });
+                
+                // Seed default categories for new users
+                if (result?.isNewUser) {
+                    await ctx.runMutation(internal.categories.seedDefaultCategories, {
+                        userId: result.userId,
+                    });
+                }
                 break;
+            }
 
             case 'user.deleted': {
                 const clerkUserId = (event.data as { id: string }).id;

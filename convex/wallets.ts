@@ -49,7 +49,9 @@ export const createWallet = mutation({
             .first();
 
         if (!existingWallets) {
-            await ctx.runMutation(internal.categories.seedDefaultCategories);
+            await ctx.runMutation(internal.categories.seedDefaultCategories, {
+                userId: user._id,
+            });
         }
 
         const walletId = await ctx.db.insert('wallets', {
