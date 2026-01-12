@@ -68,6 +68,8 @@ export const deposit = mutation({
     args: {
         walletId: v.id('wallets'),
         amount: v.number(),
+        description: v.optional(v.string()),
+        categoryId: v.optional(v.id('categories')),
     },
     handler: async (ctx, args) => {
         const user = await getCurrentUserOrThrow(ctx);
@@ -82,8 +84,37 @@ export const deposit = mutation({
             throw new Error('Unauthorized');
         }
 
+        if (args.amount <= 0) {
+            throw new Error('Deposit amount must be positive');
+        }
+
+        if (args.categoryId) {
+            const category = await ctx.db.get(args.categoryId);
+
+            if (!category) {
+                throw new Error('Category not found');
+            }
+
+            if (category.userId !== user._id) {
+                throw new Error('Unauthorized category access');
+            }
+            if (category.type !== 'income') {
+                throw new Error('Category type must be income for deposits');
+            }
+        }
+
         await ctx.db.patch(args.walletId, {
             balance: wallet.balance + args.amount,
+        });
+
+        await ctx.db.insert('transactions', {
+            userId: user._id,
+            walletId: args.walletId,
+            type: 'deposit',
+            amount: args.amount,
+            description: args.description,
+            categoryId: args.categoryId,
+            isDeleted: false,
         });
 
         return wallet;
@@ -94,6 +125,8 @@ export const withdraw = mutation({
     args: {
         walletId: v.id('wallets'),
         amount: v.number(),
+        description: v.optional(v.string()),
+        categoryId: v.optional(v.id('categories')),
     },
     handler: async (ctx, args) => {
         const user = await getCurrentUserOrThrow(ctx);
@@ -108,12 +141,39 @@ export const withdraw = mutation({
             throw new Error('Unauthorized');
         }
 
+        if (args.amount <= 0) {
+            throw new Error('Withdrawal amount must be positive');
+        }
+
         if (wallet.balance < args.amount) {
             throw new Error('Insufficient balance');
         }
 
+        if (args.categoryId) {
+            const category = await ctx.db.get(args.categoryId);
+            if (!category) {
+                throw new Error('Category not found');
+            }
+            if (category.userId !== user._id) {
+                throw new Error('Unauthorized category access');
+            }
+            if (category.type !== 'expense') {
+                throw new Error('Category type must be expense for withdrawals');
+            }
+        }
+
         await ctx.db.patch(args.walletId, {
             balance: wallet.balance - args.amount,
+        });
+
+        await ctx.db.insert('transactions', {
+            userId: user._id,
+            walletId: args.walletId,
+            type: 'withdrawal',
+            amount: args.amount,
+            description: args.description,
+            categoryId: args.categoryId,
+            isDeleted: false,
         });
 
         return wallet;
@@ -125,6 +185,7 @@ export const transfer = mutation({
         fromWalletId: v.id('wallets'),
         toWalletId: v.id('wallets'),
         amount: v.number(),
+        description: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
         const user = await getCurrentUserOrThrow(ctx);
@@ -152,6 +213,17 @@ export const transfer = mutation({
         await ctx.db.patch(args.toWalletId, {
             balance: toWallet.balance + args.amount,
         });
+
+        await ctx.db.insert('transactions', {
+            userId: user._id,
+            walletId: args.fromWalletId,
+            type: 'transfer',
+            amount: args.amount,
+            description: args.description,
+            toWalletId: args.toWalletId,
+            isDeleted: false,
+        });
+
         return { fromWallet, toWallet };
     },
 });

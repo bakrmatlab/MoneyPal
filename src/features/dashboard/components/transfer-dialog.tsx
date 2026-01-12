@@ -20,6 +20,7 @@ export const TransferDialog = ({ walletId, walletName, balance = 0, onRequest }:
     const [open, setOpen] = useState(false);
     const [amount, setAmount] = useState('');
     const [toWalletId, setToWalletId] = useState<string | null>(null);
+    const [description, setDescription] = useState('');
     const [isPending, setIsPending] = useState(false);
     const queryClient = useQueryClient();
     const transfer = useMutation(api.wallets.transfer);
@@ -38,10 +39,11 @@ export const TransferDialog = ({ walletId, walletName, balance = 0, onRequest }:
 
         setIsPending(true);
         try {
-            await transfer({ fromWalletId: walletId, toWalletId, amount: numAmount });
+            await transfer({ fromWalletId: walletId, toWalletId, amount: numAmount, description: description || undefined });
 
             setAmount('');
             setToWalletId(null);
+            setDescription('');
             setOpen(false);
         } finally {
             setIsPending(false);
@@ -104,6 +106,18 @@ export const TransferDialog = ({ walletId, walletName, balance = 0, onRequest }:
                             />
                         </div>
                         {isOverBalance && <p className='text-destructive mt-2 text-sm'>Amount exceeds available balance</p>}
+                    </div>
+                    <div className='py-4'>
+                        <Label htmlFor='transfer-description'>Description (Optional)</Label>
+                        <div className='mt-2'>
+                            <Input
+                                id='transfer-description'
+                                type='text'
+                                placeholder='e.g., Moving savings, Splitting expenses'
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                            />
+                        </div>
                     </div>
 
                     <DialogFooter>

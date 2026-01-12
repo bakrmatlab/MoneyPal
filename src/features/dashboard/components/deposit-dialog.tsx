@@ -16,6 +16,7 @@ export const DepositDialog = ({ walletId, walletName }: TransactionDialogProps) 
     const [categoryId, setCategoryId] = useState<Id<'categories'> | undefined>();
     const [isPending, setIsPending] = useState(false);
     const deposit = useMutation(api.wallets.deposit);
+    const [description, setDescription] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,10 +25,10 @@ export const DepositDialog = ({ walletId, walletName }: TransactionDialogProps) 
 
         setIsPending(true);
         try {
-            // TODO: Phase 1.3 - Pass categoryId to deposit mutation and create transaction
-            await deposit({ walletId, amount: numAmount });
+            await deposit({ walletId, amount: numAmount, description, categoryId });
             setAmount('');
             setCategoryId(undefined);
+            setDescription('');
             setOpen(false);
         } finally {
             setIsPending(false);
@@ -68,8 +69,20 @@ export const DepositDialog = ({ walletId, walletName }: TransactionDialogProps) 
                         </div>
                         <div>
                             <Label htmlFor='deposit-category'>Category (Optional)</Label>
-                            <div className='mt-2'>
+                            <div className='mt-2 mb-2'>
                                 <CategorySelector type='income' value={categoryId} onChange={setCategoryId} placeholder='Select income category...' />
+                            </div>
+                            <div>
+                                <Label htmlFor='deposit-description'>Description (Optional)</Label>
+                                <div className='mt-2'>
+                                    <Input
+                                        id='deposit-description'
+                                        type='text'
+                                        placeholder='e.g., Salary, Freelance payment'
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

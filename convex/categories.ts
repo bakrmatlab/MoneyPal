@@ -204,7 +204,7 @@ export const seedDefaultCategories = internalMutation({
 
         for (const cat of incomeCategories) {
             await ctx.db.insert('categories', {
-                userId: args.userId,  // Use the passed userId
+                userId: args.userId,
                 name: cat.name,
                 type: 'income',
                 color: cat.color,
@@ -217,7 +217,7 @@ export const seedDefaultCategories = internalMutation({
 
         for (const cat of expenseCategories) {
             await ctx.db.insert('categories', {
-                userId: args.userId,  // Use the passed userId
+                userId: args.userId,
                 name: cat.name,
                 type: 'expense',
                 color: cat.color,

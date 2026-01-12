@@ -14,6 +14,7 @@ import { TransactionDialogProps } from './types';
 export const WithdrawDialog = ({ walletId, walletName, balance = 0 }: TransactionDialogProps) => {
     const [open, setOpen] = useState(false);
     const [amount, setAmount] = useState('');
+    const [description, setDescription] = useState(''); // ADD THIS
     const [categoryId, setCategoryId] = useState<Id<'categories'> | undefined>();
     const [isPending, setIsPending] = useState(false);
     const withdraw = useMutation(api.wallets.withdraw);
@@ -27,10 +28,10 @@ export const WithdrawDialog = ({ walletId, walletName, balance = 0 }: Transactio
 
         setIsPending(true);
         try {
-            // TODO: Phase 1.3 - Pass categoryId to withdraw mutation and create transaction
-            await withdraw({ walletId, amount: numAmount });
+            await withdraw({ walletId, amount: numAmount, description, categoryId });
             setAmount('');
             setCategoryId(undefined);
+            setDescription('');
             setOpen(false);
         } finally {
             setIsPending(false);
@@ -75,8 +76,20 @@ export const WithdrawDialog = ({ walletId, walletName, balance = 0 }: Transactio
                         </div>
                         <div>
                             <Label htmlFor='withdraw-category'>Category (Optional)</Label>
-                            <div className='mt-2'>
+                            <div className='mt-2 mb-2'>
                                 <CategorySelector type='expense' value={categoryId} onChange={setCategoryId} placeholder='Select expense category...' />
+                            </div>
+                            <div>
+                                <Label htmlFor='withdraw-description'>Description (Optional)</Label>
+                                <div className='mt-2'>
+                                    <Input
+                                        id='withdraw-description'
+                                        type='text'
+                                        placeholder='e.g., Groceries, Rent, Entertainment'
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

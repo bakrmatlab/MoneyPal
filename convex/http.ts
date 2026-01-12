@@ -22,7 +22,7 @@ http.route({
                 const result = await ctx.runMutation(internal.users.upsertFromClerk, {
                     data: event.data as UserJSON,
                 });
-                
+
                 // Seed default categories for new users
                 if (result?.isNewUser) {
                     await ctx.runMutation(internal.categories.seedDefaultCategories, {
