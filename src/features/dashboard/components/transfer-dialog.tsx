@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { convexQuery } from '@convex-dev/react-query';
 import { api } from '@convex/_generated/api';
 import { useMutation } from 'convex/react';
@@ -12,17 +12,12 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TransactionDialogProps } from './types';
 
-type TransferDialogProps = TransactionDialogProps & {
-    onRequest?: (args: { fromWalletId: any; toWalletId: any; amount: number }) => void;
-};
-
-export const TransferDialog = ({ walletId, walletName, balance = 0, onRequest }: TransferDialogProps) => {
+export const TransferDialog = ({ walletId, walletName, balance = 0 }: TransactionDialogProps) => {
     const [open, setOpen] = useState(false);
     const [amount, setAmount] = useState('');
     const [toWalletId, setToWalletId] = useState<string | null>(null);
     const [description, setDescription] = useState('');
     const [isPending, setIsPending] = useState(false);
-    const queryClient = useQueryClient();
     const transfer = useMutation(api.wallets.transfer);
 
     const { data: wallets } = useQuery(convexQuery(api.wallets.getMyWallets));
@@ -40,7 +35,7 @@ export const TransferDialog = ({ walletId, walletName, balance = 0, onRequest }:
 
         setIsPending(true);
         try {
-            await transfer({ fromWalletId: walletId, toWalletId, amount: numAmount, description: description || undefined });
+            await transfer({ fromWalletId: walletId, toWalletId: toWalletId as typeof walletId, amount: numAmount, description: description || undefined });
 
             setAmount('');
             setToWalletId(null);
