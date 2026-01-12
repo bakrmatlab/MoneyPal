@@ -147,8 +147,8 @@ export function LandingPage() {
 
                         <div className='animate-fade-in flex flex-col gap-4 sm:flex-row' style={{ animationDelay: '300ms', animationFillMode: 'backwards' }}>
                             <Button size='lg' asChild className='gap-2 px-8'>
-                                <Link to='/sign-up'>
-                                    Get Started Free
+                                <Link to={isAuthenticated ? '/dashboard' : '/sign-up'}>
+                                    {isAuthenticated ? 'Go to Dashboard' : 'Get Started Free'}
                                     <ArrowRight className='size-4' />
                                 </Link>
                             </Button>
@@ -242,8 +242,8 @@ export function LandingPage() {
                         </p>
                         <div className='flex flex-col justify-center gap-4 sm:flex-row'>
                             <Button size='lg' asChild className='gap-2'>
-                                <Link to='/sign-up'>
-                                    Start Managing Your Money
+                                <Link to={isAuthenticated ? '/dashboard' : '/sign-up'}>
+                                    {isAuthenticated ? 'Go to Dashboard' : 'Start Managing Your Money'}
                                     <ArrowRight className='size-4' />
                                 </Link>
                             </Button>

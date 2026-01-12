@@ -28,6 +28,7 @@ export const TransferDialog = ({ walletId, walletName, balance = 0, onRequest }:
     const { data: wallets } = useQuery(convexQuery(api.wallets.getMyWallets));
 
     const otherWallets = (wallets ?? []).filter((w: any) => String(w._id) !== String(walletId));
+    const hasOtherWallets = otherWallets.length > 0;
 
     const numAmount = parseFloat(amount) || 0;
     const isOverBalance = numAmount > balance;
@@ -53,7 +54,12 @@ export const TransferDialog = ({ walletId, walletName, balance = 0, onRequest }:
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant='outline' size='sm' className='flex-1 gap-2' disabled={balance === 0}>
+                <Button
+                    variant='outline'
+                    size='sm'
+                    className='flex-1 gap-2'
+                    disabled={balance === 0 || !hasOtherWallets}
+                    title={!hasOtherWallets ? 'Create another wallet to transfer funds' : undefined}>
                     <ArrowLeftRight className='size-4' />
                     Transfer
                 </Button>
@@ -75,15 +81,11 @@ export const TransferDialog = ({ walletId, walletName, balance = 0, onRequest }:
                                     <SelectValue>{toWalletId ? undefined : 'Select wallet'}</SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {otherWallets.length === 0 ? (
-                                        <SelectItem value=''>{'No other wallets'}</SelectItem>
-                                    ) : (
-                                        otherWallets.map((w: any) => (
-                                            <SelectItem key={String(w._id)} value={String(w._id)}>
-                                                {w.name ?? 'Unnamed Wallet'} — {formatCurrency(w.balance)}
-                                            </SelectItem>
-                                        ))
-                                    )}
+                                    {otherWallets.map((w: any) => (
+                                        <SelectItem key={String(w._id)} value={String(w._id)}>
+                                            {w.name ?? 'Unnamed Wallet'} — {formatCurrency(w.balance)}
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </div>

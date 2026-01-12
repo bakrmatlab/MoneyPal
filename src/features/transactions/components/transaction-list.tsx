@@ -1,8 +1,8 @@
-import { AlertCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { convexQuery } from '@convex-dev/react-query';
 import { api } from '@convex/_generated/api';
 import type { Id } from '@convex/_generated/dataModel';
+import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TransactionItem } from './transaction-item';
@@ -15,7 +15,6 @@ interface TransactionListProps {
 }
 
 export const TransactionList = ({ walletId, type, categoryId, dateRange }: TransactionListProps) => {
-
     const getDateRangeTimestamp = () => {
         const now = new Date();
         const startOfDay = new Date(now.setHours(0, 0, 0, 0));
@@ -52,11 +51,8 @@ export const TransactionList = ({ walletId, type, categoryId, dateRange }: Trans
         })
     );
 
-
     const startTimestamp = getDateRangeTimestamp();
-    const filteredTransactions = startTimestamp
-        ? transactions.filter((t) => t._creationTime >= startTimestamp)
-        : transactions;
+    const filteredTransactions = startTimestamp ? transactions.filter((t) => t._creationTime >= startTimestamp) : transactions;
 
     if (isLoading) {
         return (
@@ -79,9 +75,7 @@ export const TransactionList = ({ walletId, type, categoryId, dateRange }: Trans
         return (
             <Alert>
                 <AlertCircle className='size-4' />
-                <AlertDescription>
-                    No transactions found. Try adjusting your filters or make your first transaction!
-                </AlertDescription>
+                <AlertDescription>No transactions found. Try adjusting your filters or make your first transaction!</AlertDescription>
             </Alert>
         );
     }

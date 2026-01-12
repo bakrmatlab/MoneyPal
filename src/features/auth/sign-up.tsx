@@ -5,7 +5,7 @@ export function SignUpPage() {
     return (
         <PageTemplate>
             <div className='flex h-full items-center justify-center'>
-                <SignUp />
+                <SignUp forceRedirectUrl='/dashboard' />
             </div>
         </PageTemplate>
     );
