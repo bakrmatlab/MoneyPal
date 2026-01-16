@@ -1,9 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { PreferencesSettings } from '@/features/settings';
 
 export const Route = createFileRoute('/_authenticated/preferences')({
-    component: RouteComponent,
+    component: PreferencesPage,
 });
 
-function RouteComponent() {
-    return <div>Hello "/_authenticated/preferences"!</div>;
+function PreferencesPage() {
+    return <PreferencesSettings />;
 }

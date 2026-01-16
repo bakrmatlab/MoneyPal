@@ -12,6 +12,7 @@ import type * as categories from "../categories.js";
 import type * as env from "../env.js";
 import type * as http from "../http.js";
 import type * as transactions from "../transactions.js";
+import type * as userPreferences from "../userPreferences.js";
 import type * as users from "../users.js";
 import type * as wallets from "../wallets.js";
 
@@ -26,6 +27,7 @@ declare const fullApi: ApiFromModules<{
   env: typeof env;
   http: typeof http;
   transactions: typeof transactions;
+  userPreferences: typeof userPreferences;
   users: typeof users;
   wallets: typeof wallets;
 }>;

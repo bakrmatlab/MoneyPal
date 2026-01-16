@@ -46,4 +46,18 @@ export default defineSchema({
     })
         .index('by_userId', ['userId'])
         .index('by_userId_type', ['userId', 'type']),
+
+    userPreferences: defineTable({
+        userId: v.id('users'),
+        timezone: v.string(), // IANA timezone, e.g., 'America/New_York'
+        preferredCurrency: v.optional(v.string()), // Deprecated: kept for backward compatibility
+        defaultWalletId: v.optional(v.id('wallets')),
+        locale: v.optional(v.string()), // For date/number formatting, e.g., 'en-US'
+        // Security settings (Phase 4)
+        dailySpendingLimit: v.optional(v.number()),
+        transactionConfirmThreshold: v.optional(v.number()), // Confirm above this amount
+        // Notification settings
+        emailNotifications: v.boolean(),
+        pushNotifications: v.boolean(),
+    }).index('by_userId', ['userId']),
 });

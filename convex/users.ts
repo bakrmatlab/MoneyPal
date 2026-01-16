@@ -45,6 +45,22 @@ export const upsertFromClerk = internalMutation({
             const userId = await ctx.db.insert('users', { ...userAttributes });
             console.log(`Created new user ${userId} for Clerk user ${data.id}`);
 
+            // Initialize preferences for new user with browser-detected defaults
+            try {
+                // Attempt to detect timezone and locale (will default to UTC and en-US if not provided)
+                await ctx.db.insert('userPreferences', {
+                    userId,
+                    timezone: 'UTC', // Default, frontend can update based on browser
+                    locale: 'en-US', // Default, frontend can update based on browser
+                    emailNotifications: true,
+                    pushNotifications: true,
+                });
+                console.log(`Created preferences for new user ${userId}`);
+            } catch (error) {
+                console.error(`Failed to create preferences for user ${userId}:`, error);
+                // Don't fail user creation if preferences fail
+            }
+
             return { userId, isNewUser: true };
         } else {
             // Update existing user
