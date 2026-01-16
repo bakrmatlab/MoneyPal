@@ -33,16 +33,16 @@ export function AppHeader({ fixed, onMenuClick }: AppHeaderProps) {
     const totalBalance = wallets?.reduce((sum, wallet) => sum + wallet.balance, 0) ?? 0;
 
     return (
-        <Header fixed={fixed} className='bg-background'>
+        <Header fixed={fixed} className='bg-background border-b'>
             {isMobile && isAuthenticated && (
-                <Button variant='ghost' size='icon' onClick={onMenuClick} className='shrink-0'>
+                <Button variant='ghost' size='icon' onClick={onMenuClick} className='-ml-2 shrink-0'>
                     <Menu className='size-5' />
                 </Button>
             )}
-            <div className='flex items-center gap-3'>
+            <div className='flex items-center gap-2 sm:gap-3'>
                 {isAuthenticated && clerkUser && (
                     <>
-                        <Avatar className='size-10'>
+                        <Avatar className='size-9 sm:size-10'>
                             <AvatarImage src={clerkUser?.imageUrl} alt={clerkUser?.firstName || ''} />
                             <AvatarFallback>
                                 {clerkUser?.firstName?.charAt(0)}
@@ -50,28 +50,32 @@ export function AppHeader({ fixed, onMenuClick }: AppHeaderProps) {
                             </AvatarFallback>
                         </Avatar>
                         {!isMobile && (
-                            <div>
-                                <p className='text-sm font-semibold'>{clerkUser?.fullName || 'User'}</p>
-                                <p className='text-muted-foreground text-xs'>Welcome back to MoneyPal 👋</p>
+                            <div className='min-w-0'>
+                                <p className='truncate text-sm font-semibold'>{clerkUser?.fullName || 'User'}</p>
+                                <p className='text-muted-foreground truncate text-xs'>Welcome back 👋</p>
                             </div>
                         )}
                     </>
                 )}
             </div>
-            <div className='ms-auto flex items-center space-x-2 md:space-x-4'>
+            <div className='ms-auto flex items-center gap-2 sm:gap-3 md:gap-4'>
                 {isAuthenticated && (
                     <>
-                        <div className={`flex items-center gap-3 ${!isMobile ? 'border-l' : ''} ${!isMobile ? 'pl-4' : ''}`}>
+                        <div className={`flex items-center gap-2 sm:gap-3 ${!isMobile ? 'rounded-lg border px-3 py-1.5' : ''}`}>
                             <div className='text-right'>
-                                {!isMobile && <div className='text-muted-foreground text-xs'>Balance:</div>}
-                                {isPending ? <Skeleton className='h-5 w-20' /> : <div className='text-sm font-semibold'>{formatCurrency(totalBalance)}</div>}
+                                {!isMobile && <div className='text-muted-foreground text-xs'>Total Balance</div>}
+                                {isPending ? (
+                                    <Skeleton className='h-5 w-20' />
+                                ) : (
+                                    <div className='text-sm font-semibold tabular-nums'>{formatCurrency(totalBalance)}</div>
+                                )}
                             </div>
                         </div>
                         <CreateWalletDialog
                             trigger={
-                                <Button size={isMobile ? 'icon' : 'sm'}>
+                                <Button size={isMobile ? 'icon' : 'sm'} className='shrink-0'>
                                     <Wallet className='size-4' />
-                                    {!isMobile && 'Deposit'}
+                                    {!isMobile && <span className='ml-2'>New Wallet</span>}
                                 </Button>
                             }
                         />
@@ -79,7 +83,7 @@ export function AppHeader({ fixed, onMenuClick }: AppHeaderProps) {
                 )}
                 {!isMobile && <ThemeSwitch />}
                 {!isMobile && (
-                    <Button variant='outline' size='icon' onClick={() => setSignOutOpen(true)}>
+                    <Button variant='outline' size='icon' onClick={() => setSignOutOpen(true)} className='shrink-0'>
                         <LogOut className='size-4' />
                     </Button>
                 )}

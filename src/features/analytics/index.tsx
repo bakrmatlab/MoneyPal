@@ -179,14 +179,14 @@ export const AnalyticsPage = () => {
     };
 
     return (
-        <div className='container mx-auto space-y-4 px-4 py-4 md:space-y-6 md:px-6 md:py-6'>
+        <div className='container mx-auto max-w-7xl space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8 lg:px-8'>
             {/* Header */}
             <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
                 <div>
-                    <h1 className='text-2xl font-bold md:text-3xl'>Analytics</h1>
-                    <p className='text-muted-foreground mt-1 text-xs md:mt-2 md:text-sm'>Comprehensive insights into your financial health</p>
+                    <h1 className='text-3xl font-bold tracking-tight sm:text-4xl'>Analytics</h1>
+                    <p className='text-muted-foreground mt-2 text-sm sm:text-base'>Comprehensive insights into your financial health</p>
                 </div>
-                <Button onClick={handleExportData} variant='outline' size='sm'>
+                <Button onClick={handleExportData} variant='outline' className='self-start sm:self-auto'>
                     <Download className='mr-2 size-4' />
                     Export Data
                 </Button>
@@ -194,12 +194,12 @@ export const AnalyticsPage = () => {
 
             {/* Filters */}
             <Card>
-                <CardHeader className='p-4 md:p-6'>
-                    <CardTitle className='text-base md:text-lg'>Filters</CardTitle>
-                    <CardDescription className='text-xs md:text-sm'>Customize your analytics view</CardDescription>
+                <CardHeader className='space-y-1.5 p-6'>
+                    <CardTitle className='text-lg sm:text-xl'>Filters</CardTitle>
+                    <CardDescription className='text-sm'>Customize your analytics view</CardDescription>
                 </CardHeader>
-                <CardContent className='p-4 pt-0 md:p-6 md:pt-0'>
-                    <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4'>
+                <CardContent className='p-6 pt-0'>
+                    <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
                         {/* Date Range Filter */}
                         <div className='space-y-2'>
                             <Label htmlFor='date-filter'>Date Range</Label>
@@ -239,14 +239,14 @@ export const AnalyticsPage = () => {
             </Card>
 
             {/* KPI Summary Cards */}
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4'>
                 {/* Total Income Card */}
                 <Card>
-                    <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                    <CardHeader className='flex flex-row items-center justify-between space-y-0 p-6 pb-2'>
                         <CardTitle className='text-sm font-medium'>Total Income</CardTitle>
                         <TrendingUp className='text-muted-foreground size-4' />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className='px-6 pb-6'>
                         {statsLoading ? (
                             <Skeleton className='h-8 w-24' />
                         ) : (
@@ -264,11 +264,11 @@ export const AnalyticsPage = () => {
 
                 {/* Total Expenses Card */}
                 <Card>
-                    <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                    <CardHeader className='flex flex-row items-center justify-between space-y-0 p-6 pb-2'>
                         <CardTitle className='text-sm font-medium'>Total Expenses</CardTitle>
                         <TrendingDown className='text-muted-foreground size-4' />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className='px-6 pb-6'>
                         {statsLoading ? (
                             <Skeleton className='h-8 w-24' />
                         ) : (
@@ -284,11 +284,11 @@ export const AnalyticsPage = () => {
 
                 {/* Net Change Card */}
                 <Card>
-                    <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                    <CardHeader className='flex flex-row items-center justify-between space-y-0 p-6 pb-2'>
                         <CardTitle className='text-sm font-medium'>{dateRange === 'all' ? 'Current Balance' : 'Net Change'}</CardTitle>
                         <DollarSign className='text-muted-foreground size-4' />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className='px-6 pb-6'>
                         {statsLoading ? (
                             <Skeleton className='h-8 w-24' />
                         ) : (
@@ -308,11 +308,11 @@ export const AnalyticsPage = () => {
 
                 {/* Transaction Count Card */}
                 <Card>
-                    <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                    <CardHeader className='flex flex-row items-center justify-between space-y-0 p-6 pb-2'>
                         <CardTitle className='text-sm font-medium'>Transactions</CardTitle>
                         <Activity className='text-muted-foreground size-4' />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className='px-6 pb-6'>
                         {statsLoading ? (
                             <Skeleton className='h-8 w-24' />
                         ) : (
@@ -326,7 +326,7 @@ export const AnalyticsPage = () => {
             </div>
 
             {/* Charts Grid */}
-            <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+            <div className='grid grid-cols-1 gap-6 xl:grid-cols-2'>
                 {/* Spending Trends */}
                 <SpendingChart data={monthlyTrends} isLoading={trendsLoading} dateRange={dateRange} />
 
@@ -335,7 +335,7 @@ export const AnalyticsPage = () => {
             </div>
 
             {/* Category Breakdown and Wallet Trends */}
-            <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+            <div className='grid grid-cols-1 gap-6 xl:grid-cols-2'>
                 {/* Category Breakdown */}
                 <CategoryBreakdown data={categoryBreakdown} topCategories={topCategories} isLoading={categoryLoading} />
 

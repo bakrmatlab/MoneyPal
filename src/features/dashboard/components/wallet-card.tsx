@@ -53,20 +53,20 @@ export const WalletCard = ({ wallet }: WalletCardProps) => {
     const iconColorClass = wallet.color ? WALLET_ICON_COLOR_MAP[wallet.color as keyof typeof WALLET_ICON_COLOR_MAP] : WALLET_ICON_COLOR_MAP.slate;
 
     return (
-        <Card className={`group relative overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${colorClass}`}>
-            <CardHeader className='relative p-4 md:p-6'>
-                <div className='flex items-start justify-between gap-2 md:gap-3'>
-                    <div className='flex flex-1 items-start gap-2 md:gap-3'>
-                        <div className={`rounded-lg p-1.5 md:p-2 ${iconColorClass}`}>
-                            <IconComponent className='size-4 md:size-5' />
+        <Card className={`group relative overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${colorClass}`}>
+            <CardHeader className='relative space-y-2 p-5 sm:p-6'>
+                <div className='flex items-start justify-between gap-3'>
+                    <div className='flex flex-1 items-start gap-3'>
+                        <div className={`rounded-lg p-2 ${iconColorClass}`}>
+                            <IconComponent className='size-5' />
                         </div>
                         <div className='min-w-0 flex-1'>
-                            <CardTitle className='truncate text-sm md:text-base'>{wallet.name ?? 'Unnamed Wallet'}</CardTitle>
-                            <CardDescription className='text-[10px] md:text-xs'>Created {formatDate(wallet._creationTime)}</CardDescription>
+                            <CardTitle className='truncate text-base sm:text-lg'>{wallet.name ?? 'Unnamed Wallet'}</CardTitle>
+                            <CardDescription className='text-xs'>Created {formatDate(wallet._creationTime)}</CardDescription>
                         </div>
                     </div>
-                    <div className='flex items-center gap-1 md:gap-2'>
-                        <Badge variant={wallet.balance > 0 ? 'default' : 'secondary'} className='shrink-0 px-1.5 text-[10px] md:px-2 md:text-xs'>
+                    <div className='flex items-center gap-2'>
+                        <Badge variant={wallet.balance > 0 ? 'default' : 'secondary'} className='shrink-0 px-2 text-xs'>
                             {wallet.balance > 0 ? 'Active' : 'Empty'}
                         </Badge>
                         <WalletSettingsDialog
@@ -75,17 +75,17 @@ export const WalletCard = ({ wallet }: WalletCardProps) => {
                                 <Button
                                     size='icon'
                                     variant='ghost'
-                                    className='size-7 opacity-0 transition-opacity group-hover:opacity-100 md:size-8'
+                                    className='size-8 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100'
                                     title='Wallet settings'>
-                                    <Settings className='size-3.5 md:size-4' />
+                                    <Settings className='size-4' />
                                 </Button>
                             }
                         />
                     </div>
                 </div>
             </CardHeader>
-            <CardContent className='relative p-4 pt-0 md:p-6 md:pt-0'>
-                <p className='mb-3 text-xl font-bold tracking-tight md:mb-4 md:text-2xl'>{formatCurrency(wallet.balance, wallet.currency || 'USD')}</p>
+            <CardContent className='relative space-y-4 p-5 pt-0 sm:p-6 sm:pt-0'>
+                <p className='text-2xl font-bold tracking-tight sm:text-3xl'>{formatCurrency(wallet.balance, wallet.currency || 'USD')}</p>
                 <div className='flex flex-wrap gap-2'>
                     <DepositDialog walletId={wallet._id} walletName={wallet.name} />
                     <WithdrawDialog walletId={wallet._id} walletName={wallet.name} balance={wallet.balance} />

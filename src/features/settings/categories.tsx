@@ -73,18 +73,18 @@ export const CategoriesSettings = () => {
     const expenseCategories = categories?.filter((cat) => cat.type === 'expense') ?? [];
 
     return (
-        <div className='space-y-6'>
+        <div className='space-y-6 sm:space-y-8'>
             {/* Header Section */}
-            <div className='flex items-center justify-between'>
+            <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
                 <div>
-                    <h2 className='text-2xl font-bold'>Categories</h2>
-                    <p className='text-muted-foreground'>Manage your income and expense categories</p>
+                    <h2 className='text-2xl font-bold tracking-tight sm:text-3xl'>Categories</h2>
+                    <p className='text-muted-foreground mt-1 text-sm sm:text-base'>Manage your income and expense categories</p>
                 </div>
 
                 {/* Create Category Dialog */}
                 <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button>
+                        <Button className='self-start sm:self-auto'>
                             <Plus className='mr-2 h-4 w-4' />
                             Create Category
                         </Button>
@@ -171,22 +171,22 @@ export const CategoriesSettings = () => {
             </div>
 
             {/* Categories Grid */}
-            <div className='grid gap-6 md:grid-cols-2'>
+            <div className='grid gap-6 lg:grid-cols-2'>
                 {/* Income Categories Card */}
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Income Categories</CardTitle>
-                        <CardDescription>Categories for income transactions</CardDescription>
+                    <CardHeader className='space-y-1.5'>
+                        <CardTitle className='text-lg sm:text-xl'>Income Categories</CardTitle>
+                        <CardDescription className='text-sm'>Categories for income transactions</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className='space-y-2'>
+                        <div className='space-y-3'>
                             {incomeCategories.length === 0 ? (
-                                <p className='text-muted-foreground text-center text-sm'>No income categories</p>
+                                <p className='text-muted-foreground py-8 text-center text-sm'>No income categories</p>
                             ) : (
                                 incomeCategories.map((category) => (
                                     <div
                                         key={category._id}
-                                        className={`flex items-center justify-between rounded-lg border p-3 ${category.isHidden ? 'opacity-50' : ''}`}>
+                                        className={`flex items-center justify-between rounded-lg border p-4 transition-opacity ${category.isHidden ? 'opacity-50' : ''}`}>
                                         {/* Category Info */}
                                         <div className='flex items-center gap-3'>
                                             <span className='text-2xl'>{category.icon}</span>
@@ -225,19 +225,19 @@ export const CategoriesSettings = () => {
 
                 {/* Expense Categories Card */}
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Expense Categories</CardTitle>
-                        <CardDescription>Categories for expense transactions</CardDescription>
+                    <CardHeader className='space-y-1.5'>
+                        <CardTitle className='text-lg sm:text-xl'>Expense Categories</CardTitle>
+                        <CardDescription className='text-sm'>Categories for expense transactions</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className='space-y-2'>
+                        <div className='space-y-3'>
                             {expenseCategories.length === 0 ? (
-                                <p className='text-muted-foreground text-center text-sm'>No expense categories</p>
+                                <p className='text-muted-foreground py-8 text-center text-sm'>No expense categories</p>
                             ) : (
                                 expenseCategories.map((category) => (
                                     <div
                                         key={category._id}
-                                        className={`flex items-center justify-between rounded-lg border p-3 ${category.isHidden ? 'opacity-50' : ''}`}>
+                                        className={`flex items-center justify-between rounded-lg border p-4 transition-opacity ${category.isHidden ? 'opacity-50' : ''}`}>
                                         {/* Category Info */}
                                         <div className='flex items-center gap-3'>
                                             <span className='text-2xl'>{category.icon}</span>

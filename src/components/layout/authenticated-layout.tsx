@@ -34,7 +34,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
             />
             <div className='flex flex-1 flex-col overflow-hidden'>
                 <AppHeader onMenuClick={() => setMobileMenuOpen(true)} />
-                <main className='flex-1 overflow-y-auto'>{children ?? <Outlet />}</main>
+                <main className='flex-1 overflow-y-auto scroll-smooth'>{children ?? <Outlet />}</main>
             </div>
         </div>
     );
