@@ -13,6 +13,7 @@ type AuthenticatedLayoutProps = {
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
     const { isAuthenticated, isLoading } = useConvexAuth();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     if (isLoading) {
         return <LoadingPage />;
@@ -25,9 +26,14 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
     return (
         <div className='bg-background flex h-screen overflow-hidden'>
             <SkipToMain />
-            <AppSidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
+            <AppSidebar
+                collapsed={sidebarCollapsed}
+                onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+                mobileOpen={mobileMenuOpen}
+                onMobileOpenChange={setMobileMenuOpen}
+            />
             <div className='flex flex-1 flex-col overflow-hidden'>
-                <AppHeader />
+                <AppHeader onMenuClick={() => setMobileMenuOpen(true)} />
                 <main className='flex-1 overflow-y-auto'>{children ?? <Outlet />}</main>
             </div>
         </div>

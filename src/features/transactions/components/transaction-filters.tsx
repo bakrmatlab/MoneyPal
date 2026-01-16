@@ -36,7 +36,7 @@ export const TransactionFilters = ({
 
     return (
         <div className='space-y-4'>
-            <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
+            <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-4'>
                 {/* Wallet Filter */}
                 <div className='space-y-2'>
                     <Label htmlFor='wallet-filter'>Wallet</Label>
@@ -108,8 +108,8 @@ export const TransactionFilters = ({
             </div>
 
             {/* Clear Filters Button */}
-            <div className='flex justify-end'>
-                <Button variant='outline' size='sm' onClick={onClearFilters}>
+            <div className='flex justify-center sm:justify-end'>
+                <Button variant='outline' size='sm' onClick={onClearFilters} className='w-full sm:w-auto'>
                     <X className='mr-2 size-4' />
                     Clear Filters
                 </Button>

@@ -44,9 +44,9 @@ export function Dashboard() {
     }, [error]);
 
     return (
-        <div className='container mx-auto max-w-7xl p-8'>
+        <div className='container mx-auto max-w-7xl p-4 md:p-8'>
             {/* Stats Overview Cards */}
-            <div className='mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+            <div className='mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 md:mb-8 md:gap-4 lg:grid-cols-4'>
                 {/* Total Balance Card */}
                 <Card className='hover:border-primary/50 group relative overflow-hidden transition-all duration-300 hover:shadow-lg'>
                     <div className='from-primary/5 absolute inset-0 bg-gradient-to-br to-transparent opacity-0 transition-opacity group-hover:opacity-100' />
@@ -121,16 +121,16 @@ export function Dashboard() {
             </div>
 
             {/* Your Wallets Section */}
-            <div className='mb-4 flex items-center justify-between'>
+            <div className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between md:mb-4'>
                 <div>
-                    <h2 className='text-xl font-semibold'>Your Wallets</h2>
-                    <p className='text-muted-foreground text-sm'>Manage your wallets with just a click of a button</p>
+                    <h2 className='text-lg font-semibold md:text-xl'>Your Wallets</h2>
+                    <p className='text-muted-foreground text-xs md:text-sm'>Manage your wallets with just a click of a button</p>
                 </div>
             </div>
 
             {/* Wallets Grid */}
             {isPending ? (
-                <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+                <div className='grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3'>
                     {[...Array(3)].map((_, i) => (
                         <Card key={i}>
                             <CardHeader>
@@ -148,18 +148,20 @@ export function Dashboard() {
                     ))}
                 </div>
             ) : wallets?.length === 0 ? (
-                <Card className='py-16 text-center'>
+                <Card className='py-12 text-center md:py-16'>
                     <CardContent>
-                        <div className='bg-muted mx-auto mb-4 flex size-16 items-center justify-center rounded-full'>
-                            <Wallet className='text-muted-foreground size-8' />
+                        <div className='bg-muted mx-auto mb-4 flex size-12 items-center justify-center rounded-full md:size-16'>
+                            <Wallet className='text-muted-foreground size-6 md:size-8' />
                         </div>
-                        <h3 className='mb-2 text-lg font-semibold'>You don't have any wallets currently</h3>
-                        <p className='text-muted-foreground mb-6 text-sm'>No wallets at the moment. Create your first wallet to get started!</p>
+                        <h3 className='mb-2 text-base font-semibold md:text-lg'>You don't have any wallets currently</h3>
+                        <p className='text-muted-foreground mb-4 text-xs md:mb-6 md:text-sm'>
+                            No wallets at the moment. Create your first wallet to get started!
+                        </p>
                         <CreateWalletDialog />
                     </CardContent>
                 </Card>
             ) : (
-                <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+                <div className='grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3'>
                     {wallets?.map((wallet) => (
                         <WalletCard key={wallet._id} wallet={wallet} />
                     ))}
@@ -168,15 +170,15 @@ export function Dashboard() {
 
             {/* Archived Wallets Section */}
             {wallets && wallets.length > 0 && (
-                <div className='mt-8'>
+                <div className='mt-6 md:mt-8'>
                     <Collapsible open={showArchivedWallets} onOpenChange={setShowArchivedWallets}>
-                        <div className='mb-4 flex items-center justify-between'>
+                        <div className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between md:mb-4'>
                             <div>
-                                <h2 className='text-xl font-semibold'>Archived Wallets</h2>
-                                <p className='text-muted-foreground text-sm'>View and restore your archived wallets</p>
+                                <h2 className='text-lg font-semibold md:text-xl'>Archived Wallets</h2>
+                                <p className='text-muted-foreground text-xs md:text-sm'>View and restore your archived wallets</p>
                             </div>
                             <CollapsibleTrigger asChild>
-                                <Button variant='ghost' size='sm' className='gap-2'>
+                                <Button variant='ghost' size='sm' className='gap-2 self-start sm:self-auto'>
                                     <Archive className='size-4' />
                                     {showArchivedWallets ? 'Hide' : 'Show'} Archived
                                     {showArchivedWallets ? <ChevronUp className='size-4' /> : <ChevronDown className='size-4' />}
@@ -185,7 +187,7 @@ export function Dashboard() {
                         </div>
                         <CollapsibleContent>
                             {isAllPending ? (
-                                <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+                                <div className='grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3'>
                                     {[...Array(2)].map((_, i) => (
                                         <Card key={i}>
                                             <CardHeader>
@@ -200,17 +202,17 @@ export function Dashboard() {
                                     ))}
                                 </div>
                             ) : archivedWallets.length === 0 ? (
-                                <Card className='border-dashed py-12 text-center'>
+                                <Card className='border-dashed py-8 text-center md:py-12'>
                                     <CardContent>
-                                        <div className='bg-muted mx-auto mb-4 flex size-12 items-center justify-center rounded-full'>
-                                            <Archive className='text-muted-foreground size-6' />
+                                        <div className='bg-muted mx-auto mb-4 flex size-10 items-center justify-center rounded-full md:size-12'>
+                                            <Archive className='text-muted-foreground size-5 md:size-6' />
                                         </div>
-                                        <h3 className='mb-2 text-base font-semibold'>No Archived Wallets</h3>
-                                        <p className='text-muted-foreground text-sm'>You haven't archived any wallets yet.</p>
+                                        <h3 className='mb-2 text-sm font-semibold md:text-base'>No Archived Wallets</h3>
+                                        <p className='text-muted-foreground text-xs md:text-sm'>You haven't archived any wallets yet.</p>
                                     </CardContent>
                                 </Card>
                             ) : (
-                                <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+                                <div className='grid gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3'>
                                     {archivedWallets.map((wallet) => (
                                         <div key={wallet._id} className='relative'>
                                             <div className='absolute -top-2 -right-2 z-10'>

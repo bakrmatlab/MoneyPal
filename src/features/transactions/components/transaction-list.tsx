@@ -56,7 +56,7 @@ export const TransactionList = ({ walletId, type, categoryId, dateRange }: Trans
 
     if (isLoading) {
         return (
-            <div className='space-y-3'>
+            <div className='space-y-2 md:space-y-3'>
                 {[...Array(5)].map((_, i) => (
                     <div key={i} className='flex items-center gap-4 rounded-lg border p-4'>
                         <Skeleton className='size-10 rounded-full' />

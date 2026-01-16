@@ -56,31 +56,31 @@ export function LandingPage() {
     return (
         <>
             {/* Floating Header */}
-            <header className='fixed top-0 z-50 w-full px-4 py-4'>
+            <header className='fixed top-0 z-50 w-full px-2 py-3 md:px-4 md:py-4'>
                 <div
                     className={cn(
-                        'mx-auto flex max-w-5xl items-center justify-between rounded-2xl px-4 py-2 transition-all duration-300',
+                        'mx-auto flex max-w-5xl items-center justify-between rounded-2xl px-3 py-2 transition-all duration-300 md:px-4',
                         scrolled ? 'bg-background/80 border shadow-lg backdrop-blur-xl' : 'bg-transparent'
                     )}>
-                    <Link to='/' className='flex items-center gap-2.5 transition-opacity hover:opacity-80'>
-                        <div className='bg-primary flex size-8 items-center justify-center rounded-lg'>
-                            <Fan className='text-primary-foreground size-4' />
+                    <Link to='/' className='flex items-center gap-2 transition-opacity hover:opacity-80 md:gap-2.5'>
+                        <div className='bg-primary flex size-7 items-center justify-center rounded-lg md:size-8'>
+                            <Fan className='text-primary-foreground size-3.5 md:size-4' />
                         </div>
-                        <span className='text-lg font-semibold tracking-tight'>Money-Pal</span>
+                        <span className='text-base font-semibold tracking-tight md:text-lg'>Money-Pal</span>
                     </Link>
-                    <nav className='flex items-center gap-1.5'>
+                    <nav className='flex items-center gap-1 md:gap-1.5'>
                         {isLoading ? (
                             <>
-                                <Skeleton className='size-9 rounded-md' />
-                                <Skeleton className='h-8 w-20 rounded-md' />
-                                <Skeleton className='h-8 w-24 rounded-md' />
+                                <Skeleton className='hidden size-9 rounded-md md:flex' />
+                                <Skeleton className='h-8 w-16 rounded-md md:w-20' />
+                                <Skeleton className='hidden h-8 w-20 rounded-md sm:flex md:w-24' />
                             </>
                         ) : isAuthenticated ? (
                             <>
-                                <Button size='sm' asChild>
+                                <Button size='sm' asChild className='text-xs md:text-sm'>
                                     <Link to='/dashboard'>
-                                        <LayoutDashboard className='size-4' />
-                                        Dashboard
+                                        <LayoutDashboard className='size-3.5 md:size-4' />
+                                        <span className='hidden sm:inline'>Dashboard</span>
                                     </Link>
                                 </Button>
                                 <ThemeSwitch />
@@ -89,10 +89,10 @@ export function LandingPage() {
                         ) : (
                             <>
                                 <ThemeSwitch />
-                                <Button variant='ghost' size='sm' asChild>
+                                <Button variant='ghost' size='sm' asChild className='hidden text-xs sm:flex md:text-sm'>
                                     <Link to='/sign-in'>Sign In</Link>
                                 </Button>
-                                <Button size='sm' asChild>
+                                <Button size='sm' asChild className='text-xs md:text-sm'>
                                     <Link to='/sign-up'>Get Started</Link>
                                 </Button>
                             </>
@@ -119,7 +119,7 @@ export function LandingPage() {
                         />
                     </div>
 
-                    <div className='container mx-auto flex min-h-screen flex-col items-center justify-center px-4 py-24 text-center'>
+                    <div className='container mx-auto flex min-h-screen flex-col items-center justify-center px-4 py-20 text-center md:py-24'>
                         <Badge
                             variant='secondary'
                             className='animate-fade-in mb-6 gap-2 px-4 py-1.5 text-sm font-medium'
@@ -132,27 +132,29 @@ export function LandingPage() {
                         </Badge>
 
                         <h1
-                            className='animate-fade-in mb-6 max-w-4xl text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl'
+                            className='animate-fade-in mb-4 max-w-4xl text-3xl font-bold tracking-tight sm:text-4xl md:mb-6 md:text-5xl lg:text-6xl xl:text-7xl'
                             style={{ animationDelay: '100ms', animationFillMode: 'backwards' }}>
                             Your personal <span className='from-primary via-primary to-secondary bg-linear-to-r bg-clip-text text-transparent'>finance</span>{' '}
                             companion
                         </h1>
 
                         <p
-                            className='animate-fade-in text-muted-foreground mb-10 max-w-2xl text-lg sm:text-xl'
+                            className='animate-fade-in text-muted-foreground mb-6 max-w-2xl text-sm sm:text-base md:mb-10 md:text-lg'
                             style={{ animationDelay: '200ms', animationFillMode: 'backwards' }}>
                             Manage multiple wallets, track expenses, set budgets, and gain insights into your spending habits. Take control of your money with
                             real-time synchronization.
                         </p>
 
-                        <div className='animate-fade-in flex flex-col gap-4 sm:flex-row' style={{ animationDelay: '300ms', animationFillMode: 'backwards' }}>
-                            <Button size='lg' asChild className='gap-2 px-8'>
+                        <div
+                            className='animate-fade-in flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4'
+                            style={{ animationDelay: '300ms', animationFillMode: 'backwards' }}>
+                            <Button size='lg' asChild className='w-full gap-2 px-6 sm:w-auto md:px-8'>
                                 <Link to={isAuthenticated ? '/dashboard' : '/sign-up'}>
                                     {isAuthenticated ? 'Go to Dashboard' : 'Get Started Free'}
                                     <ArrowRight className='size-4' />
                                 </Link>
                             </Button>
-                            <Button size='lg' variant='outline' asChild>
+                            <Button size='lg' variant='outline' asChild className='w-full sm:w-auto'>
                                 <a href='https://github.com/roynulrohan/money-pal' target='_blank' rel='noopener noreferrer' aria-label='View on GitHub'>
                                     View on GitHub
                                 </a>
@@ -160,12 +162,12 @@ export function LandingPage() {
                         </div>
 
                         {/* Floating Elements */}
-                        <div className='animate-fade-in mt-16' style={{ animationDelay: '400ms', animationFillMode: 'backwards' }}>
-                            <div className='relative mx-auto max-w-3xl'>
-                                <div className='from-primary/20 via-secondary/20 to-primary/20 absolute -inset-4 rounded-2xl bg-linear-to-r blur-2xl' />
+                        <div className='animate-fade-in mt-10 w-full md:mt-16' style={{ animationDelay: '400ms', animationFillMode: 'backwards' }}>
+                            <div className='relative mx-auto max-w-3xl px-4'>
+                                <div className='from-primary/20 via-secondary/20 to-primary/20 absolute -inset-2 rounded-2xl bg-linear-to-r blur-2xl md:-inset-4' />
                                 <Card className='bg-card/80 relative border-2 backdrop-blur-sm'>
-                                    <CardContent className='p-6'>
-                                        <pre className='overflow-x-auto text-left text-sm'>
+                                    <CardContent className='p-4 md:p-6'>
+                                        <pre className='overflow-x-auto text-left text-xs sm:text-sm'>
                                             <code className='text-muted-foreground'>
                                                 <span className='text-primary'>$</span> Create your first wallet
                                                 <br />
@@ -182,14 +184,14 @@ export function LandingPage() {
                 </section>
 
                 {/* Features Section */}
-                <section className='bg-muted/30 border-t py-24'>
+                <section className='bg-muted/30 border-t py-12 md:py-24'>
                     <div className='container mx-auto px-4'>
-                        <div className='mb-16 text-center'>
+                        <div className='mb-10 text-center md:mb-16'>
                             <Badge variant='outline' className='mb-4'>
                                 Features
                             </Badge>
-                            <h2 className='mb-4 text-3xl font-bold tracking-tight sm:text-4xl'>Everything you need to manage your money</h2>
-                            <p className='text-muted-foreground mx-auto max-w-2xl'>
+                            <h2 className='mb-3 text-2xl font-bold tracking-tight sm:text-3xl md:mb-4 md:text-4xl'>Everything you need to manage your money</h2>
+                            <p className='text-muted-foreground mx-auto max-w-2xl text-sm md:text-base'>
                                 Powerful features designed to give you complete control over your finances, from simple tracking to advanced budgeting.
                             </p>
                         </div>
@@ -219,13 +221,13 @@ export function LandingPage() {
                 </section>
 
                 {/* Stats Section */}
-                <section className='border-t py-24'>
+                <section className='border-t py-12 md:py-24'>
                     <div className='container mx-auto px-4'>
-                        <div className='grid grid-cols-2 gap-8 md:grid-cols-4'>
+                        <div className='grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8'>
                             {stats.map((stat) => (
                                 <div key={stat.label} className='text-center'>
-                                    <div className='text-primary mb-2 text-4xl font-bold sm:text-5xl'>{stat.value}</div>
-                                    <div className='text-muted-foreground text-sm'>{stat.label}</div>
+                                    <div className='text-primary mb-1 text-2xl font-bold sm:text-3xl md:mb-2 md:text-4xl lg:text-5xl'>{stat.value}</div>
+                                    <div className='text-muted-foreground text-xs md:text-sm'>{stat.label}</div>
                                 </div>
                             ))}
                         </div>
@@ -233,15 +235,15 @@ export function LandingPage() {
                 </section>
 
                 {/* CTA Section */}
-                <section className='bg-muted/30 border-t py-24'>
+                <section className='bg-muted/30 border-t py-12 md:py-24'>
                     <div className='container mx-auto px-4 text-center'>
-                        <h2 className='mb-4 text-3xl font-bold tracking-tight sm:text-4xl'>Ready to take control of your finances?</h2>
-                        <p className='text-muted-foreground mx-auto mb-8 max-w-xl'>
+                        <h2 className='mb-3 text-2xl font-bold tracking-tight sm:text-3xl md:mb-4 md:text-4xl'>Ready to take control of your finances?</h2>
+                        <p className='text-muted-foreground mx-auto mb-6 max-w-xl text-sm md:mb-8 md:text-base'>
                             Join Money-Pal today and start managing your money smarter. Create unlimited wallets, track every transaction, and achieve your
                             financial goals.
                         </p>
-                        <div className='flex flex-col justify-center gap-4 sm:flex-row'>
-                            <Button size='lg' asChild className='gap-2'>
+                        <div className='flex flex-col justify-center gap-3 sm:flex-row md:gap-4'>
+                            <Button size='lg' asChild className='w-full gap-2 sm:w-auto'>
                                 <Link to={isAuthenticated ? '/dashboard' : '/sign-up'}>
                                     {isAuthenticated ? 'Go to Dashboard' : 'Start Managing Your Money'}
                                     <ArrowRight className='size-4' />

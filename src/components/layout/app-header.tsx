@@ -4,8 +4,9 @@ import { useUser as useClerkUser } from '@clerk/clerk-react';
 import { convexQuery } from '@convex-dev/react-query';
 import { useConvexAuth } from '@convex-dev/react-query';
 import { api } from '@convex/_generated/api';
-import { Wallet, LogOut } from 'lucide-react';
+import { Wallet, LogOut, Menu } from 'lucide-react';
 import { formatCurrency } from '@/lib/format';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { CreateWalletDialog } from '@/features/dashboard/components/create-wallet-dialog';
 import { SignOutDialog } from '../sign-out-dialog';
 import { ThemeSwitch } from '../theme-switch';
@@ -16,12 +17,14 @@ import { Header } from './header';
 
 interface AppHeaderProps {
     fixed?: boolean;
+    onMenuClick?: () => void;
 }
 
-export function AppHeader({ fixed }: AppHeaderProps) {
+export function AppHeader({ fixed, onMenuClick }: AppHeaderProps) {
     const { isAuthenticated } = useConvexAuth();
     const { user: clerkUser } = useClerkUser();
     const [signOutOpen, setSignOutOpen] = useState(false);
+    const isMobile = useIsMobile();
     const { data: wallets, isPending } = useQuery({
         ...convexQuery(api.wallets.getMyWallets),
         enabled: isAuthenticated,
@@ -31,6 +34,11 @@ export function AppHeader({ fixed }: AppHeaderProps) {
 
     return (
         <Header fixed={fixed} className='bg-background'>
+            {isMobile && isAuthenticated && (
+                <Button variant='ghost' size='icon' onClick={onMenuClick} className='shrink-0'>
+                    <Menu className='size-5' />
+                </Button>
+            )}
             <div className='flex items-center gap-3'>
                 {isAuthenticated && clerkUser && (
                     <>
@@ -41,36 +49,40 @@ export function AppHeader({ fixed }: AppHeaderProps) {
                                 {clerkUser?.lastName?.charAt(0)}
                             </AvatarFallback>
                         </Avatar>
-                        <div>
-                            <p className='text-sm font-semibold'>{clerkUser?.fullName || 'User'}</p>
-                            <p className='text-muted-foreground text-xs'>Welcome back to MoneyPal 👋</p>
-                        </div>
+                        {!isMobile && (
+                            <div>
+                                <p className='text-sm font-semibold'>{clerkUser?.fullName || 'User'}</p>
+                                <p className='text-muted-foreground text-xs'>Welcome back to MoneyPal 👋</p>
+                            </div>
+                        )}
                     </>
                 )}
             </div>
-            <div className='ms-auto flex items-center space-x-4'>
+            <div className='ms-auto flex items-center space-x-2 md:space-x-4'>
                 {isAuthenticated && (
                     <>
-                        <div className='flex items-center gap-3 border-l pl-4'>
+                        <div className={`flex items-center gap-3 ${!isMobile ? 'border-l' : ''} ${!isMobile ? 'pl-4' : ''}`}>
                             <div className='text-right'>
-                                <div className='text-muted-foreground text-xs'>Balance:</div>
+                                {!isMobile && <div className='text-muted-foreground text-xs'>Balance:</div>}
                                 {isPending ? <Skeleton className='h-5 w-20' /> : <div className='text-sm font-semibold'>{formatCurrency(totalBalance)}</div>}
                             </div>
                         </div>
                         <CreateWalletDialog
                             trigger={
-                                <Button size='sm'>
+                                <Button size={isMobile ? 'icon' : 'sm'}>
                                     <Wallet className='size-4' />
-                                    Deposit
+                                    {!isMobile && 'Deposit'}
                                 </Button>
                             }
                         />
                     </>
                 )}
-                <ThemeSwitch />
-                <Button variant='outline' size='icon' onClick={() => setSignOutOpen(true)}>
-                    <LogOut className='size-4' />
-                </Button>
+                {!isMobile && <ThemeSwitch />}
+                {!isMobile && (
+                    <Button variant='outline' size='icon' onClick={() => setSignOutOpen(true)}>
+                        <LogOut className='size-4' />
+                    </Button>
+                )}
                 <SignOutDialog open={signOutOpen} onOpenChange={setSignOutOpen} />
             </div>
         </Header>

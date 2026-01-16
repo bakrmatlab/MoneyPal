@@ -60,39 +60,44 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
     };
 
     return (
-        <div className='hover:bg-accent flex items-center gap-4 rounded-lg border p-4 transition-colors'>
-            {/* Icon */}
-            <div className='bg-muted flex size-10 items-center justify-center rounded-full'>{getIcon()}</div>
+        <div className='hover:bg-accent flex flex-col gap-3 rounded-lg border p-3 transition-colors sm:flex-row sm:items-center md:gap-4 md:p-4'>
+            <div className='flex flex-1 items-center gap-3 md:gap-4'>
+                {/* Icon */}
+                <div className='bg-muted flex size-9 shrink-0 items-center justify-center rounded-full md:size-10'>{getIcon()}</div>
 
-            {/* Transaction Details */}
-            <div className='flex-1 space-y-1'>
-                <div className='flex items-center gap-2'>
-                    <p className='font-medium'>{tx.description || 'No description'}</p>
-                    <Badge variant='outline' className='text-xs'>
-                        {getTypeLabel()}
-                    </Badge>
-                    {tx.category && (
-                        <Badge variant='secondary' className='text-xs' style={{ backgroundColor: tx.category.color + '20', color: tx.category.color }}>
-                            {tx.category.icon} {tx.category.name}
+                {/* Transaction Details */}
+                <div className='min-w-0 flex-1 space-y-0.5 md:space-y-1'>
+                    <div className='flex flex-wrap items-center gap-1.5 md:gap-2'>
+                        <p className='truncate text-sm font-medium md:text-base'>{tx.description || 'No description'}</p>
+                        <Badge variant='outline' className='shrink-0 text-[10px] md:text-xs'>
+                            {getTypeLabel()}
                         </Badge>
-                    )}
-                </div>
-                <div className='text-muted-foreground flex items-center gap-2 text-sm'>
-                    <span>{tx.wallet?.name || 'Unknown Wallet'}</span>
-                    {tx.toWallet && (
-                        <>
-                            <span>→</span>
-                            <span>{tx.toWallet.name}</span>
-                        </>
-                    )}
-                    <span>•</span>
-                    <span>{new Date(tx._creationTime).toLocaleDateString()}</span>
+                        {tx.category && (
+                            <Badge
+                                variant='secondary'
+                                className='shrink-0 text-[10px] md:text-xs'
+                                style={{ backgroundColor: tx.category.color + '20', color: tx.category.color }}>
+                                {tx.category.icon} {tx.category.name}
+                            </Badge>
+                        )}
+                    </div>
+                    <div className='text-muted-foreground flex flex-wrap items-center gap-1 text-xs md:gap-2 md:text-sm'>
+                        <span className='truncate'>{tx.wallet?.name || 'Unknown Wallet'}</span>
+                        {tx.toWallet && (
+                            <>
+                                <span className='hidden sm:inline'>→</span>
+                                <span className='truncate'>{tx.toWallet.name}</span>
+                            </>
+                        )}
+                        <span className='hidden sm:inline'>•</span>
+                        <span>{new Date(tx._creationTime).toLocaleDateString()}</span>
+                    </div>
                 </div>
             </div>
 
             {/* Amount */}
-            <div className='flex items-center gap-4'>
-                <p className={`text-lg font-semibold ${getAmountColor()}`}>
+            <div className='flex items-center justify-between gap-3 sm:ml-auto sm:justify-end md:gap-4'>
+                <p className={`text-base font-semibold md:text-lg ${getAmountColor()}`}>
                     {tx.type === 'deposit' ? '+' : tx.type === 'withdrawal' ? '-' : ''}
                     {formatCurrency(tx.amount)}
                 </p>
@@ -100,8 +105,8 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
                 {/* Actions Menu */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant='ghost' size='icon'>
-                            <MoreVertical className='size-4' />
+                        <Button variant='ghost' size='icon' className='size-8 shrink-0 md:size-9'>
+                            <MoreVertical className='size-3.5 md:size-4' />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align='end'>

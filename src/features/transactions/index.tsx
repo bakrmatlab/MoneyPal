@@ -18,18 +18,18 @@ export const TransactionsPage = () => {
     };
 
     return (
-        <div className='container mx-auto space-y-6 py-6'>
+        <div className='container mx-auto space-y-4 px-4 py-4 md:space-y-6 md:px-6 md:py-6'>
             <div>
-                <h1 className='text-3xl font-bold'>Transactions</h1>
-                <p className='text-muted-foreground mt-2'>View and manage all your transaction history</p>
+                <h1 className='text-2xl font-bold md:text-3xl'>Transactions</h1>
+                <p className='text-muted-foreground mt-1 text-xs md:mt-2 md:text-sm'>View and manage all your transaction history</p>
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Filter Transactions</CardTitle>
-                    <CardDescription>Filter by wallet, type, category, or date range</CardDescription>
+                <CardHeader className='p-4 md:p-6'>
+                    <CardTitle className='text-base md:text-lg'>Filter Transactions</CardTitle>
+                    <CardDescription className='text-xs md:text-sm'>Filter by wallet, type, category, or date range</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className='p-4 pt-0 md:p-6 md:pt-0'>
                     <TransactionFilters
                         walletId={walletId}
                         setWalletId={setWalletId}
@@ -45,11 +45,11 @@ export const TransactionsPage = () => {
             </Card>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Transaction History</CardTitle>
-                    <CardDescription>All your financial activities</CardDescription>
+                <CardHeader className='p-4 md:p-6'>
+                    <CardTitle className='text-base md:text-lg'>Transaction History</CardTitle>
+                    <CardDescription className='text-xs md:text-sm'>All your financial activities</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className='p-4 pt-0 md:p-6 md:pt-0'>
                     <TransactionList walletId={walletId} type={type} categoryId={categoryId} dateRange={dateRange} />
                 </CardContent>
             </Card>
