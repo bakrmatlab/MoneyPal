@@ -73,7 +73,9 @@ export const TransactionFilters = ({
                 {/* Type Filter */}
                 <div className='space-y-2'>
                     <Label htmlFor='type-filter'>Type</Label>
-                    <Select value={type ?? 'all'} onValueChange={(v) => handleTypeChange(v === 'all' ? undefined : (v as 'deposit' | 'withdrawal' | 'transfer'))}>
+                    <Select
+                        value={type ?? 'all'}
+                        onValueChange={(v) => handleTypeChange(v === 'all' ? undefined : (v as 'deposit' | 'withdrawal' | 'transfer'))}>
                         <SelectTrigger id='type-filter'>
                             <SelectValue placeholder='All Types' />
                         </SelectTrigger>
@@ -89,11 +91,10 @@ export const TransactionFilters = ({
                 {/* Category Filter */}
                 <div className='space-y-2'>
                     <Label htmlFor='category-filter'>Category</Label>
-                    <Select 
-                        value={categoryId ?? 'all'} 
+                    <Select
+                        value={categoryId ?? 'all'}
                         onValueChange={(v) => setCategoryId(v === 'all' ? undefined : (v as Id<'categories'>))}
-                        disabled={type === 'transfer'}
-                    >
+                        disabled={type === 'transfer'}>
                         <SelectTrigger id='category-filter'>
                             <SelectValue placeholder={type === 'transfer' ? 'N/A for transfers' : 'All Categories'} />
                         </SelectTrigger>

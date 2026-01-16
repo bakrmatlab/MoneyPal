@@ -19,7 +19,7 @@ export const getTransactions = query({
     },
     handler: async (ctx, args) => {
         const user = await getCurrentUserOrThrow(ctx);
-        
+
         // Start with user's transactions
         let transactions = await ctx.db
             .query('transactions')
@@ -32,9 +32,7 @@ export const getTransactions = query({
 
         // Apply wallet filter (include both source and destination for transfers)
         if (args.walletId) {
-            transactions = transactions.filter(
-                (t) => t.walletId === args.walletId || (t.toWalletId && t.toWalletId === args.walletId)
-            );
+            transactions = transactions.filter((t) => t.walletId === args.walletId || (t.toWalletId && t.toWalletId === args.walletId));
         }
 
         // Apply type filter
@@ -299,7 +297,7 @@ export const getTransactionStats = query({
             .collect();
 
         if (args.walletId) {
-            transactions = transactions.filter((t) => t.walletId === args.walletId);
+            transactions = transactions.filter((t) => t.walletId === args.walletId || (t.toWalletId && t.toWalletId === args.walletId));
         }
 
         if (args.startDate) {

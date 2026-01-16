@@ -105,12 +105,7 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
                 </p>
 
                 {/* View Details Button */}
-                <Button 
-                    variant='ghost' 
-                    size='icon' 
-                    className='size-8 shrink-0 md:size-9'
-                    onClick={() => setIsDetailsOpen(true)}
-                >
+                <Button variant='ghost' size='icon' className='size-8 shrink-0 md:size-9' onClick={() => setIsDetailsOpen(true)}>
                     <Info className='size-3.5 md:size-4' />
                 </Button>
             </div>
@@ -124,18 +119,16 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
                     </DialogHeader>
                     <div className='space-y-4'>
                         <div className='flex items-center gap-3'>
-                            <div className='bg-muted flex size-12 shrink-0 items-center justify-center rounded-full'>
-                                {getIcon()}
-                            </div>
+                            <div className='bg-muted flex size-12 shrink-0 items-center justify-center rounded-full'>{getIcon()}</div>
                             <div>
-                                <p className='text-sm font-medium text-muted-foreground'>Type</p>
+                                <p className='text-muted-foreground text-sm font-medium'>Type</p>
                                 <p className='font-semibold'>{getTypeLabel()}</p>
                             </div>
                         </div>
 
                         <div className='space-y-3 rounded-lg border p-4'>
                             <div>
-                                <p className='text-sm font-medium text-muted-foreground'>Amount</p>
+                                <p className='text-muted-foreground text-sm font-medium'>Amount</p>
                                 <p className={`text-2xl font-bold ${getAmountColor()}`}>
                                     {tx.type === 'deposit' ? '+' : tx.type === 'withdrawal' ? '-' : ''}
                                     {formatCurrency(tx.amount)}
@@ -143,12 +136,12 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
                             </div>
 
                             <div>
-                                <p className='text-sm font-medium text-muted-foreground'>Description</p>
+                                <p className='text-muted-foreground text-sm font-medium'>Description</p>
                                 <p className='font-medium'>{tx.description || 'No description provided'}</p>
                             </div>
 
                             <div>
-                                <p className='text-sm font-medium text-muted-foreground'>Date</p>
+                                <p className='text-muted-foreground text-sm font-medium'>Date</p>
                                 <p className='font-medium'>
                                     {new Date(tx._creationTime).toLocaleDateString(undefined, {
                                         year: 'numeric',
@@ -161,33 +154,28 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
                             </div>
 
                             <div>
-                                <p className='text-sm font-medium text-muted-foreground'>
-                                    {tx.type === 'transfer' ? 'From Wallet' : 'Wallet'}
-                                </p>
+                                <p className='text-muted-foreground text-sm font-medium'>{tx.type === 'transfer' ? 'From Wallet' : 'Wallet'}</p>
                                 <p className='font-medium'>{tx.wallet?.name || 'Unknown Wallet'}</p>
                             </div>
 
                             {tx.toWallet && (
                                 <div>
-                                    <p className='text-sm font-medium text-muted-foreground'>To Wallet</p>
+                                    <p className='text-muted-foreground text-sm font-medium'>To Wallet</p>
                                     <p className='font-medium'>{tx.toWallet.name}</p>
                                 </div>
                             )}
 
                             {tx.category && (
                                 <div>
-                                    <p className='text-sm font-medium text-muted-foreground'>Category</p>
-                                    <Badge
-                                        variant='secondary'
-                                        className='mt-1'
-                                        style={{ backgroundColor: tx.category.color + '20', color: tx.category.color }}>
+                                    <p className='text-muted-foreground text-sm font-medium'>Category</p>
+                                    <Badge variant='secondary' className='mt-1' style={{ backgroundColor: tx.category.color + '20', color: tx.category.color }}>
                                         {tx.category.icon} {tx.category.name}
                                     </Badge>
                                 </div>
                             )}
 
                             <div>
-                                <p className='text-sm font-medium text-muted-foreground'>Transaction ID</p>
+                                <p className='text-muted-foreground text-sm font-medium'>Transaction ID</p>
                                 <p className='font-mono text-xs'>{tx._id}</p>
                             </div>
                         </div>
