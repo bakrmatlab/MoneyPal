@@ -155,7 +155,7 @@ export function LandingPage() {
                                 </Link>
                             </Button>
                             <Button size='lg' variant='outline' asChild className='w-full sm:w-auto'>
-                                <a href='https://github.com/roynulrohan/money-pal' target='_blank' rel='noopener noreferrer' aria-label='View on GitHub'>
+                                <a href='https://github.com/bakrmatlab/MoneyPal' target='_blank' rel='noopener noreferrer' aria-label='View on GitHub'>
                                     View on GitHub
                                 </a>
                             </Button>
