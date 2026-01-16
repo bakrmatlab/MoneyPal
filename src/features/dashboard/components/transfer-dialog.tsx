@@ -20,9 +20,9 @@ export const TransferDialog = ({ walletId, walletName, balance = 0 }: Transactio
     const [isPending, setIsPending] = useState(false);
     const transfer = useMutation(api.wallets.transfer);
 
-    const { data: wallets } = useQuery(convexQuery(api.wallets.getMyWallets));
+    const { data: wallets } = useQuery(convexQuery(api.wallets.getMyWallets, {}));
 
-    const otherWallets = (wallets ?? []).filter((w: any) => String(w._id) !== String(walletId));
+    const otherWallets = (wallets ?? []).filter((w: any) => String(w._id) !== String(walletId) && !w.isArchived);
     const hasOtherWallets = otherWallets.length > 0;
 
     const numAmount = parseFloat(amount) || 0;

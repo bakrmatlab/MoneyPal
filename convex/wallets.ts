@@ -4,14 +4,23 @@ import { mutation, query } from './_generated/server';
 import { getCurrentUserOrThrow } from './users';
 
 export const getMyWallets = query({
-    args: {},
-    handler: async (ctx) => {
+    args: {
+        includeArchived: v.optional(v.boolean()),
+    },
+    handler: async (ctx, args) => {
         const user = await getCurrentUserOrThrow(ctx);
 
-        return await ctx.db
+        const wallets = await ctx.db
             .query('wallets')
             .withIndex('by_userId', (q) => q.eq('userId', user._id))
             .collect();
+
+        // Filter out archived wallets unless explicitly requested
+        if (!args.includeArchived) {
+            return wallets.filter((wallet) => !wallet.isArchived);
+        }
+
+        return wallets;
     },
 });
 
@@ -33,6 +42,33 @@ export const getMyWallet = query({
         }
 
         return wallet;
+    },
+});
+
+export const hasWalletTransactions = query({
+    args: {
+        walletId: v.id('wallets'),
+    },
+    handler: async (ctx, args) => {
+        const user = await getCurrentUserOrThrow(ctx);
+
+        const wallet = await ctx.db.get(args.walletId);
+
+        if (!wallet) {
+            throw new Error('Wallet not found');
+        }
+
+        if (wallet.userId !== user._id) {
+            throw new Error('Unauthorized');
+        }
+
+        // Check if wallet has any transaction history (including soft-deleted)
+        const transaction = await ctx.db
+            .query('transactions')
+            .withIndex('by_walletId', (q) => q.eq('walletId', args.walletId))
+            .first();
+
+        return !!transaction;
     },
 });
 
@@ -58,6 +94,8 @@ export const createWallet = mutation({
             userId: user._id,
             name: args.name ?? undefined,
             balance: 0,
+            currency: 'USD',
+            isArchived: false,
         });
 
         return walletId;
@@ -225,5 +263,130 @@ export const transfer = mutation({
         });
 
         return { fromWallet, toWallet };
+    },
+});
+
+export const updateWallet = mutation({
+    args: {
+        walletId: v.id('wallets'),
+        name: v.optional(v.string()),
+        color: v.optional(v.string()),
+        icon: v.optional(v.string()),
+        currency: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        const user = await getCurrentUserOrThrow(ctx);
+
+        const wallet = await ctx.db.get(args.walletId);
+
+        if (!wallet) {
+            throw new Error('Wallet not found');
+        }
+
+        if (wallet.userId !== user._id) {
+            throw new Error('Unauthorized');
+        }
+
+        const updates: Partial<typeof wallet> = {};
+
+        if (args.name !== undefined) {
+            updates.name = args.name || undefined;
+        }
+        if (args.color !== undefined) {
+            updates.color = args.color || undefined;
+        }
+        if (args.icon !== undefined) {
+            updates.icon = args.icon || undefined;
+        }
+        if (args.currency !== undefined) {
+            updates.currency = args.currency;
+        }
+
+        await ctx.db.patch(args.walletId, updates);
+
+        return wallet;
+    },
+});
+
+export const deleteWallet = mutation({
+    args: {
+        walletId: v.id('wallets'),
+    },
+    handler: async (ctx, args) => {
+        const user = await getCurrentUserOrThrow(ctx);
+
+        const wallet = await ctx.db.get(args.walletId);
+
+        if (!wallet) {
+            throw new Error('Wallet not found');
+        }
+
+        if (wallet.userId !== user._id) {
+            throw new Error('Unauthorized');
+        }
+
+        // Check if wallet has zero balance
+        if (wallet.balance !== 0) {
+            throw new Error('Cannot delete wallet with non-zero balance');
+        }
+
+        // Check if wallet has any transaction history (including soft-deleted)
+        const transactions = await ctx.db
+            .query('transactions')
+            .withIndex('by_walletId', (q) => q.eq('walletId', args.walletId))
+            .first();
+
+        if (transactions) {
+            throw new Error('Cannot delete wallet with transaction history. Archive it instead.');
+        }
+
+        // Safe to delete
+        await ctx.db.delete(args.walletId);
+    },
+});
+
+export const archiveWallet = mutation({
+    args: {
+        walletId: v.id('wallets'),
+    },
+    handler: async (ctx, args) => {
+        const user = await getCurrentUserOrThrow(ctx);
+
+        const wallet = await ctx.db.get(args.walletId);
+
+        if (!wallet) {
+            throw new Error('Wallet not found');
+        }
+
+        if (wallet.userId !== user._id) {
+            throw new Error('Unauthorized');
+        }
+
+        await ctx.db.patch(args.walletId, {
+            isArchived: true,
+        });
+    },
+});
+
+export const unarchiveWallet = mutation({
+    args: {
+        walletId: v.id('wallets'),
+    },
+    handler: async (ctx, args) => {
+        const user = await getCurrentUserOrThrow(ctx);
+
+        const wallet = await ctx.db.get(args.walletId);
+
+        if (!wallet) {
+            throw new Error('Wallet not found');
+        }
+
+        if (wallet.userId !== user._id) {
+            throw new Error('Unauthorized');
+        }
+
+        await ctx.db.patch(args.walletId, {
+            isArchived: false,
+        });
     },
 });

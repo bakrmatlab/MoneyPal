@@ -14,6 +14,10 @@ export default defineSchema({
         userId: v.id('users'),
         name: v.optional(v.string()),
         balance: v.number(),
+        currency: v.optional(v.string()),
+        color: v.optional(v.string()),
+        icon: v.optional(v.string()),
+        isArchived: v.optional(v.boolean()),
     }).index('by_userId', ['userId']),
 
     transactions: defineTable({

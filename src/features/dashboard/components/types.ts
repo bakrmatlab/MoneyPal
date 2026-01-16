@@ -6,6 +6,10 @@ export type Wallet = {
     userId: Id<'users'>;
     name?: string;
     balance: number;
+    currency?: string;
+    color?: string;
+    icon?: string;
+    isArchived?: boolean;
 };
 
 export type TransactionDialogProps = {
