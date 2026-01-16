@@ -34,6 +34,21 @@ export const TransactionFilters = ({
 
     const { data: categories = [] } = useQuery(convexQuery(api.categories.getCategories, {}));
 
+    // Filter categories based on transaction type
+    const filteredCategories = categories.filter((category) => {
+        if (type === 'deposit') return category.type === 'income';
+        if (type === 'withdrawal') return category.type === 'expense';
+        return true; // Show all if no type selected (though transfer shouldn't have categories)
+    });
+
+    // Clear category when switching to transfer type
+    const handleTypeChange = (newType: 'deposit' | 'withdrawal' | 'transfer' | undefined) => {
+        setType(newType);
+        if (newType === 'transfer' && categoryId) {
+            setCategoryId(undefined);
+        }
+    };
+
     return (
         <div className='space-y-4'>
             <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-4'>
@@ -58,7 +73,7 @@ export const TransactionFilters = ({
                 {/* Type Filter */}
                 <div className='space-y-2'>
                     <Label htmlFor='type-filter'>Type</Label>
-                    <Select value={type ?? 'all'} onValueChange={(v) => setType(v === 'all' ? undefined : (v as 'deposit' | 'withdrawal' | 'transfer'))}>
+                    <Select value={type ?? 'all'} onValueChange={(v) => handleTypeChange(v === 'all' ? undefined : (v as 'deposit' | 'withdrawal' | 'transfer'))}>
                         <SelectTrigger id='type-filter'>
                             <SelectValue placeholder='All Types' />
                         </SelectTrigger>
@@ -74,13 +89,17 @@ export const TransactionFilters = ({
                 {/* Category Filter */}
                 <div className='space-y-2'>
                     <Label htmlFor='category-filter'>Category</Label>
-                    <Select value={categoryId ?? 'all'} onValueChange={(v) => setCategoryId(v === 'all' ? undefined : (v as Id<'categories'>))}>
+                    <Select 
+                        value={categoryId ?? 'all'} 
+                        onValueChange={(v) => setCategoryId(v === 'all' ? undefined : (v as Id<'categories'>))}
+                        disabled={type === 'transfer'}
+                    >
                         <SelectTrigger id='category-filter'>
-                            <SelectValue placeholder='All Categories' />
+                            <SelectValue placeholder={type === 'transfer' ? 'N/A for transfers' : 'All Categories'} />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value='all'>All Categories</SelectItem>
-                            {categories.map((category) => (
+                            {filteredCategories.map((category) => (
                                 <SelectItem key={category._id} value={category._id}>
                                     {category.icon} {category.name}
                                 </SelectItem>

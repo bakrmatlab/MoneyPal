@@ -1,8 +1,9 @@
-import { ArrowDownToLine, ArrowLeftRight, ArrowUpFromLine, MoreVertical } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowDownToLine, ArrowLeftRight, ArrowUpFromLine, Info } from 'lucide-react';
 import { formatCurrency } from '@/lib/format';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface TransactionItemProps {
     transaction: {
@@ -19,6 +20,7 @@ interface TransactionItemProps {
 
 export const TransactionItem = ({ transaction }: TransactionItemProps) => {
     const tx = transaction;
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     const getIcon = () => {
         switch (tx.type) {
@@ -102,20 +104,96 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
                     {formatCurrency(tx.amount)}
                 </p>
 
-                {/* Actions Menu */}
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant='ghost' size='icon' className='size-8 shrink-0 md:size-9'>
-                            <MoreVertical className='size-3.5 md:size-4' />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align='end'>
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem className='text-destructive'>Delete</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                {/* View Details Button */}
+                <Button 
+                    variant='ghost' 
+                    size='icon' 
+                    className='size-8 shrink-0 md:size-9'
+                    onClick={() => setIsDetailsOpen(true)}
+                >
+                    <Info className='size-3.5 md:size-4' />
+                </Button>
             </div>
+
+            {/* Transaction Details Modal */}
+            <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+                <DialogContent className='sm:max-w-[500px]'>
+                    <DialogHeader>
+                        <DialogTitle>Transaction Details</DialogTitle>
+                        <DialogDescription>Complete information about this transaction</DialogDescription>
+                    </DialogHeader>
+                    <div className='space-y-4'>
+                        <div className='flex items-center gap-3'>
+                            <div className='bg-muted flex size-12 shrink-0 items-center justify-center rounded-full'>
+                                {getIcon()}
+                            </div>
+                            <div>
+                                <p className='text-sm font-medium text-muted-foreground'>Type</p>
+                                <p className='font-semibold'>{getTypeLabel()}</p>
+                            </div>
+                        </div>
+
+                        <div className='space-y-3 rounded-lg border p-4'>
+                            <div>
+                                <p className='text-sm font-medium text-muted-foreground'>Amount</p>
+                                <p className={`text-2xl font-bold ${getAmountColor()}`}>
+                                    {tx.type === 'deposit' ? '+' : tx.type === 'withdrawal' ? '-' : ''}
+                                    {formatCurrency(tx.amount)}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p className='text-sm font-medium text-muted-foreground'>Description</p>
+                                <p className='font-medium'>{tx.description || 'No description provided'}</p>
+                            </div>
+
+                            <div>
+                                <p className='text-sm font-medium text-muted-foreground'>Date</p>
+                                <p className='font-medium'>
+                                    {new Date(tx._creationTime).toLocaleDateString(undefined, {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                    })}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p className='text-sm font-medium text-muted-foreground'>
+                                    {tx.type === 'transfer' ? 'From Wallet' : 'Wallet'}
+                                </p>
+                                <p className='font-medium'>{tx.wallet?.name || 'Unknown Wallet'}</p>
+                            </div>
+
+                            {tx.toWallet && (
+                                <div>
+                                    <p className='text-sm font-medium text-muted-foreground'>To Wallet</p>
+                                    <p className='font-medium'>{tx.toWallet.name}</p>
+                                </div>
+                            )}
+
+                            {tx.category && (
+                                <div>
+                                    <p className='text-sm font-medium text-muted-foreground'>Category</p>
+                                    <Badge
+                                        variant='secondary'
+                                        className='mt-1'
+                                        style={{ backgroundColor: tx.category.color + '20', color: tx.category.color }}>
+                                        {tx.category.icon} {tx.category.name}
+                                    </Badge>
+                                </div>
+                            )}
+
+                            <div>
+                                <p className='text-sm font-medium text-muted-foreground'>Transaction ID</p>
+                                <p className='font-mono text-xs'>{tx._id}</p>
+                            </div>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

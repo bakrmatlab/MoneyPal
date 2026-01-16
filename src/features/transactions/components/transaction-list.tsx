@@ -42,17 +42,17 @@ export const TransactionList = ({ walletId, type, categoryId, dateRange }: Trans
         }
     };
 
+    const startTimestamp = getDateRangeTimestamp();
+
     const { data: transactions = [], isLoading } = useQuery(
         convexQuery(api.transactions.getTransactions, {
             walletId,
             type,
             categoryId,
-            limit: 100, //
+            startDate: startTimestamp,
+            limit: 100,
         })
     );
-
-    const startTimestamp = getDateRangeTimestamp();
-    const filteredTransactions = startTimestamp ? transactions.filter((t) => t._creationTime >= startTimestamp) : transactions;
 
     if (isLoading) {
         return (
@@ -71,7 +71,7 @@ export const TransactionList = ({ walletId, type, categoryId, dateRange }: Trans
         );
     }
 
-    if (filteredTransactions.length === 0) {
+    if (transactions.length === 0) {
         return (
             <Alert>
                 <AlertCircle className='size-4' />
@@ -82,7 +82,7 @@ export const TransactionList = ({ walletId, type, categoryId, dateRange }: Trans
 
     return (
         <div className='space-y-2'>
-            {filteredTransactions.map((transaction) => (
+            {transactions.map((transaction) => (
                 <TransactionItem key={transaction._id} transaction={transaction} />
             ))}
 

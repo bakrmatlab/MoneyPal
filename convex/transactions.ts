@@ -7,6 +7,8 @@ export const getTransactions = query({
         walletId: v.optional(v.id('wallets')),
         type: v.optional(v.union(v.literal('deposit'), v.literal('withdrawal'), v.literal('transfer'))),
         categoryId: v.optional(v.id('categories')),
+        startDate: v.optional(v.number()),
+        endDate: v.optional(v.number()),
         limit: v.optional(v.number()),
         paginationOptions: v.optional(
             v.object({
@@ -17,24 +19,43 @@ export const getTransactions = query({
     },
     handler: async (ctx, args) => {
         const user = await getCurrentUserOrThrow(ctx);
-        let query = ctx.db.query('transactions').withIndex('by_userId', (q) => q.eq('userId', user._id));
+        
+        // Start with user's transactions
+        let transactions = await ctx.db
+            .query('transactions')
+            .withIndex('by_userId', (q) => q.eq('userId', user._id))
+            .order('desc')
+            .collect();
 
+        // Filter out deleted transactions
+        transactions = transactions.filter((t) => !t.isDeleted);
+
+        // Apply wallet filter (include both source and destination for transfers)
         if (args.walletId) {
-            query = ctx.db.query('transactions').withIndex('by_walletId', (q) => q.eq('walletId', args.walletId!));
+            transactions = transactions.filter(
+                (t) => t.walletId === args.walletId || (t.toWalletId && t.toWalletId === args.walletId)
+            );
         }
 
+        // Apply type filter
         if (args.type) {
-            query = ctx.db.query('transactions').withIndex('by_type', (q) => q.eq('type', args.type!));
+            transactions = transactions.filter((t) => t.type === args.type);
         }
 
+        // Apply category filter
         if (args.categoryId) {
-            query = ctx.db.query('transactions').withIndex('by_categoryId', (q) => q.eq('categoryId', args.categoryId!));
+            transactions = transactions.filter((t) => t.categoryId === args.categoryId);
         }
 
-        let transactions = await query.order('desc').collect();
+        // Apply date range filter
+        if (args.startDate) {
+            transactions = transactions.filter((t) => t._creationTime >= args.startDate!);
+        }
+        if (args.endDate) {
+            transactions = transactions.filter((t) => t._creationTime <= args.endDate!);
+        }
 
-        transactions = transactions.filter((t) => !t.isDeleted && t.userId === user._id);
-
+        // Apply limit
         if (args.limit) {
             transactions = transactions.slice(0, args.limit);
         }
