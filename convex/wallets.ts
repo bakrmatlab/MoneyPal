@@ -1,14 +1,19 @@
 import { v } from 'convex/values';
 import { internal } from './_generated/api';
 import { mutation, query } from './_generated/server';
-import { getCurrentUserOrThrow } from './users';
+import { getCurrentUser, getCurrentUserOrThrow } from './users';
 
 export const getMyWallets = query({
     args: {
         includeArchived: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
-        const user = await getCurrentUserOrThrow(ctx);
+        const user = await getCurrentUser(ctx);
+        
+        // Return empty array if not authenticated
+        if (!user) {
+            return [];
+        }
 
         const wallets = await ctx.db
             .query('wallets')
