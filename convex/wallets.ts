@@ -9,7 +9,7 @@ export const getMyWallets = query({
     },
     handler: async (ctx, args) => {
         const user = await getCurrentUser(ctx);
-        
+
         // Return empty array if not authenticated
         if (!user) {
             return [];
