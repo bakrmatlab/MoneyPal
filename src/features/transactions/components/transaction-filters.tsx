@@ -10,8 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 interface TransactionFiltersProps {
     walletId: Id<'wallets'> | undefined;
     setWalletId: (id: Id<'wallets'> | undefined) => void;
-    type: 'deposit' | 'withdrawal' | 'transfer' | undefined;
-    setType: (type: 'deposit' | 'withdrawal' | 'transfer' | undefined) => void;
+    type: 'deposit' | 'withdrawal' | 'transfer' | 'e-transfer' | undefined;
+    setType: (type: 'deposit' | 'withdrawal' | 'transfer' | 'e-transfer' | undefined) => void;
     categoryId: Id<'categories'> | undefined;
     setCategoryId: (id: Id<'categories'> | undefined) => void;
     dateRange: string;
@@ -41,10 +41,10 @@ export const TransactionFilters = ({
         return true; // Show all if no type selected (though transfer shouldn't have categories)
     });
 
-    // Clear category when switching to transfer type
-    const handleTypeChange = (newType: 'deposit' | 'withdrawal' | 'transfer' | undefined) => {
+    // Clear category when switching to transfer or e-transfer type
+    const handleTypeChange = (newType: 'deposit' | 'withdrawal' | 'transfer' | 'e-transfer' | undefined) => {
         setType(newType);
-        if (newType === 'transfer' && categoryId) {
+        if ((newType === 'transfer' || newType === 'e-transfer') && categoryId) {
             setCategoryId(undefined);
         }
     };
@@ -75,7 +75,7 @@ export const TransactionFilters = ({
                     <Label htmlFor='type-filter'>Type</Label>
                     <Select
                         value={type ?? 'all'}
-                        onValueChange={(v) => handleTypeChange(v === 'all' ? undefined : (v as 'deposit' | 'withdrawal' | 'transfer'))}>
+                        onValueChange={(v) => handleTypeChange(v === 'all' ? undefined : (v as 'deposit' | 'withdrawal' | 'transfer' | 'e-transfer'))}>
                         <SelectTrigger id='type-filter'>
                             <SelectValue placeholder='All Types' />
                         </SelectTrigger>
@@ -84,6 +84,7 @@ export const TransactionFilters = ({
                             <SelectItem value='deposit'>Deposit</SelectItem>
                             <SelectItem value='withdrawal'>Withdrawal</SelectItem>
                             <SelectItem value='transfer'>Transfer</SelectItem>
+                            <SelectItem value='e-transfer'>E-Transfer</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -94,9 +95,9 @@ export const TransactionFilters = ({
                     <Select
                         value={categoryId ?? 'all'}
                         onValueChange={(v) => setCategoryId(v === 'all' ? undefined : (v as Id<'categories'>))}
-                        disabled={type === 'transfer'}>
+                        disabled={type === 'transfer' || type === 'e-transfer'}>
                         <SelectTrigger id='category-filter'>
-                            <SelectValue placeholder={type === 'transfer' ? 'N/A for transfers' : 'All Categories'} />
+                            <SelectValue placeholder={type === 'transfer' || type === 'e-transfer' ? 'N/A for transfers' : 'All Categories'} />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value='all'>All Categories</SelectItem>

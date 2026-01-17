@@ -9,7 +9,7 @@ import { TransactionItem } from './transaction-item';
 
 interface TransactionListProps {
     walletId: Id<'wallets'> | undefined;
-    type: 'deposit' | 'withdrawal' | 'transfer' | undefined;
+    type: 'deposit' | 'withdrawal' | 'transfer' | 'e-transfer' | undefined;
     categoryId: Id<'categories'> | undefined;
     dateRange: string;
 }

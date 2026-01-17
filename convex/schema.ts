@@ -23,17 +23,23 @@ export default defineSchema({
     transactions: defineTable({
         userId: v.id('users'),
         walletId: v.id('wallets'),
-        type: v.union(v.literal('deposit'), v.literal('withdrawal'), v.literal('transfer')),
+        type: v.union(v.literal('deposit'), v.literal('withdrawal'), v.literal('transfer'), v.literal('e-transfer')),
         amount: v.number(),
         description: v.optional(v.string()),
         categoryId: v.optional(v.id('categories')),
         toWalletId: v.optional(v.id('wallets')),
+        // E-transfer specific fields
+        recipientEmail: v.optional(v.string()),
+        recipientUserId: v.optional(v.id('users')),
+        recipientWalletId: v.optional(v.id('wallets')),
+        isOutgoing: v.optional(v.boolean()), // true = sent, false = received (for e-transfers)
         isDeleted: v.boolean(),
     })
         .index('by_userId', ['userId'])
         .index('by_walletId', ['walletId'])
         .index('by_type', ['type'])
-        .index('by_categoryId', ['categoryId']),
+        .index('by_categoryId', ['categoryId'])
+        .index('by_recipientUserId', ['recipientUserId']),
 
     categories: defineTable({
         userId: v.id('users'),

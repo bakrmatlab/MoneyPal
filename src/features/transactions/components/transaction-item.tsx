@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowDownToLine, ArrowLeftRight, ArrowUpFromLine, Info } from 'lucide-react';
+import { ArrowDownToLine, ArrowLeftRight, ArrowUpFromLine, Info, Send } from 'lucide-react';
 import { formatCurrency } from '@/lib/format';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -8,13 +8,17 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 interface TransactionItemProps {
     transaction: {
         _id: string;
-        type: 'deposit' | 'withdrawal' | 'transfer';
+        type: 'deposit' | 'withdrawal' | 'transfer' | 'e-transfer';
         amount: number;
         description?: string;
         _creationTime: number;
         wallet: { name?: string } | null;
         category?: { name: string; color: string; icon: string } | null;
         toWallet?: { name?: string } | null;
+        recipientEmail?: string;
+        recipientUser?: { fullName: string; email: string } | null;
+        recipientWallet?: { name?: string } | null;
+        isOutgoing?: boolean;
     };
 }
 
@@ -30,6 +34,9 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
                 return <ArrowUpFromLine className='size-5 text-red-500' />;
             case 'transfer':
                 return <ArrowLeftRight className='size-5 text-blue-500' />;
+            case 'e-transfer':
+                // Show different icon based on sent/received
+                return tx.isOutgoing ? <Send className='size-5 text-orange-500' /> : <ArrowDownToLine className='size-5 text-green-500' />;
             default:
                 return null;
         }
@@ -43,6 +50,8 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
                 return 'Withdrawal';
             case 'transfer':
                 return 'Transfer';
+            case 'e-transfer':
+                return tx.isOutgoing ? 'E-Transfer Sent' : 'E-Transfer Received';
             default:
                 return tx.type;
         }
@@ -56,6 +65,9 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
                 return 'text-red-600 dark:text-red-400';
             case 'transfer':
                 return 'text-blue-600 dark:text-blue-400';
+            case 'e-transfer':
+                // Received = green (money in), Sent = orange (money out)
+                return tx.isOutgoing ? 'text-orange-600 dark:text-orange-400' : 'text-green-600 dark:text-green-400';
             default:
                 return '';
         }
@@ -85,6 +97,12 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
                     </div>
                     <div className='text-muted-foreground flex flex-wrap items-center gap-1 text-xs md:gap-2 md:text-sm'>
                         <span className='truncate'>{tx.wallet?.name || 'Unknown Wallet'}</span>
+                        {tx.type === 'e-transfer' && tx.recipientUser && (
+                            <>
+                                <span className='hidden sm:inline'>→</span>
+                                <span className='truncate'>{tx.recipientUser.fullName}</span>
+                            </>
+                        )}
                         {tx.toWallet && (
                             <>
                                 <span className='hidden sm:inline'>→</span>
@@ -100,7 +118,11 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
             {/* Amount */}
             <div className='flex items-center justify-between gap-3 sm:ml-auto sm:justify-end md:gap-4'>
                 <p className={`text-base font-semibold md:text-lg ${getAmountColor()}`}>
-                    {tx.type === 'deposit' ? '+' : tx.type === 'withdrawal' ? '-' : ''}
+                    {tx.type === 'deposit' || (tx.type === 'e-transfer' && !tx.isOutgoing)
+                        ? '+'
+                        : tx.type === 'withdrawal' || (tx.type === 'e-transfer' && tx.isOutgoing)
+                          ? '-'
+                          : ''}
                     {formatCurrency(tx.amount)}
                 </p>
 
@@ -130,7 +152,11 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
                             <div>
                                 <p className='text-muted-foreground text-sm font-medium'>Amount</p>
                                 <p className={`text-2xl font-bold ${getAmountColor()}`}>
-                                    {tx.type === 'deposit' ? '+' : tx.type === 'withdrawal' ? '-' : ''}
+                                    {tx.type === 'deposit' || (tx.type === 'e-transfer' && !tx.isOutgoing)
+                                        ? '+'
+                                        : tx.type === 'withdrawal' || (tx.type === 'e-transfer' && tx.isOutgoing)
+                                          ? '-'
+                                          : ''}
                                     {formatCurrency(tx.amount)}
                                 </p>
                             </div>
@@ -158,6 +184,21 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
                                 <p className='font-medium'>{tx.wallet?.name || 'Unknown Wallet'}</p>
                             </div>
 
+                            {tx.type === 'e-transfer' && tx.recipientUser && (
+                                <>
+                                    <div>
+                                        <p className='text-muted-foreground text-sm font-medium'>Recipient</p>
+                                        <p className='font-medium'>{tx.recipientUser.fullName}</p>
+                                        <p className='text-muted-foreground text-xs'>{tx.recipientUser.email}</p>
+                                    </div>
+                                    {tx.recipientWallet && (
+                                        <div>
+                                            <p className='text-muted-foreground text-sm font-medium'>Recipient Wallet</p>
+                                            <p className='font-medium'>{tx.recipientWallet.name}</p>
+                                        </div>
+                                    )}
+                                </>
+                            )}
                             {tx.toWallet && (
                                 <div>
                                     <p className='text-muted-foreground text-sm font-medium'>To Wallet</p>

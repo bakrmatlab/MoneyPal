@@ -6,7 +6,7 @@ import { TransactionList } from './components/transaction-list';
 
 export const TransactionsPage = () => {
     const [walletId, setWalletId] = useState<Id<'wallets'> | undefined>();
-    const [type, setType] = useState<'deposit' | 'withdrawal' | 'transfer' | undefined>();
+    const [type, setType] = useState<'deposit' | 'withdrawal' | 'transfer' | 'e-transfer' | undefined>();
     const [categoryId, setCategoryId] = useState<Id<'categories'> | undefined>();
     const [dateRange, setDateRange] = useState<string>('all');
 

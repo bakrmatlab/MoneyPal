@@ -13,6 +13,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTransactionsRouteImport } from './routes/_authenticated/transactions'
 import { Route as AuthenticatedPreferencesRouteImport } from './routes/_authenticated/preferences'
+import { Route as AuthenticatedETransfersRouteImport } from './routes/_authenticated/e-transfers'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCategoriesRouteImport } from './routes/_authenticated/categories'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
@@ -46,6 +47,11 @@ const AuthenticatedPreferencesRoute =
     path: '/preferences',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedETransfersRoute = AuthenticatedETransfersRouteImport.update({
+  id: '/e-transfers',
+  path: '/e-transfers',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/categories': typeof AuthenticatedCategoriesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/e-transfers': typeof AuthenticatedETransfersRoute
   '/preferences': typeof AuthenticatedPreferencesRoute
   '/transactions': typeof AuthenticatedTransactionsRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/categories': typeof AuthenticatedCategoriesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/e-transfers': typeof AuthenticatedETransfersRoute
   '/preferences': typeof AuthenticatedPreferencesRoute
   '/transactions': typeof AuthenticatedTransactionsRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/categories': typeof AuthenticatedCategoriesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/e-transfers': typeof AuthenticatedETransfersRoute
   '/_authenticated/preferences': typeof AuthenticatedPreferencesRoute
   '/_authenticated/transactions': typeof AuthenticatedTransactionsRoute
   '/_authenticated/errors/$error': typeof AuthenticatedErrorsErrorRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/categories'
     | '/dashboard'
+    | '/e-transfers'
     | '/preferences'
     | '/transactions'
     | '/errors/$error'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/categories'
     | '/dashboard'
+    | '/e-transfers'
     | '/preferences'
     | '/transactions'
     | '/errors/$error'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/_authenticated/analytics'
     | '/_authenticated/categories'
     | '/_authenticated/dashboard'
+    | '/_authenticated/e-transfers'
     | '/_authenticated/preferences'
     | '/_authenticated/transactions'
     | '/_authenticated/errors/$error'
@@ -245,6 +257,13 @@ declare module '@tanstack/react-router' {
       path: '/preferences'
       fullPath: '/preferences'
       preLoaderRoute: typeof AuthenticatedPreferencesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/e-transfers': {
+      id: '/_authenticated/e-transfers'
+      path: '/e-transfers'
+      fullPath: '/e-transfers'
+      preLoaderRoute: typeof AuthenticatedETransfersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -331,6 +350,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedCategoriesRoute: typeof AuthenticatedCategoriesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedETransfersRoute: typeof AuthenticatedETransfersRoute
   AuthenticatedPreferencesRoute: typeof AuthenticatedPreferencesRoute
   AuthenticatedTransactionsRoute: typeof AuthenticatedTransactionsRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
@@ -340,6 +360,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedCategoriesRoute: AuthenticatedCategoriesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedETransfersRoute: AuthenticatedETransfersRoute,
   AuthenticatedPreferencesRoute: AuthenticatedPreferencesRoute,
   AuthenticatedTransactionsRoute: AuthenticatedTransactionsRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,

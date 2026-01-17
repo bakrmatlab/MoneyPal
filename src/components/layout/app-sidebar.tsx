@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from '@tanstack/react-router';
 import { useUser, useClerk } from '@clerk/clerk-react';
-import { LayoutDashboard, Tags, ChevronLeft, ChevronRight, Settings, LogOut, ArrowRightLeft, SlidersHorizontal, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, Tags, ChevronLeft, ChevronRight, Settings, LogOut, ArrowRightLeft, SlidersHorizontal, BarChart3, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -15,6 +15,7 @@ const menuSections = [
         items: [
             { label: 'Dashboard', icon: LayoutDashboard, to: '/dashboard' },
             { label: 'Transactions', icon: ArrowRightLeft, to: '/transactions' },
+            { label: 'E-Transfers', icon: Send, to: '/e-transfers' },
             { label: 'Analytics', icon: BarChart3, to: '/analytics' },
             { label: 'Categories', icon: Tags, to: '/categories' },
         ],
