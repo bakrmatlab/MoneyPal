@@ -343,6 +343,45 @@ export const getTransactionStats = query({
 
 // E-Transfer Functions
 
+export const getRecentRecipients = query({
+    args: {
+        limit: v.optional(v.number()),
+    },
+    handler: async (ctx, args) => {
+        const user = await getCurrentUserOrThrow(ctx);
+        const limit = args.limit ?? 5;
+
+        // Get recent outgoing e-transfers
+        const sentTransfers = await ctx.db
+            .query('transactions')
+            .withIndex('by_userId', (q) => q.eq('userId', user._id))
+            .filter((q) => q.eq(q.field('type'), 'e-transfer'))
+            .filter((q) => q.eq(q.field('isOutgoing'), true))
+            .filter((q) => q.eq(q.field('isDeleted'), false))
+            .order('desc')
+            .take(50);
+
+        // Deduplicate recipients by user ID
+        const uniqueRecipients = new Map();
+        for (const tx of sentTransfers) {
+            if (tx.recipientUserId && !uniqueRecipients.has(tx.recipientUserId)) {
+                const recipient = await ctx.db.get(tx.recipientUserId);
+                if (recipient) {
+                    uniqueRecipients.set(tx.recipientUserId, {
+                        _id: recipient._id,
+                        fullName: recipient.fullName,
+                        email: recipient.email,
+                        username: recipient.username,
+                    });
+                }
+                if (uniqueRecipients.size >= limit) break;
+            }
+        }
+
+        return Array.from(uniqueRecipients.values());
+    },
+});
+
 export const getUserByEmail = query({
     args: {
         email: v.string(),

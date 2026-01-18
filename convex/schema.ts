@@ -8,7 +8,9 @@ export default defineSchema({
         email: v.string(),
         username: v.optional(v.string()),
         clerkUserId: v.string(),
-    }).index('by_clerkUserId', ['clerkUserId']),
+    })
+        .index('by_clerkUserId', ['clerkUserId'])
+        .index('by_email', ['email']),
 
     wallets: defineTable({
         userId: v.id('users'),

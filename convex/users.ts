@@ -110,3 +110,39 @@ async function userByClerkUserId(ctx: QueryCtx, clerkUserId: string) {
         .withIndex('by_clerkUserId', (q) => q.eq('clerkUserId', clerkUserId))
         .unique();
 }
+
+export const listUsers = query({
+    args: {
+        searchText: v.optional(v.string()),
+        limit: v.optional(v.number()),
+    },
+    handler: async (ctx, args) => {
+        const currentUser = await getCurrentUserOrThrow(ctx);
+        const limit = args.limit ?? 100;
+
+        // Get all users
+        const allUsers = await ctx.db.query('users').collect();
+
+        // Filter out current user
+        let filteredUsers = allUsers.filter((u) => u._id !== currentUser._id);
+
+        // Apply search filter if provided
+        if (args.searchText) {
+            const searchLower = args.searchText.toLowerCase();
+            filteredUsers = filteredUsers.filter(
+                (u) =>
+                    u.fullName.toLowerCase().includes(searchLower) ||
+                    u.email.toLowerCase().includes(searchLower) ||
+                    u.username?.toLowerCase().includes(searchLower)
+            );
+        }
+
+        // Limit results
+        return filteredUsers.slice(0, limit).map((u) => ({
+            _id: u._id,
+            fullName: u.fullName,
+            email: u.email,
+            username: u.username,
+        }));
+    },
+});

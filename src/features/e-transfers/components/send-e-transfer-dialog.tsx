@@ -2,15 +2,18 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { convexQuery } from '@convex-dev/react-query';
 import { api } from '@convex/_generated/api';
-import type { Id } from '@convex/_generated/dataModel';
+import { type Id } from '@convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
-import { Send, Loader2, Search } from 'lucide-react';
+import { Send, Loader2, Check, ChevronsUpDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatCurrency } from '@/lib/format';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface SendETransferDialogProps {
@@ -22,71 +25,66 @@ interface SendETransferDialogProps {
 
 export const SendETransferDialog = ({ walletId, walletName, balance = 0, triggerButton }: SendETransferDialogProps) => {
     const [open, setOpen] = useState(false);
-    const [amount, setAmount] = useState('');
-    const [recipientEmail, setRecipientEmail] = useState('');
+    const [comboboxOpen, setComboboxOpen] = useState(false);
+    const [searchText, setSearchText] = useState('');
+    const [selectedUserId, setSelectedUserId] = useState<Id<'users'> | null>(null);
     const [recipientWalletId, setRecipientWalletId] = useState<string | null>(null);
+    const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
     const [isPending, setIsPending] = useState(false);
-    const [isSearching, setIsSearching] = useState(false);
 
     const sendETransfer = useMutation(api.transactions.sendETransfer);
 
-    // Look up recipient by email
-    const { data: recipient, refetch: searchRecipient } = useQuery({
-        ...convexQuery(api.transactions.getUserByEmail, { email: recipientEmail }),
-        enabled: false,
+    // Get recent recipients
+    const { data: recentRecipients = [] } = useQuery({
+        ...convexQuery(api.transactions.getRecentRecipients, { limit: 5 }),
     });
 
-    // Get recipient's wallets if recipient found - only query when we have a valid recipient ID
-    const hasRecipient = !!recipient?._id;
+    // Get all users with optional search filter
+    const { data: allUsers = [] } = useQuery({
+        ...convexQuery(api.users.listUsers, { searchText: searchText || undefined, limit: 100 }),
+    });
+
+    // Filter out recent recipients from all users to avoid duplicates in the dropdown (only when not searching)
+    const recentRecipientIds = new Set(recentRecipients.map((u) => u._id));
+    const filteredAllUsers = searchText ? allUsers : allUsers.filter((u) => !recentRecipientIds.has(u._id));
+
+    // Get selected recipient info
+    const selectedRecipient = [...recentRecipients, ...allUsers].find((u) => u._id === selectedUserId);
+
+    // Get recipient's wallets if recipient selected - only query when we have a valid user ID
     const recipientWalletsQuery = useQuery({
         ...convexQuery(api.transactions.getRecipientWallets, {
-            userId: recipient?._id as Id<'users'>,
+            userId: selectedUserId ? selectedUserId : undefined,
         }),
-        enabled: hasRecipient,
+        enabled: !!selectedUserId,
     });
-    const recipientWallets = hasRecipient ? recipientWalletsQuery.data : undefined;
+    const recipientWallets = recipientWalletsQuery.data;
 
     const numAmount = parseFloat(amount) || 0;
     const isOverBalance = numAmount > balance;
 
-    const handleSearchRecipient = async () => {
-        if (!recipientEmail.trim()) {
-            toast.error('Please enter a recipient email');
-            return;
-        }
-
-        setIsSearching(true);
-        setRecipientWalletId(null);
-        try {
-            await searchRecipient();
-        } catch (error) {
-            toast.error(error instanceof Error ? error.message : 'Error finding recipient');
-        } finally {
-            setIsSearching(false);
-        }
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!recipientWalletId || !recipient) return;
+        if (!recipientWalletId || !selectedRecipient) return;
         if (isNaN(numAmount) || numAmount <= 0 || isOverBalance) return;
 
         setIsPending(true);
         try {
             await sendETransfer({
                 walletId,
-                recipientEmail: recipient.email,
+                recipientEmail: selectedRecipient.email,
                 recipientWalletId: recipientWalletId as Id<'wallets'>,
                 amount: numAmount,
                 description: description || undefined,
             });
 
-            toast.success(`Sent ${formatCurrency(numAmount)} to ${recipient.fullName}`);
+            toast.success(`Sent ${formatCurrency(numAmount)} to ${selectedRecipient.fullName}`);
 
             // Reset form
             setAmount('');
-            setRecipientEmail('');
+            setSearchText('');
+            setSelectedUserId(null);
             setRecipientWalletId(null);
             setDescription('');
             setOpen(false);
@@ -102,7 +100,8 @@ export const SendETransferDialog = ({ walletId, walletName, balance = 0, trigger
         if (!newOpen) {
             // Reset form when closing
             setAmount('');
-            setRecipientEmail('');
+            setSearchText('');
+            setSelectedUserId(null);
             setRecipientWalletId(null);
             setDescription('');
         }
@@ -128,38 +127,88 @@ export const SendETransferDialog = ({ walletId, walletName, balance = 0, trigger
                     </DialogHeader>
 
                     <div className='space-y-4 py-4'>
-                        {/* Recipient Email */}
+                        {/* Recipient User Selection */}
                         <div>
-                            <Label htmlFor='recipient-email'>Recipient Email</Label>
-                            <div className='mt-2 flex gap-2'>
-                                <Input
-                                    id='recipient-email'
-                                    type='email'
-                                    placeholder='recipient@example.com'
-                                    value={recipientEmail}
-                                    onChange={(e) => {
-                                        setRecipientEmail(e.target.value);
-                                        setRecipientWalletId(null);
-                                    }}
-                                    disabled={isPending}
-                                />
-                                <Button
-                                    type='button'
-                                    variant='outline'
-                                    onClick={handleSearchRecipient}
-                                    disabled={!recipientEmail.trim() || isSearching || isPending}>
-                                    {isSearching ? <Loader2 className='size-4 animate-spin' /> : <Search className='size-4' />}
-                                </Button>
+                            <Label htmlFor='recipient-user'>Recipient</Label>
+                            <div className='mt-2'>
+                                <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            id='recipient-user'
+                                            variant='outline'
+                                            role='combobox'
+                                            aria-expanded={comboboxOpen}
+                                            className='w-full justify-between'
+                                            disabled={isPending}>
+                                            {selectedRecipient ? (
+                                                <span className='flex items-center gap-2 truncate'>
+                                                    <span className='font-medium'>{selectedRecipient.fullName}</span>
+                                                    <span className='text-muted-foreground text-sm'>({selectedRecipient.email})</span>
+                                                </span>
+                                            ) : (
+                                                <span className='text-muted-foreground'>Select recipient...</span>
+                                            )}
+                                            <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className='w-[400px] p-0' align='start'>
+                                        <Command shouldFilter={false}>
+                                            <CommandInput placeholder='Search by name or email...' value={searchText} onValueChange={setSearchText} />
+                                            <CommandList>
+                                                <CommandEmpty>{searchText ? 'No users found.' : 'Browse all users to get started.'}</CommandEmpty>
+
+                                                {/* Recent Recipients */}
+                                                {recentRecipients.length > 0 && !searchText && (
+                                                    <CommandGroup heading='Recent'>
+                                                        {recentRecipients.map((user) => (
+                                                            <CommandItem
+                                                                key={user._id}
+                                                                value={`${user.fullName} ${user.email}`}
+                                                                onSelect={() => {
+                                                                    setSelectedUserId(user._id);
+                                                                    setRecipientWalletId(null);
+                                                                    setComboboxOpen(false);
+                                                                }}>
+                                                                <Check
+                                                                    className={cn('mr-2 h-4 w-4', selectedUserId === user._id ? 'opacity-100' : 'opacity-0')}
+                                                                />
+                                                                <div className='flex flex-col'>
+                                                                    <span className='font-medium'>{user.fullName}</span>
+                                                                    <span className='text-muted-foreground text-xs'>{user.email}</span>
+                                                                </div>
+                                                            </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                )}
+
+                                                {/* All Users */}
+                                                <CommandGroup heading={searchText ? 'Search Results' : 'All Users'}>
+                                                    {filteredAllUsers.map((user) => (
+                                                        <CommandItem
+                                                            key={user._id}
+                                                            value={`${user.fullName} ${user.email}`}
+                                                            onSelect={() => {
+                                                                setSelectedUserId(user._id);
+                                                                setRecipientWalletId(null);
+                                                                setComboboxOpen(false);
+                                                            }}>
+                                                            <Check className={cn('mr-2 h-4 w-4', selectedUserId === user._id ? 'opacity-100' : 'opacity-0')} />
+                                                            <div className='flex flex-col'>
+                                                                <span className='font-medium'>{user.fullName}</span>
+                                                                <span className='text-muted-foreground text-xs'>{user.email}</span>
+                                                            </div>
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
                             </div>
-                            {recipient && (
-                                <p className='text-muted-foreground mt-2 text-sm'>
-                                    Found: <span className='font-medium'>{recipient.fullName}</span>
-                                </p>
-                            )}
                         </div>
 
                         {/* Recipient Wallet Selection */}
-                        {recipient && (
+                        {selectedRecipient && (
                             <div>
                                 <Label htmlFor='recipient-wallet'>Recipient Wallet</Label>
                                 <div className='mt-2'>
@@ -230,7 +279,7 @@ export const SendETransferDialog = ({ walletId, walletName, balance = 0, trigger
                                 Cancel
                             </Button>
                         </DialogClose>
-                        <Button type='submit' disabled={isPending || !recipient || !recipientWalletId || !amount || numAmount <= 0 || isOverBalance}>
+                        <Button type='submit' disabled={isPending || !selectedRecipient || !recipientWalletId || !amount || numAmount <= 0 || isOverBalance}>
                             {isPending && <Loader2 className='size-4 animate-spin' />}
                             Send E-Transfer
                         </Button>
