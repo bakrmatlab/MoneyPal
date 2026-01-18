@@ -32,7 +32,14 @@ export function Dashboard() {
         enabled: isAuthenticated && showArchivedWallets,
     });
 
+    // Always check if there are any wallets at all (including archived) to show the archived section
+    const { data: allWalletsCheck } = useQuery({
+        ...convexQuery(api.wallets.getMyWallets, { includeArchived: true }),
+        enabled: isAuthenticated,
+    });
+
     const archivedWallets = allWallets?.filter((w) => w.isArchived) ?? [];
+    const hasAnyWallet = (allWalletsCheck?.length ?? 0) > 0;
 
     const totalBalance = wallets?.reduce((sum, wallet) => sum + wallet.balance, 0) ?? 0;
     const activeWallets = wallets?.filter((w) => w.balance > 0).length ?? 0;
@@ -169,7 +176,7 @@ export function Dashboard() {
             )}
 
             {/* Archived Wallets Section */}
-            {wallets && wallets.length > 0 && (
+            {hasAnyWallet && (
                 <div className='mt-12'>
                     <Collapsible open={showArchivedWallets} onOpenChange={setShowArchivedWallets}>
                         <div className='mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
