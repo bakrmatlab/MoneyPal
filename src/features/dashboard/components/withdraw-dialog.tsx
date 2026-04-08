@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { convexQuery } from '@convex-dev/react-query';
 import { api } from '@convex/_generated/api';
 import { Id } from '@convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
 import { ArrowUpFromLine, Loader2 } from 'lucide-react';
 import { formatCurrency } from '@/lib/format';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -14,10 +17,12 @@ import { TransactionDialogProps } from './types';
 export const WithdrawDialog = ({ walletId, walletName, balance = 0 }: TransactionDialogProps) => {
     const [open, setOpen] = useState(false);
     const [amount, setAmount] = useState('');
-    const [description, setDescription] = useState(''); // ADD THIS
+    const [description, setDescription] = useState('');
     const [categoryId, setCategoryId] = useState<Id<'categories'> | undefined>();
     const [isPending, setIsPending] = useState(false);
+    const [showBudgetWarning, setShowBudgetWarning] = useState(false);
     const withdraw = useMutation(api.wallets.withdraw);
+    const { data: currentBudget } = useQuery(convexQuery(api.budgets.getCurrentBudget, {}));
 
     const numAmount = parseFloat(amount) || 0;
     const isOverBalance = numAmount > balance;
@@ -25,6 +30,11 @@ export const WithdrawDialog = ({ walletId, walletName, balance = 0 }: Transactio
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (isNaN(numAmount) || numAmount <= 0 || isOverBalance) return;
+
+        if (currentBudget && currentBudget.spent + numAmount > currentBudget.amount) {
+            setShowBudgetWarning(true);
+            return;
+        }
 
         setIsPending(true);
         try {
@@ -39,73 +49,103 @@ export const WithdrawDialog = ({ walletId, walletName, balance = 0 }: Transactio
     };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant='outline' size='sm' className='flex-1 gap-2' disabled={balance === 0}>
-                    <ArrowUpFromLine className='size-4' />
-                    Withdraw
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <form onSubmit={handleSubmit}>
-                    <DialogHeader>
-                        <DialogTitle>Withdraw Funds</DialogTitle>
-                        <DialogDescription>
-                            Withdraw from {walletName ?? 'this wallet'}. Available: {formatCurrency(balance)}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className='space-y-4 py-4'>
-                        <div>
-                            <Label htmlFor='withdraw-amount'>Amount</Label>
-                            <div className='relative mt-2'>
-                                <span className='text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2'>$</span>
-                                <Input
-                                    id='withdraw-amount'
-                                    type='number'
-                                    min='0.01'
-                                    step='0.01'
-                                    max={balance}
-                                    placeholder='0.00'
-                                    value={amount}
-                                    onChange={(e) => setAmount(e.target.value)}
-                                    className='pl-7'
-                                    autoFocus
-                                />
-                            </div>
-                            {isOverBalance && <p className='text-destructive mt-2 text-sm'>Amount exceeds available balance</p>}
-                        </div>
-                        <div>
-                            <Label htmlFor='withdraw-category'>Category (Optional)</Label>
-                            <div className='mt-2 mb-2'>
-                                <CategorySelector type='expense' value={categoryId} onChange={setCategoryId} placeholder='Select expense category...' />
+        <>
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                    <Button variant='outline' size='sm' className='flex-1 gap-2' disabled={balance === 0}>
+                        <ArrowUpFromLine className='size-4' />
+                        Withdraw
+                    </Button>
+                </DialogTrigger>
+                <DialogContent>
+                    <form onSubmit={handleSubmit}>
+                        <DialogHeader>
+                            <DialogTitle>Withdraw Funds</DialogTitle>
+                            <DialogDescription>
+                                Withdraw from {walletName ?? 'this wallet'}. Available: {formatCurrency(balance)}
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className='space-y-4 py-4'>
+                            <div>
+                                <Label htmlFor='withdraw-amount'>Amount</Label>
+                                <div className='relative mt-2'>
+                                    <span className='text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2'>$</span>
+                                    <Input
+                                        id='withdraw-amount'
+                                        type='number'
+                                        min='0.01'
+                                        step='0.01'
+                                        max={balance}
+                                        placeholder='0.00'
+                                        value={amount}
+                                        onChange={(e) => setAmount(e.target.value)}
+                                        className='pl-7'
+                                        autoFocus
+                                    />
+                                </div>
+                                {isOverBalance && <p className='text-destructive mt-2 text-sm'>Amount exceeds available balance</p>}
                             </div>
                             <div>
-                                <Label htmlFor='withdraw-description'>Description (Optional)</Label>
-                                <div className='mt-2'>
-                                    <Input
-                                        id='withdraw-description'
-                                        type='text'
-                                        placeholder='e.g., Groceries, Rent, Entertainment'
-                                        value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
-                                    />
+                                <Label htmlFor='withdraw-category'>Category (Optional)</Label>
+                                <div className='mt-2 mb-2'>
+                                    <CategorySelector type='expense' value={categoryId} onChange={setCategoryId} placeholder='Select expense category...' />
+                                </div>
+                                <div>
+                                    <Label htmlFor='withdraw-description'>Description (Optional)</Label>
+                                    <div className='mt-2'>
+                                        <Input
+                                            id='withdraw-description'
+                                            type='text'
+                                            placeholder='e.g., Groceries, Rent, Entertainment'
+                                            value={description}
+                                            onChange={(e) => setDescription(e.target.value)}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <DialogFooter>
-                        <DialogClose asChild>
-                            <Button type='button' variant='outline' disabled={isPending}>
-                                Cancel
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button type='button' variant='outline' disabled={isPending}>
+                                    Cancel
+                                </Button>
+                            </DialogClose>
+                            <Button type='submit' disabled={isPending || !amount || numAmount <= 0 || isOverBalance}>
+                                {isPending && <Loader2 className='size-4 animate-spin' />}
+                                Withdraw
                             </Button>
-                        </DialogClose>
-                        <Button type='submit' disabled={isPending || !amount || numAmount <= 0 || isOverBalance}>
-                            {isPending && <Loader2 className='size-4 animate-spin' />}
-                            Withdraw
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
+            <AlertDialog open={showBudgetWarning} onOpenChange={setShowBudgetWarning}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Exceeds Monthly Budget</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This withdrawal will exceed your monthly budget. Do you want to continue?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                setShowBudgetWarning(false);
+                                setIsPending(true);
+                                void withdraw({ walletId, amount: numAmount, description, categoryId })
+                                    .then(() => {
+                                        setAmount('');
+                                        setCategoryId(undefined);
+                                        setDescription('');
+                                        setOpen(false);
+                                    })
+                                    .finally(() => setIsPending(false));
+                            }}>
+                            Continue
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </>
     );
 };
