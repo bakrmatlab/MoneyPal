@@ -57,7 +57,7 @@ export function BudgetHistoryChart({ data, isLoading }: BudgetHistoryChartProps)
                                 <XAxis dataKey='name' tick={{ fontSize: 12 }} />
                                 <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 12 }} />
                                 <ChartTooltip content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />} />
-                                <ChartLegend content={<ChartLegendContent />} />
+                                <ChartLegend content={ChartLegendContent} />
                                 <Bar dataKey='Budget' fill='var(--color-Budget)' radius={[4, 4, 0, 0]} />
                                 <Bar dataKey='Spent' fill='var(--color-Spent)' radius={[4, 4, 0, 0]} />
                             </BarChart>
