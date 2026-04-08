@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Skeleton } from '@/components/ui/skeleton';
+import { BudgetCard } from './components/budget-card';
 import { CreateWalletDialog } from './components/create-wallet-dialog';
 import { WalletCard } from './components/wallet-card';
 
@@ -53,7 +54,7 @@ export function Dashboard() {
     return (
         <div className='container mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8'>
             {/* Stats Overview Cards */}
-            <div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+            <div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'>
                 {/* Total Balance Card */}
                 <Card className='hover:border-primary/50 group relative overflow-hidden transition-all duration-300 hover:shadow-lg'>
                     <div className='from-primary/5 absolute inset-0 bg-gradient-to-br to-transparent opacity-0 transition-opacity group-hover:opacity-100' />
@@ -125,6 +126,8 @@ export function Dashboard() {
                         <CreateWalletDialog />
                     </CardContent>
                 </Card>
+
+                <BudgetCard />
             </div>
 
             {/* Your Wallets Section */}
