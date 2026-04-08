@@ -1,4 +1,5 @@
 import { v } from 'convex/values';
+import { internal } from './_generated/api';
 import { mutation, query } from './_generated/server';
 import { getCurrentUserOrThrow } from './users';
 
@@ -263,6 +264,17 @@ export const deleteTransaction = mutation({
             isDeleted: true,
         });
 
+        // Reverse budget spend if this was a withdrawal or outgoing e-transfer
+        if (
+            transaction.type === 'withdrawal' ||
+            (transaction.type === 'e-transfer' && transaction.isOutgoing === true)
+        ) {
+            await ctx.runMutation(internal.budgets.updateSpent, {
+                userId: user._id,
+                delta: -transaction.amount,
+            });
+        }
+
         return transaction;
     },
 });
@@ -523,6 +535,11 @@ export const sendETransfer = mutation({
             recipientWalletId: args.recipientWalletId,
             isOutgoing: true,
             isDeleted: false,
+        });
+
+        await ctx.runMutation(internal.budgets.updateSpent, {
+            userId: user._id,
+            delta: args.amount,
         });
 
         // Create recipient transaction (incoming)
