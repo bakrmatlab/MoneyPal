@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { convexQuery } from '@convex-dev/react-query';
+import { convexQuery, useConvexAuth } from '@convex-dev/react-query';
 import { api } from '@convex/_generated/api';
 import type { Id } from '@convex/_generated/dataModel';
 import { Download, TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
+import { BudgetHistoryChart } from './components/budget-history-chart';
 import { CategoryBreakdown } from './components/category-breakdown';
 import { IncomeExpenseChart } from './components/income-expense-chart';
 import { SpendingChart } from './components/spending-chart';
@@ -128,6 +129,18 @@ export const AnalyticsPage = () => {
             limit: 5,
         })
     );
+
+    const { isAuthenticated } = useConvexAuth();
+
+    const { data: budgetHistory, isPending: budgetLoading } = useQuery({
+        ...convexQuery(api.budgets.getBudgetHistory, {}),
+        enabled: isAuthenticated,
+    });
+
+    const { data: currentBudget } = useQuery({
+        ...convexQuery(api.budgets.getCurrentBudget, {}),
+        enabled: isAuthenticated,
+    });
 
     // Calculate totals
     const totalExpenses = stats?.totalWithdrawals ?? 0;
@@ -324,6 +337,46 @@ export const AnalyticsPage = () => {
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Budget Section */}
+            {(currentBudget || (budgetHistory && budgetHistory.length > 0)) && (
+                <div className='grid grid-cols-1 gap-6 xl:grid-cols-2'>
+                    {/* Current Month Progress */}
+                    {currentBudget && (
+                        <Card>
+                            <CardHeader className='flex flex-row items-center justify-between space-y-0 p-6 pb-2'>
+                                <CardTitle className='text-lg sm:text-xl'>This Month's Budget</CardTitle>
+                            </CardHeader>
+                            <CardContent className='px-6 pb-6'>
+                                <CardDescription className='mb-3 text-sm'>
+                                    {formatCurrency(currentBudget.spent)} spent of {formatCurrency(currentBudget.amount)}
+                                </CardDescription>
+                                {(() => {
+                                    const pct = currentBudget.amount > 0
+                                        ? Math.min(100, (currentBudget.spent / currentBudget.amount) * 100)
+                                        : 0;
+                                    const color = pct >= 100 ? 'bg-destructive' : pct >= 80 ? 'bg-yellow-500' : 'bg-primary';
+                                    return (
+                                        <div className='space-y-2'>
+                                            <div className='relative h-3 w-full overflow-hidden rounded-full bg-secondary'>
+                                                <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${pct}%` }} />
+                                            </div>
+                                            <p className='text-muted-foreground text-sm'>
+                                                {pct >= 100
+                                                    ? `Over budget by ${formatCurrency(currentBudget.spent - currentBudget.amount)}`
+                                                    : `${formatCurrency(Math.max(0, currentBudget.amount - currentBudget.spent))} remaining`}
+                                            </p>
+                                        </div>
+                                    );
+                                })()}
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Budget History Chart */}
+                    <BudgetHistoryChart data={budgetHistory} isLoading={budgetLoading} />
+                </div>
+            )}
 
             {/* Charts Grid */}
             <div className='grid grid-cols-1 gap-6 xl:grid-cols-2'>
