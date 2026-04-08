@@ -80,6 +80,7 @@ export const hasWalletTransactions = query({
 export const createWallet = mutation({
     args: {
         name: v.optional(v.string()),
+        currency: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
         const user = await getCurrentUserOrThrow(ctx);
@@ -99,7 +100,7 @@ export const createWallet = mutation({
             userId: user._id,
             name: args.name ?? undefined,
             balance: 0,
-            currency: 'USD',
+            currency: args.currency ?? 'USD',
             isArchived: false,
         });
 

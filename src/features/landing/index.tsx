@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from '@tanstack/react-router';
+import { Link, Navigate } from '@tanstack/react-router';
 import { useConvexAuth } from '@convex-dev/react-query';
 import { ArrowRight, Blocks, Fan, LayoutDashboard, Shield, Sparkles, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -52,6 +52,10 @@ export function LandingPage() {
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    if (!isLoading && isAuthenticated) {
+        return <Navigate to='/dashboard' />;
+    }
 
     return (
         <>

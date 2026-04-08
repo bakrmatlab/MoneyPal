@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SetupRouteRouteImport } from './routes/_setup/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SetupOnboardingRouteImport } from './routes/_setup/onboarding'
 import { Route as AuthenticatedTransactionsRouteImport } from './routes/_authenticated/transactions'
 import { Route as AuthenticatedPreferencesRouteImport } from './routes/_authenticated/preferences'
 import { Route as AuthenticatedETransfersRouteImport } from './routes/_authenticated/e-transfers'
@@ -26,6 +28,10 @@ import { Route as authSignUpRouteImport } from './routes/(auth)/sign-up'
 import { Route as authSignInRouteImport } from './routes/(auth)/sign-in'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
 
+const SetupRouteRoute = SetupRouteRouteImport.update({
+  id: '/_setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -34,6 +40,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const SetupOnboardingRoute = SetupOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => SetupRouteRoute,
 } as any)
 const AuthenticatedTransactionsRoute =
   AuthenticatedTransactionsRouteImport.update({
@@ -124,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/e-transfers': typeof AuthenticatedETransfersRoute
   '/preferences': typeof AuthenticatedPreferencesRoute
   '/transactions': typeof AuthenticatedTransactionsRoute
+  '/onboarding': typeof SetupOnboardingRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
 }
 export interface FileRoutesByTo {
@@ -141,12 +153,14 @@ export interface FileRoutesByTo {
   '/e-transfers': typeof AuthenticatedETransfersRoute
   '/preferences': typeof AuthenticatedPreferencesRoute
   '/transactions': typeof AuthenticatedTransactionsRoute
+  '/onboarding': typeof SetupOnboardingRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_setup': typeof SetupRouteRouteWithChildren
   '/(auth)/sign-in': typeof authSignInRoute
   '/(auth)/sign-up': typeof authSignUpRoute
   '/(errors)/401': typeof errors401Route
@@ -160,6 +174,7 @@ export interface FileRoutesById {
   '/_authenticated/e-transfers': typeof AuthenticatedETransfersRoute
   '/_authenticated/preferences': typeof AuthenticatedPreferencesRoute
   '/_authenticated/transactions': typeof AuthenticatedTransactionsRoute
+  '/_setup/onboarding': typeof SetupOnboardingRoute
   '/_authenticated/errors/$error': typeof AuthenticatedErrorsErrorRoute
 }
 export interface FileRouteTypes {
@@ -179,6 +194,7 @@ export interface FileRouteTypes {
     | '/e-transfers'
     | '/preferences'
     | '/transactions'
+    | '/onboarding'
     | '/errors/$error'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -196,11 +212,13 @@ export interface FileRouteTypes {
     | '/e-transfers'
     | '/preferences'
     | '/transactions'
+    | '/onboarding'
     | '/errors/$error'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/_setup'
     | '/(auth)/sign-in'
     | '/(auth)/sign-up'
     | '/(errors)/401'
@@ -214,12 +232,14 @@ export interface FileRouteTypes {
     | '/_authenticated/e-transfers'
     | '/_authenticated/preferences'
     | '/_authenticated/transactions'
+    | '/_setup/onboarding'
     | '/_authenticated/errors/$error'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  SetupRouteRoute: typeof SetupRouteRouteWithChildren
   authSignInRoute: typeof authSignInRoute
   authSignUpRoute: typeof authSignUpRoute
   errors401Route: typeof errors401Route
@@ -231,6 +251,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_setup': {
+      id: '/_setup'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof SetupRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
@@ -244,6 +271,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_setup/onboarding': {
+      id: '/_setup/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof SetupOnboardingRouteImport
+      parentRoute: typeof SetupRouteRoute
     }
     '/_authenticated/transactions': {
       id: '/_authenticated/transactions'
@@ -369,9 +403,22 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface SetupRouteRouteChildren {
+  SetupOnboardingRoute: typeof SetupOnboardingRoute
+}
+
+const SetupRouteRouteChildren: SetupRouteRouteChildren = {
+  SetupOnboardingRoute: SetupOnboardingRoute,
+}
+
+const SetupRouteRouteWithChildren = SetupRouteRoute._addFileChildren(
+  SetupRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  SetupRouteRoute: SetupRouteRouteWithChildren,
   authSignInRoute: authSignInRoute,
   authSignUpRoute: authSignUpRoute,
   errors401Route: errors401Route,
