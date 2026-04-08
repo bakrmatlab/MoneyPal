@@ -1,7 +1,7 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
 import { formatCurrency } from '@/lib/format';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface BudgetHistoryRow {
@@ -57,7 +57,7 @@ export function BudgetHistoryChart({ data, isLoading }: BudgetHistoryChartProps)
                                 <XAxis dataKey='name' tick={{ fontSize: 12 }} />
                                 <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 12 }} />
                                 <ChartTooltip content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />} />
-                                <ChartLegend content={ChartLegendContent} />
+                                <Legend wrapperStyle={{ fontSize: '13px' }} />
                                 <Bar dataKey='Budget' fill='var(--color-Budget)' radius={[4, 4, 0, 0]} />
                                 <Bar dataKey='Spent' fill='var(--color-Spent)' radius={[4, 4, 0, 0]} />
                             </BarChart>

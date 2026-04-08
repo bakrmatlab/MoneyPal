@@ -1,7 +1,7 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
 import { formatCurrency } from '@/lib/format';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface IncomeExpenseChartProps {
@@ -99,7 +99,7 @@ export const IncomeExpenseChart = ({ data, isLoading, dateRange }: IncomeExpense
                                     />
                                 }
                             />
-                            <ChartLegend content={<ChartLegendContent />} />
+                            <Legend wrapperStyle={{ fontSize: '13px' }} />
                             <Bar dataKey='income' fill='var(--color-income)' radius={[4, 4, 0, 0]} />
                             <Bar dataKey='expenses' fill='var(--color-expenses)' radius={[4, 4, 0, 0]} />
                         </BarChart>
