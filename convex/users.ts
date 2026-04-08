@@ -1,7 +1,7 @@
 import { UserJSON } from '@clerk/backend';
 import { ConvexError, v, Validator } from 'convex/values';
 import type { Doc } from './_generated/dataModel';
-import { internalMutation, query, QueryCtx } from './_generated/server';
+import { internalMutation, mutation, query, QueryCtx } from './_generated/server';
 
 type User = Doc<'users'>;
 
@@ -42,7 +42,7 @@ export const upsertFromClerk = internalMutation({
 
         if (user === null) {
             // Create new user
-            const userId = await ctx.db.insert('users', { ...userAttributes });
+            const userId = await ctx.db.insert('users', { ...userAttributes, onboardingCompleted: false });
             console.log(`Created new user ${userId} for Clerk user ${data.id}`);
 
             // Initialize preferences for new user with browser-detected defaults
@@ -69,6 +69,46 @@ export const upsertFromClerk = internalMutation({
 
             return { userId: user._id, isNewUser: false };
         }
+    },
+});
+
+export const ensureUserExists = mutation({
+    args: {},
+    returns: v.boolean(), // true = user was created, false = already existed
+    handler: async (ctx) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) return false;
+
+        const existing = await userByClerkUserId(ctx, identity.subject);
+        if (existing) return false;
+
+        const userId = await ctx.db.insert('users', {
+            clerkUserId: identity.subject,
+            fullName: identity.name ?? identity.givenName ?? 'Unknown User',
+            email: (identity.email as string | undefined) ?? '',
+            username: (identity.nickname as string | undefined) ?? undefined,
+            onboardingCompleted: false,
+        });
+
+        await ctx.db.insert('userPreferences', {
+            userId,
+            timezone: 'UTC',
+            locale: 'en-US',
+            emailNotifications: true,
+            pushNotifications: true,
+        });
+
+        return true;
+    },
+});
+
+export const markOnboardingComplete = mutation({
+    args: {},
+    returns: v.null(),
+    handler: async (ctx) => {
+        const user = await getCurrentUserOrThrow(ctx);
+        await ctx.db.patch(user._id, { onboardingCompleted: true });
+        return null;
     },
 });
 
