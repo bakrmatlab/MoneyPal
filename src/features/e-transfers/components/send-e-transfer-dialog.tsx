@@ -8,6 +8,16 @@ import { Send, Loader2, Check, ChevronsUpDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatCurrency } from '@/lib/format';
 import { cn } from '@/lib/utils';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -32,8 +42,10 @@ export const SendETransferDialog = ({ walletId, walletName, balance = 0, trigger
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
     const [isPending, setIsPending] = useState(false);
+    const [showBudgetWarning, setShowBudgetWarning] = useState(false);
 
     const sendETransfer = useMutation(api.transactions.sendETransfer);
+    const { data: currentBudget } = useQuery(convexQuery(api.budgets.getCurrentBudget, {}));
 
     // Get recent recipients
     const { data: recentRecipients = [] } = useQuery({
@@ -64,11 +76,8 @@ export const SendETransferDialog = ({ walletId, walletName, balance = 0, trigger
     const numAmount = parseFloat(amount) || 0;
     const isOverBalance = numAmount > balance;
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const doSend = async () => {
         if (!recipientWalletId || !selectedRecipient) return;
-        if (isNaN(numAmount) || numAmount <= 0 || isOverBalance) return;
-
         setIsPending(true);
         try {
             await sendETransfer({
@@ -78,10 +87,7 @@ export const SendETransferDialog = ({ walletId, walletName, balance = 0, trigger
                 amount: numAmount,
                 description: description || undefined,
             });
-
             toast.success(`Sent ${formatCurrency(numAmount)} to ${selectedRecipient.fullName}`);
-
-            // Reset form
             setAmount('');
             setSearchText('');
             setSelectedUserId(null);
@@ -93,6 +99,19 @@ export const SendETransferDialog = ({ walletId, walletName, balance = 0, trigger
         } finally {
             setIsPending(false);
         }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!recipientWalletId || !selectedRecipient) return;
+        if (isNaN(numAmount) || numAmount <= 0 || isOverBalance) return;
+
+        if (currentBudget && currentBudget.spent + numAmount > currentBudget.amount) {
+            setShowBudgetWarning(true);
+            return;
+        }
+
+        await doSend();
     };
 
     const handleOpenChange = (newOpen: boolean) => {
@@ -108,6 +127,7 @@ export const SendETransferDialog = ({ walletId, walletName, balance = 0, trigger
     };
 
     return (
+        <>
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
                 {triggerButton || (
@@ -287,5 +307,26 @@ export const SendETransferDialog = ({ walletId, walletName, balance = 0, trigger
                 </form>
             </DialogContent>
         </Dialog>
+        <AlertDialog open={showBudgetWarning} onOpenChange={setShowBudgetWarning}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Exceeds Monthly Budget</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        This e-transfer will exceed your monthly budget. Do you want to continue?
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                        onClick={() => {
+                            setShowBudgetWarning(false);
+                            void doSend();
+                        }}>
+                        Continue
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+        </>
     );
 };
