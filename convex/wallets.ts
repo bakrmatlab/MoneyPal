@@ -219,6 +219,11 @@ export const withdraw = mutation({
             isDeleted: false,
         });
 
+        await ctx.runMutation(internal.budgets.updateSpent, {
+            userId: user._id,
+            delta: args.amount,
+        });
+
         return wallet;
     },
 });
