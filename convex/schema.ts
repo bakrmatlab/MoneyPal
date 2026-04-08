@@ -68,4 +68,14 @@ export default defineSchema({
         emailNotifications: v.boolean(),
         pushNotifications: v.boolean(),
     }).index('by_userId', ['userId']),
+
+    budgets: defineTable({
+        userId: v.id('users'),
+        amount: v.number(), // budget limit for this month
+        month: v.number(), // 1–12
+        year: v.number(), // e.g. 2026
+        spent: v.number(), // cached sum of withdrawals + outgoing e-transfers
+    })
+        .index('by_userId', ['userId'])
+        .index('by_userId_month_year', ['userId', 'month', 'year']),
 });
