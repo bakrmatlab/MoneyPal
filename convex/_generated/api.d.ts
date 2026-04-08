@@ -11,6 +11,7 @@
 import type * as analytics from "../analytics.js";
 import type * as budgets from "../budgets.js";
 import type * as categories from "../categories.js";
+import type * as crons from "../crons.js";
 import type * as env from "../env.js";
 import type * as http from "../http.js";
 import type * as migrations_fixETransferDirection from "../migrations/fixETransferDirection.js";
@@ -29,6 +30,7 @@ declare const fullApi: ApiFromModules<{
   analytics: typeof analytics;
   budgets: typeof budgets;
   categories: typeof categories;
+  crons: typeof crons;
   env: typeof env;
   http: typeof http;
   "migrations/fixETransferDirection": typeof migrations_fixETransferDirection;
