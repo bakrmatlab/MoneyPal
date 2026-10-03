@@ -14,7 +14,7 @@
         @apply overflow-x-hidden;
     }
     body {
-        @apply bg-background text-foreground has-[div[data-variant='inset']]:bg-sidebar min-h-svh w-full;
+        @apply bg-background text-foreground font-sans antialiased has-[div[data-variant='inset']]:bg-sidebar min-h-svh w-full;
     }
 
     /* Override Radix scroll locking for sticky headers */
@@ -83,5 +83,17 @@
     }
     to {
         height: 0;
+    }
+}
+
+/* Respect reduced motion across shared components and page transitions. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }
