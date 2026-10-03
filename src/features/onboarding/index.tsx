@@ -17,7 +17,7 @@ function StepDots({ current }: { current: number }) {
             {STEPS.map((_, i) => (
                 <div
                     key={i}
-                    className={`h-2 rounded-full transition-all duration-300 ${i === current ? 'bg-primary w-6' : i < current ? 'bg-primary/40 w-2' : 'bg-muted w-2'}`}
+                    className={`h-2 rounded-sm transition-all duration-300 ${i === current ? 'bg-primary w-6' : i < current ? 'bg-primary/40 w-2' : 'bg-muted w-2'}`}
                 />
             ))}
         </div>
@@ -81,16 +81,10 @@ export function Onboarding() {
                     <StepDots current={currentIndex} />
                 </div>
 
-                <div className='bg-card border-border rounded-2xl border p-8 shadow-sm'>
-                    {step === 'welcome' && (
-                        <WelcomeStep onNext={() => setStep('wallet')} onSkip={skip} isSkipping={isPending} />
-                    )}
-                    {step === 'wallet' && (
-                        <WalletStep onNext={handleWalletNext} onSkip={() => setStep('spending-limit')} isPending={isPending} />
-                    )}
-                    {step === 'spending-limit' && (
-                        <SpendingLimitStep onFinish={finish} isPending={isPending} />
-                    )}
+                <div className='bg-card border-border rounded-sm border p-5 shadow-none sm:p-8'>
+                    {step === 'welcome' && <WelcomeStep onNext={() => setStep('wallet')} onSkip={skip} isSkipping={isPending} />}
+                    {step === 'wallet' && <WalletStep onNext={handleWalletNext} onSkip={() => setStep('spending-limit')} isPending={isPending} />}
+                    {step === 'spending-limit' && <SpendingLimitStep onFinish={finish} isPending={isPending} />}
                 </div>
 
                 <p className='text-muted-foreground mt-6 text-center text-xs'>You can update all of this later in Settings.</p>

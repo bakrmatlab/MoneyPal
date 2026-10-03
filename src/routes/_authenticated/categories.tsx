@@ -6,9 +6,5 @@ export const Route = createFileRoute('/_authenticated/categories')({
 });
 
 function CategoriesPage() {
-    return (
-        <div className='container mx-auto py-8'>
-            <CategoriesSettings />
-        </div>
-    );
+    return <CategoriesSettings />;
 }

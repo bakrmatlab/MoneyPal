@@ -114,9 +114,9 @@ export const PreferencesForm = () => {
         <form onSubmit={handleSubmit}>
             <div className='space-y-6'>
                 {/* Regional Settings */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Regional Settings</CardTitle>
+                <Card className='min-w-0 rounded-sm shadow-none'>
+                    <CardHeader className='border-b pb-5'>
+                        <CardTitle className='text-base font-semibold'>Regional Settings</CardTitle>
                         <CardDescription>Configure timezone and locale preferences</CardDescription>
                     </CardHeader>
                     <CardContent className='space-y-4'>
@@ -124,7 +124,7 @@ export const PreferencesForm = () => {
                         <div className='space-y-2'>
                             <Label htmlFor='timezone'>Timezone</Label>
                             <Select value={formData.timezone} onValueChange={(value) => setFormData({ ...formData, timezone: value })}>
-                                <SelectTrigger id='timezone'>
+                                <SelectTrigger id='timezone' className='h-11 w-full min-w-0 rounded-sm'>
                                     <SelectValue placeholder='Select timezone' />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -142,7 +142,7 @@ export const PreferencesForm = () => {
                         <div className='space-y-2'>
                             <Label htmlFor='locale'>Locale</Label>
                             <Select value={formData.locale} onValueChange={(value) => setFormData({ ...formData, locale: value })}>
-                                <SelectTrigger id='locale'>
+                                <SelectTrigger id='locale' className='h-11 w-full min-w-0 rounded-sm'>
                                     <SelectValue placeholder='Select locale' />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -159,9 +159,9 @@ export const PreferencesForm = () => {
                 </Card>
 
                 {/* Wallet Settings */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Wallet Settings</CardTitle>
+                <Card className='min-w-0 rounded-sm shadow-none'>
+                    <CardHeader className='border-b pb-5'>
+                        <CardTitle className='text-base font-semibold'>Wallet Settings</CardTitle>
                         <CardDescription>Configure default wallet for new transactions</CardDescription>
                     </CardHeader>
                     <CardContent className='space-y-4'>
@@ -176,7 +176,7 @@ export const PreferencesForm = () => {
                                         defaultWalletId: value === 'none' ? undefined : (value as Id<'wallets'>),
                                     })
                                 }>
-                                <SelectTrigger id='defaultWallet'>
+                                <SelectTrigger id='defaultWallet' className='h-11 w-full min-w-0 rounded-sm'>
                                     <SelectValue placeholder='Select default wallet' />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -194,10 +194,10 @@ export const PreferencesForm = () => {
                 </Card>
 
                 {/* Security Settings */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Security Settings</CardTitle>
-                        <CardDescription>Set spending limits and confirmation thresholds (Phase 4)</CardDescription>
+                <Card className='min-w-0 rounded-sm shadow-none'>
+                    <CardHeader className='border-b pb-5'>
+                        <CardTitle className='text-base font-semibold'>Security Settings</CardTitle>
+                        <CardDescription>Set spending limits and confirmation thresholds </CardDescription>
                     </CardHeader>
                     <CardContent className='space-y-4'>
                         {/* Daily Spending Limit */}
@@ -216,6 +216,7 @@ export const PreferencesForm = () => {
                                         dailySpendingLimit: e.target.value ? parseFloat(e.target.value) : undefined,
                                     })
                                 }
+                                className='h-11 min-w-0 rounded-sm text-base'
                             />
                             <p className='text-muted-foreground text-sm'>Optional: Maximum daily spending amount</p>
                         </div>
@@ -236,6 +237,7 @@ export const PreferencesForm = () => {
                                         transactionConfirmThreshold: e.target.value ? parseFloat(e.target.value) : undefined,
                                     })
                                 }
+                                className='h-11 min-w-0 rounded-sm text-base'
                             />
                             <p className='text-muted-foreground text-sm'>Optional: Confirm transactions above this amount</p>
                         </div>
@@ -243,14 +245,14 @@ export const PreferencesForm = () => {
                 </Card>
 
                 {/* Notification Settings */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Notification Settings</CardTitle>
+                <Card className='min-w-0 rounded-sm shadow-none'>
+                    <CardHeader className='border-b pb-5'>
+                        <CardTitle className='text-base font-semibold'>Notification Settings</CardTitle>
                         <CardDescription>Manage how you receive notifications</CardDescription>
                     </CardHeader>
                     <CardContent className='space-y-4'>
                         {/* Email Notifications */}
-                        <div className='flex items-center justify-between'>
+                        <div className='flex min-w-0 flex-wrap items-center justify-between gap-3'>
                             <div className='space-y-0.5'>
                                 <Label htmlFor='emailNotifications'>Email Notifications</Label>
                                 <p className='text-muted-foreground text-sm'>Receive notifications via email</p>
@@ -263,7 +265,7 @@ export const PreferencesForm = () => {
                         </div>
 
                         {/* Push Notifications */}
-                        <div className='flex items-center justify-between'>
+                        <div className='flex min-w-0 flex-wrap items-center justify-between gap-3'>
                             <div className='space-y-0.5'>
                                 <Label htmlFor='pushNotifications'>Push Notifications</Label>
                                 <p className='text-muted-foreground text-sm'>Receive push notifications in-app</p>
@@ -280,7 +282,7 @@ export const PreferencesForm = () => {
 
             {/* Save Button */}
             <div className='mt-6 flex justify-end'>
-                <Button type='submit' disabled={isPending || preferences === undefined}>
+                <Button type='submit' disabled={isPending || preferences === undefined} className='min-h-11 rounded-sm'>
                     {isPending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
                     <Save className='mr-2 h-4 w-4' />
                     Save Preferences
