@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { api } from '@/../convex/_generated/api';
-import { Id } from '@/../convex/_generated/dataModel';
+import type { Id } from '@/../convex/_generated/dataModel';
 import { useQuery } from 'convex/react';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -9,13 +9,14 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 type CategorySelectorProps = {
+    id?: string;
     type: 'income' | 'expense';
     value?: Id<'categories'>;
     onChange: (value: Id<'categories'> | undefined) => void;
     placeholder?: string;
 };
 
-export const CategorySelector = ({ type, value, onChange, placeholder }: CategorySelectorProps) => {
+export const CategorySelector = ({ id, type, value, onChange, placeholder }: CategorySelectorProps) => {
     const [open, setOpen] = useState(false);
     const categories = useQuery(api.categories.getCategories, { type });
 
@@ -24,9 +25,14 @@ export const CategorySelector = ({ type, value, onChange, placeholder }: Categor
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button variant='outline' role='combobox' aria-expanded={open} className='w-full justify-between'>
+                <Button
+                    id={id}
+                    variant='outline'
+                    role='combobox'
+                    aria-expanded={open}
+                    className='h-auto min-h-11 w-full min-w-0 justify-between rounded-sm py-2'>
                     {selectedCategory ? (
-                        <span className='flex items-center gap-2'>
+                        <span className='flex min-w-0 items-center gap-2 break-words whitespace-normal'>
                             <span>{selectedCategory.icon}</span>
                             <span>{selectedCategory.name}</span>
                         </span>
@@ -36,7 +42,7 @@ export const CategorySelector = ({ type, value, onChange, placeholder }: Categor
                     <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className='w-full p-0'>
+            <PopoverContent className='w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] rounded-sm p-0'>
                 <Command>
                     <CommandInput placeholder='Search categories...' />
                     <CommandList>
@@ -60,7 +66,7 @@ export const CategorySelector = ({ type, value, onChange, placeholder }: Categor
                                         setOpen(false);
                                     }}>
                                     <Check className={cn('mr-2 h-4 w-4', value === category._id ? 'opacity-100' : 'opacity-0')} />
-                                    <span className='flex items-center gap-2'>
+                                    <span className='flex min-w-0 items-center gap-2 break-words whitespace-normal'>
                                         <span>{category.icon}</span>
                                         <span>{category.name}</span>
                                     </span>

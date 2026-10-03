@@ -128,59 +128,87 @@ export const SendETransferDialog = ({ walletId, walletName, balance = 0, trigger
 
     return (
         <>
-        <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogTrigger asChild>
-                {triggerButton || (
-                    <Button variant='outline' size='sm' className='flex-1 gap-2' disabled={balance === 0}>
-                        <Send className='size-4' />
-                        E-Transfer
-                    </Button>
-                )}
-            </DialogTrigger>
-            <DialogContent className='max-w-md'>
-                <form onSubmit={handleSubmit}>
-                    <DialogHeader>
-                        <DialogTitle>Send E-Transfer</DialogTitle>
-                        <DialogDescription>
-                            Send money from {walletName ?? 'this wallet'}. Available: {formatCurrency(balance)}
-                        </DialogDescription>
-                    </DialogHeader>
+            <Dialog open={open} onOpenChange={handleOpenChange}>
+                <DialogTrigger asChild>
+                    {triggerButton || (
+                        <Button variant='outline' size='sm' className='min-h-11 flex-1 gap-2 rounded-sm' disabled={balance === 0}>
+                            <Send className='size-4' />
+                            E-Transfer
+                        </Button>
+                    )}
+                </DialogTrigger>
+                <DialogContent className='max-h-[85dvh] max-w-md overflow-y-auto rounded-sm'>
+                    <form onSubmit={handleSubmit}>
+                        <DialogHeader className='border-b pb-5 text-left'>
+                            <DialogTitle className='text-xl font-semibold tracking-tight'>Send E-Transfer</DialogTitle>
+                            <DialogDescription className='break-words'>
+                                Send money from {walletName ?? 'this wallet'}. Available: {formatCurrency(balance)}
+                            </DialogDescription>
+                        </DialogHeader>
 
-                    <div className='space-y-4 py-4'>
-                        {/* Recipient User Selection */}
-                        <div>
-                            <Label htmlFor='recipient-user'>Recipient</Label>
-                            <div className='mt-2'>
-                                <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
-                                    <PopoverTrigger asChild>
-                                        <Button
-                                            id='recipient-user'
-                                            variant='outline'
-                                            role='combobox'
-                                            aria-expanded={comboboxOpen}
-                                            className='w-full justify-between'
-                                            disabled={isPending}>
-                                            {selectedRecipient ? (
-                                                <span className='flex items-center gap-2 truncate'>
-                                                    <span className='font-medium'>{selectedRecipient.fullName}</span>
-                                                    <span className='text-muted-foreground text-sm'>({selectedRecipient.email})</span>
-                                                </span>
-                                            ) : (
-                                                <span className='text-muted-foreground'>Select recipient...</span>
-                                            )}
-                                            <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className='w-[400px] p-0' align='start'>
-                                        <Command shouldFilter={false}>
-                                            <CommandInput placeholder='Search by name or email...' value={searchText} onValueChange={setSearchText} />
-                                            <CommandList>
-                                                <CommandEmpty>{searchText ? 'No users found.' : 'Browse all users to get started.'}</CommandEmpty>
+                        <div className='space-y-5 py-5'>
+                            {/* Recipient User Selection */}
+                            <div>
+                                <Label htmlFor='recipient-user'>Recipient</Label>
+                                <div className='mt-2'>
+                                    <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                id='recipient-user'
+                                                variant='outline'
+                                                role='combobox'
+                                                aria-expanded={comboboxOpen}
+                                                className='h-auto min-h-11 w-full min-w-0 justify-between rounded-sm py-2'
+                                                disabled={isPending}>
+                                                {selectedRecipient ? (
+                                                    <span className='flex min-w-0 flex-col items-start gap-1 text-left'>
+                                                        <span className='font-medium break-words'>{selectedRecipient.fullName}</span>
+                                                        <span className='text-muted-foreground text-sm break-all'>({selectedRecipient.email})</span>
+                                                    </span>
+                                                ) : (
+                                                    <span className='text-muted-foreground'>Select recipient...</span>
+                                                )}
+                                                <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent
+                                            className='w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] rounded-sm p-0'
+                                            align='start'>
+                                            <Command shouldFilter={false}>
+                                                <CommandInput placeholder='Search by name or email...' value={searchText} onValueChange={setSearchText} />
+                                                <CommandList>
+                                                    <CommandEmpty>{searchText ? 'No users found.' : 'Browse all users to get started.'}</CommandEmpty>
 
-                                                {/* Recent Recipients */}
-                                                {recentRecipients.length > 0 && !searchText && (
-                                                    <CommandGroup heading='Recent'>
-                                                        {recentRecipients.map((user) => (
+                                                    {/* Recent Recipients */}
+                                                    {recentRecipients.length > 0 && !searchText && (
+                                                        <CommandGroup heading='Recent'>
+                                                            {recentRecipients.map((user) => (
+                                                                <CommandItem
+                                                                    key={user._id}
+                                                                    value={`${user.fullName} ${user.email}`}
+                                                                    onSelect={() => {
+                                                                        setSelectedUserId(user._id);
+                                                                        setRecipientWalletId(null);
+                                                                        setComboboxOpen(false);
+                                                                    }}>
+                                                                    <Check
+                                                                        className={cn(
+                                                                            'mr-2 h-4 w-4',
+                                                                            selectedUserId === user._id ? 'opacity-100' : 'opacity-0'
+                                                                        )}
+                                                                    />
+                                                                    <div className='flex min-w-0 flex-col'>
+                                                                        <span className='font-medium break-words'>{user.fullName}</span>
+                                                                        <span className='text-muted-foreground text-xs break-all'>{user.email}</span>
+                                                                    </div>
+                                                                </CommandItem>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    )}
+
+                                                    {/* All Users */}
+                                                    <CommandGroup heading={searchText ? 'Search Results' : 'All Users'}>
+                                                        {filteredAllUsers.map((user) => (
                                                             <CommandItem
                                                                 key={user._id}
                                                                 value={`${user.fullName} ${user.email}`}
@@ -192,141 +220,123 @@ export const SendETransferDialog = ({ walletId, walletName, balance = 0, trigger
                                                                 <Check
                                                                     className={cn('mr-2 h-4 w-4', selectedUserId === user._id ? 'opacity-100' : 'opacity-0')}
                                                                 />
-                                                                <div className='flex flex-col'>
-                                                                    <span className='font-medium'>{user.fullName}</span>
-                                                                    <span className='text-muted-foreground text-xs'>{user.email}</span>
+                                                                <div className='flex min-w-0 flex-col'>
+                                                                    <span className='font-medium break-words'>{user.fullName}</span>
+                                                                    <span className='text-muted-foreground text-xs break-all'>{user.email}</span>
                                                                 </div>
                                                             </CommandItem>
                                                         ))}
                                                     </CommandGroup>
-                                                )}
-
-                                                {/* All Users */}
-                                                <CommandGroup heading={searchText ? 'Search Results' : 'All Users'}>
-                                                    {filteredAllUsers.map((user) => (
-                                                        <CommandItem
-                                                            key={user._id}
-                                                            value={`${user.fullName} ${user.email}`}
-                                                            onSelect={() => {
-                                                                setSelectedUserId(user._id);
-                                                                setRecipientWalletId(null);
-                                                                setComboboxOpen(false);
-                                                            }}>
-                                                            <Check className={cn('mr-2 h-4 w-4', selectedUserId === user._id ? 'opacity-100' : 'opacity-0')} />
-                                                            <div className='flex flex-col'>
-                                                                <span className='font-medium'>{user.fullName}</span>
-                                                                <span className='text-muted-foreground text-xs'>{user.email}</span>
-                                                            </div>
-                                                        </CommandItem>
-                                                    ))}
-                                                </CommandGroup>
-                                            </CommandList>
-                                        </Command>
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                        </div>
-
-                        {/* Recipient Wallet Selection */}
-                        {selectedRecipient && (
-                            <div>
-                                <Label htmlFor='recipient-wallet'>Recipient Wallet</Label>
-                                <div className='mt-2'>
-                                    {recipientWalletsQuery.isLoading ? (
-                                        <div className='text-muted-foreground flex items-center gap-2 text-sm'>
-                                            <Loader2 className='size-4 animate-spin' />
-                                            Loading wallets...
-                                        </div>
-                                    ) : recipientWallets && recipientWallets.length > 0 ? (
-                                        <Select value={recipientWalletId ?? ''} onValueChange={(v) => setRecipientWalletId(v || null)}>
-                                            <SelectTrigger id='recipient-wallet' className='w-full'>
-                                                <SelectValue placeholder='Select recipient wallet' />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {recipientWallets.map((w) => (
-                                                    <SelectItem key={String(w._id)} value={String(w._id)}>
-                                                        {w.icon} {w.name ?? 'Unnamed Wallet'} ({w.currency ?? 'USD'})
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    ) : (
-                                        <p className='text-destructive text-sm'>Recipient has no available wallets</p>
-                                    )}
+                                                </CommandList>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
                                 </div>
                             </div>
-                        )}
 
-                        {/* Amount */}
-                        <div>
-                            <Label htmlFor='e-transfer-amount'>Amount</Label>
-                            <div className='relative mt-2'>
-                                <span className='text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2'>$</span>
-                                <Input
-                                    id='e-transfer-amount'
-                                    type='number'
-                                    min='0.01'
-                                    step='0.01'
-                                    placeholder='0.00'
-                                    value={amount}
-                                    onChange={(e) => setAmount(e.target.value)}
-                                    className='pl-7'
-                                    disabled={isPending}
-                                />
+                            {/* Recipient Wallet Selection */}
+                            {selectedRecipient && (
+                                <div>
+                                    <Label htmlFor='recipient-wallet'>Recipient Wallet</Label>
+                                    <div className='mt-2'>
+                                        {recipientWalletsQuery.isLoading ? (
+                                            <div className='text-muted-foreground flex items-center gap-2 text-sm'>
+                                                <Loader2 className='size-4 animate-spin' />
+                                                Loading wallets...
+                                            </div>
+                                        ) : recipientWallets && recipientWallets.length > 0 ? (
+                                            <Select value={recipientWalletId ?? ''} onValueChange={(v) => setRecipientWalletId(v || null)}>
+                                                <SelectTrigger id='recipient-wallet' className='h-11 w-full min-w-0 rounded-sm'>
+                                                    <SelectValue placeholder='Select recipient wallet' />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {recipientWallets.map((w) => (
+                                                        <SelectItem key={String(w._id)} value={String(w._id)}>
+                                                            {w.icon} {w.name ?? 'Unnamed Wallet'} ({w.currency ?? 'USD'})
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        ) : (
+                                            <p className='text-destructive text-sm'>Recipient has no available wallets</p>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Amount */}
+                            <div>
+                                <Label htmlFor='e-transfer-amount'>Amount</Label>
+                                <div className='relative mt-2'>
+                                    <span className='text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2'>$</span>
+                                    <Input
+                                        id='e-transfer-amount'
+                                        type='number'
+                                        min='0.01'
+                                        step='0.01'
+                                        placeholder='0.00'
+                                        value={amount}
+                                        onChange={(e) => setAmount(e.target.value)}
+                                        className='h-11 rounded-sm pl-7 text-base text-xl tabular-nums'
+                                        disabled={isPending}
+                                    />
+                                </div>
+                                {isOverBalance && <p className='text-destructive mt-2 text-sm'>Amount exceeds available balance</p>}
                             </div>
-                            {isOverBalance && <p className='text-destructive mt-2 text-sm'>Amount exceeds available balance</p>}
+
+                            {/* Description */}
+                            <div>
+                                <Label htmlFor='e-transfer-description'>Description (Optional)</Label>
+                                <div className='mt-2'>
+                                    <Input
+                                        id='e-transfer-description'
+                                        type='text'
+                                        placeholder='e.g., Payment for dinner, Birthday gift'
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                        disabled={isPending}
+                                        className='h-11 rounded-sm text-base'
+                                    />
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Description */}
-                        <div>
-                            <Label htmlFor='e-transfer-description'>Description (Optional)</Label>
-                            <div className='mt-2'>
-                                <Input
-                                    id='e-transfer-description'
-                                    type='text'
-                                    placeholder='e.g., Payment for dinner, Birthday gift'
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    disabled={isPending}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <DialogFooter>
-                        <DialogClose asChild>
-                            <Button type='button' variant='outline' disabled={isPending}>
-                                Cancel
+                        <DialogFooter className='border-t pt-5'>
+                            <DialogClose asChild>
+                                <Button type='button' variant='outline' disabled={isPending} className='min-h-11 rounded-sm'>
+                                    Cancel
+                                </Button>
+                            </DialogClose>
+                            <Button
+                                type='submit'
+                                disabled={isPending || !selectedRecipient || !recipientWalletId || !amount || numAmount <= 0 || isOverBalance}
+                                className='min-h-11 rounded-sm'>
+                                {isPending && <Loader2 className='size-4 animate-spin' />}
+                                Send E-Transfer
                             </Button>
-                        </DialogClose>
-                        <Button type='submit' disabled={isPending || !selectedRecipient || !recipientWalletId || !amount || numAmount <= 0 || isOverBalance}>
-                            {isPending && <Loader2 className='size-4 animate-spin' />}
-                            Send E-Transfer
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-        <AlertDialog open={showBudgetWarning} onOpenChange={setShowBudgetWarning}>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>Exceeds Monthly Budget</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        This e-transfer will exceed your monthly budget. Do you want to continue?
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                        onClick={() => {
-                            setShowBudgetWarning(false);
-                            void doSend();
-                        }}>
-                        Continue
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
+            <AlertDialog open={showBudgetWarning} onOpenChange={setShowBudgetWarning}>
+                <AlertDialogContent className='max-h-[85dvh] overflow-y-auto rounded-sm'>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Exceeds Monthly Budget</AlertDialogTitle>
+                        <AlertDialogDescription>This e-transfer will exceed your monthly budget. Do you want to continue?</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className='min-h-11 rounded-sm'>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                setShowBudgetWarning(false);
+                                void doSend();
+                            }}
+                            className='min-h-11 rounded-sm'>
+                            Continue
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     );
 };

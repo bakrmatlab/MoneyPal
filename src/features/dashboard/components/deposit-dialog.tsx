@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { api } from '@convex/_generated/api';
-import { Id } from '@convex/_generated/dataModel';
+import type { Id } from '@convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
 import { ArrowDownToLine, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CategorySelector } from './category-selector';
-import { TransactionDialogProps } from './types';
+import type { TransactionDialogProps } from './types';
 
 export const DepositDialog = ({ walletId, walletName }: TransactionDialogProps) => {
     const [open, setOpen] = useState(false);
@@ -38,18 +38,18 @@ export const DepositDialog = ({ walletId, walletName }: TransactionDialogProps) 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant='outline' size='sm' className='flex-1 gap-2'>
+                <Button variant='outline' size='sm' className='min-h-11 flex-1 gap-2 rounded-sm'>
                     <ArrowDownToLine className='size-4' />
                     Deposit
                 </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className='max-h-[85dvh] overflow-y-auto rounded-sm'>
                 <form onSubmit={handleSubmit}>
-                    <DialogHeader>
-                        <DialogTitle>Deposit Funds</DialogTitle>
-                        <DialogDescription>Add funds to {walletName ?? 'this wallet'}.</DialogDescription>
+                    <DialogHeader className='border-b pb-5 text-left'>
+                        <DialogTitle className='text-xl font-semibold tracking-tight'>Deposit Funds</DialogTitle>
+                        <DialogDescription className='break-words'>Add funds to {walletName ?? 'this wallet'}.</DialogDescription>
                     </DialogHeader>
-                    <div className='space-y-4 py-4'>
+                    <div className='space-y-5 py-5'>
                         <div>
                             <Label htmlFor='deposit-amount'>Amount</Label>
                             <div className='relative mt-2'>
@@ -62,7 +62,7 @@ export const DepositDialog = ({ walletId, walletName }: TransactionDialogProps) 
                                     placeholder='0.00'
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
-                                    className='pl-7'
+                                    className='h-11 rounded-sm pl-7 text-base text-xl tabular-nums'
                                     autoFocus
                                 />
                             </div>
@@ -70,7 +70,13 @@ export const DepositDialog = ({ walletId, walletName }: TransactionDialogProps) 
                         <div>
                             <Label htmlFor='deposit-category'>Category (Optional)</Label>
                             <div className='mt-2 mb-2'>
-                                <CategorySelector type='income' value={categoryId} onChange={setCategoryId} placeholder='Select income category...' />
+                                <CategorySelector
+                                    id='deposit-category'
+                                    type='income'
+                                    value={categoryId}
+                                    onChange={setCategoryId}
+                                    placeholder='Select income category...'
+                                />
                             </div>
                             <div>
                                 <Label htmlFor='deposit-description'>Description (Optional)</Label>
@@ -81,18 +87,19 @@ export const DepositDialog = ({ walletId, walletName }: TransactionDialogProps) 
                                         placeholder='e.g., Salary, Freelance payment'
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
+                                        className='h-11 rounded-sm text-base'
                                     />
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <DialogFooter>
+                    <DialogFooter className='border-t pt-5'>
                         <DialogClose asChild>
-                            <Button type='button' variant='outline' disabled={isPending}>
+                            <Button type='button' variant='outline' disabled={isPending} className='min-h-11 rounded-sm'>
                                 Cancel
                             </Button>
                         </DialogClose>
-                        <Button type='submit' disabled={isPending || !amount || parseFloat(amount) <= 0}>
+                        <Button type='submit' disabled={isPending || !amount || parseFloat(amount) <= 0} className='min-h-11 rounded-sm'>
                             {isPending && <Loader2 className='size-4 animate-spin' />}
                             Deposit
                         </Button>
