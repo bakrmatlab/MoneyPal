@@ -65,7 +65,7 @@ Use the PR template for summary, before/after evidence, validation, and rollback
 - [ ] PR 2: [Foundation (#4)](https://github.com/bakrmatlab/MoneyPal/pull/4) — implemented, draft; targets planning branch
 - [ ] PR 3: [Shell (#5)](https://github.com/bakrmatlab/MoneyPal/pull/5) — implemented, draft; targets foundation
 - [ ] PR 4: [Dashboard and wallets (#6)](https://github.com/bakrmatlab/MoneyPal/pull/6) — implemented, draft; targets shell; [verification evidence](modernization-evidence/README.md)
-- [ ] PR 5: Transactions and E-Transfers page — implemented, draft pending; targets dashboard; [verification evidence](modernization-evidence/transactions.md)
+- [ ] PR 5: [Transactions and E-Transfers (#7)](https://github.com/bakrmatlab/MoneyPal/pull/7) — implemented, draft; targets dashboard; [verification evidence](modernization-evidence/transactions.md)
 - [ ] PR 6: Dialogs
 - [ ] PR 7: Analytics
 - [ ] PR 8: Settings and onboarding
