@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
 
 type WalletStepProps = {
     onNext: (data: { name?: string; currency: string }) => void;
@@ -38,7 +38,7 @@ export function WalletStep({ onNext, onSkip, isPending }: WalletStepProps) {
     return (
         <form onSubmit={handleSubmit} className='flex flex-col gap-6'>
             <div className='text-center'>
-                <h2 className='mb-1 text-2xl font-bold tracking-tight'>Create your first wallet</h2>
+                <h2 className='mb-1 text-2xl font-semibold tracking-tight'>Create your first wallet</h2>
                 <p className='text-muted-foreground text-sm'>Give it a name and choose a currency.</p>
             </div>
 
@@ -51,19 +51,25 @@ export function WalletStep({ onNext, onSkip, isPending }: WalletStepProps) {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         autoFocus
+                        className='h-11 min-w-0 rounded-sm text-base'
                     />
                 </div>
 
                 <div className='flex flex-col gap-2'>
-                    <Label>Currency</Label>
+                    <Label htmlFor='onboarding-currency'>Currency</Label>
                     <Popover open={comboOpen} onOpenChange={setComboOpen}>
                         <PopoverTrigger asChild>
-                            <Button variant='outline' role='combobox' aria-expanded={comboOpen} className='w-full justify-between font-normal'>
+                            <Button
+                                id='onboarding-currency'
+                                variant='outline'
+                                role='combobox'
+                                aria-expanded={comboOpen}
+                                className='h-auto min-h-11 w-full min-w-0 justify-between rounded-sm py-2 text-left font-normal whitespace-normal'>
                                 {selectedCurrency ? `${selectedCurrency.code} — ${selectedCurrency.name}` : 'Select currency'}
                                 <ChevronsUpDown className='text-muted-foreground ml-2 size-4 shrink-0' />
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className='w-full p-0' align='start'>
+                        <PopoverContent className='w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] rounded-sm p-0' align='start'>
                             <Command>
                                 <CommandInput placeholder='Search currencies...' />
                                 <CommandList>
@@ -91,11 +97,11 @@ export function WalletStep({ onNext, onSkip, isPending }: WalletStepProps) {
             </div>
 
             <div className='flex flex-col gap-3'>
-                <Button type='submit' size='lg' className='w-full' disabled={isPending}>
+                <Button type='submit' size='lg' className='min-h-11 w-full rounded-sm' disabled={isPending}>
                     {isPending && <Loader2 className='size-4 animate-spin' />}
                     Create Wallet & Continue
                 </Button>
-                <Button type='button' variant='ghost' size='sm' onClick={onSkip} disabled={isPending}>
+                <Button type='button' variant='ghost' size='sm' onClick={onSkip} disabled={isPending} className='min-h-11 rounded-sm'>
                     Skip for now
                 </Button>
             </div>

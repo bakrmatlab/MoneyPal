@@ -73,24 +73,24 @@ export const CategoriesSettings = () => {
     const expenseCategories = categories?.filter((cat) => cat.type === 'expense') ?? [];
 
     return (
-        <div className='space-y-6 sm:space-y-8'>
+        <div className='container mx-auto max-w-7xl space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8 lg:px-8'>
             {/* Header Section */}
             <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
                 <div>
-                    <h2 className='text-2xl font-bold tracking-tight sm:text-3xl'>Categories</h2>
+                    <h1 className='text-3xl font-semibold tracking-tight'>Categories</h1>
                     <p className='text-muted-foreground mt-1 text-sm sm:text-base'>Manage your income and expense categories</p>
                 </div>
 
                 {/* Create Category Dialog */}
                 <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button className='self-start sm:self-auto'>
+                        <Button className='min-h-11 self-start rounded-sm sm:self-auto'>
                             <Plus className='mr-2 h-4 w-4' />
                             Create Category
                         </Button>
                     </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
+                    <DialogContent className='max-h-[85dvh] overflow-y-auto rounded-sm'>
+                        <DialogHeader className='border-b pb-5 text-left'>
                             <DialogTitle>Create Custom Category</DialogTitle>
                             <DialogDescription>Add a new category to organize your transactions</DialogDescription>
                         </DialogHeader>
@@ -105,6 +105,7 @@ export const CategoriesSettings = () => {
                                     value={newCategory.name}
                                     onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
                                     placeholder='Category name'
+                                    className='h-11 min-w-0 rounded-sm text-base'
                                 />
                             </div>
 
@@ -114,7 +115,7 @@ export const CategoriesSettings = () => {
                                 <Select
                                     value={newCategory.type}
                                     onValueChange={(value: 'income' | 'expense') => setNewCategory({ ...newCategory, type: value })}>
-                                    <SelectTrigger id='type'>
+                                    <SelectTrigger id='type' className='h-11 w-full min-w-0 rounded-sm'>
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -130,12 +131,17 @@ export const CategoriesSettings = () => {
                                 <div className='flex gap-2'>
                                     <Popover open={isEmojiPickerOpen} onOpenChange={setIsEmojiPickerOpen}>
                                         <PopoverTrigger asChild>
-                                            <Button variant='outline' className='h-10 w-full justify-start text-left font-normal'>
+                                            <Button
+                                                variant='outline'
+                                                aria-label='Choose category icon'
+                                                className='h-auto min-h-11 w-full justify-start rounded-sm text-left font-normal'>
                                                 <span className='text-2xl'>{newCategory.icon}</span>
                                                 <span className='text-muted-foreground ml-2'>Click to select emoji</span>
                                             </Button>
                                         </PopoverTrigger>
-                                        <PopoverContent className='w-full p-0' align='start'>
+                                        <PopoverContent
+                                            className='w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] rounded-sm p-0'
+                                            align='start'>
                                             <EmojiPicker onEmojiClick={handleEmojiSelect} width='100%' height={400} />
                                         </PopoverContent>
                                     </Popover>
@@ -151,18 +157,18 @@ export const CategoriesSettings = () => {
                                         type='color'
                                         value={newCategory.color}
                                         onChange={(e) => setNewCategory({ ...newCategory, color: e.target.value })}
-                                        className='h-10 w-20'
+                                        className='h-10 h-11 w-20 min-w-0 rounded-sm text-base'
                                     />
-                                    <Input value={newCategory.color} readOnly className='flex-1' />
+                                    <Input value={newCategory.color} readOnly className='h-11 min-w-0 flex-1 rounded-sm text-base' />
                                 </div>
                             </div>
                         </div>
 
-                        <DialogFooter>
-                            <Button variant='outline' onClick={() => setIsCreateDialogOpen(false)}>
+                        <DialogFooter className='border-t pt-5'>
+                            <Button variant='outline' onClick={() => setIsCreateDialogOpen(false)} className='min-h-11 rounded-sm'>
                                 Cancel
                             </Button>
-                            <Button onClick={handleCreateCategory} disabled={!newCategory.name.trim()}>
+                            <Button onClick={handleCreateCategory} disabled={!newCategory.name.trim()} className='min-h-11 rounded-sm'>
                                 Create
                             </Button>
                         </DialogFooter>
@@ -173,9 +179,9 @@ export const CategoriesSettings = () => {
             {/* Categories Grid */}
             <div className='grid gap-6 lg:grid-cols-2'>
                 {/* Income Categories Card */}
-                <Card>
-                    <CardHeader className='space-y-1.5'>
-                        <CardTitle className='text-lg sm:text-xl'>Income Categories</CardTitle>
+                <Card className='min-w-0 rounded-sm shadow-none'>
+                    <CardHeader className='space-y-1.5 border-b pb-5'>
+                        <CardTitle className='text-base text-lg font-semibold sm:text-xl'>Income Categories</CardTitle>
                         <CardDescription className='text-sm'>Categories for income transactions</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -186,12 +192,12 @@ export const CategoriesSettings = () => {
                                 incomeCategories.map((category) => (
                                     <div
                                         key={category._id}
-                                        className={`flex items-center justify-between rounded-lg border p-4 transition-opacity ${category.isHidden ? 'opacity-50' : ''}`}>
+                                        className={`flex min-w-0 flex-wrap items-center justify-between gap-3 rounded-sm border p-4 transition-opacity ${category.isHidden ? 'opacity-50' : ''}`}>
                                         {/* Category Info */}
-                                        <div className='flex items-center gap-3'>
+                                        <div className='flex min-w-0 items-center gap-3'>
                                             <span className='text-2xl'>{category.icon}</span>
                                             <div>
-                                                <p className='font-medium'>{category.name}</p>
+                                                <p className='font-medium break-words'>{category.name}</p>
                                                 {category.isDefault && <p className='text-muted-foreground text-xs'>Default</p>}
                                             </div>
                                         </div>
@@ -204,14 +210,22 @@ export const CategoriesSettings = () => {
                                                     variant='ghost'
                                                     size='sm'
                                                     onClick={() => handleToggleVisibility(category._id, !category.isHidden)}
-                                                    title={category.isHidden ? 'Show category' : 'Hide category'}>
+                                                    aria-label={`${category.isHidden ? 'Show' : 'Hide'} ${category.name}`}
+                                                    title={category.isHidden ? 'Show category' : 'Hide category'}
+                                                    className='min-h-11 rounded-sm'>
                                                     {category.isHidden ? <Eye className='h-4 w-4' /> : <EyeOff className='h-4 w-4' />}
                                                 </Button>
                                             )}
 
                                             {/* Delete button for custom categories */}
                                             {!category.isDefault && (
-                                                <Button variant='ghost' size='sm' onClick={() => handleDeleteCategory(category._id)} title='Delete category'>
+                                                <Button
+                                                    variant='ghost'
+                                                    size='sm'
+                                                    onClick={() => handleDeleteCategory(category._id)}
+                                                    aria-label={`Delete ${category.name}`}
+                                                    title='Delete category'
+                                                    className='min-h-11 rounded-sm'>
                                                     <Trash2 className='text-destructive h-4 w-4' />
                                                 </Button>
                                             )}
@@ -224,9 +238,9 @@ export const CategoriesSettings = () => {
                 </Card>
 
                 {/* Expense Categories Card */}
-                <Card>
-                    <CardHeader className='space-y-1.5'>
-                        <CardTitle className='text-lg sm:text-xl'>Expense Categories</CardTitle>
+                <Card className='min-w-0 rounded-sm shadow-none'>
+                    <CardHeader className='space-y-1.5 border-b pb-5'>
+                        <CardTitle className='text-base text-lg font-semibold sm:text-xl'>Expense Categories</CardTitle>
                         <CardDescription className='text-sm'>Categories for expense transactions</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -237,12 +251,12 @@ export const CategoriesSettings = () => {
                                 expenseCategories.map((category) => (
                                     <div
                                         key={category._id}
-                                        className={`flex items-center justify-between rounded-lg border p-4 transition-opacity ${category.isHidden ? 'opacity-50' : ''}`}>
+                                        className={`flex min-w-0 flex-wrap items-center justify-between gap-3 rounded-sm border p-4 transition-opacity ${category.isHidden ? 'opacity-50' : ''}`}>
                                         {/* Category Info */}
-                                        <div className='flex items-center gap-3'>
+                                        <div className='flex min-w-0 items-center gap-3'>
                                             <span className='text-2xl'>{category.icon}</span>
                                             <div>
-                                                <p className='font-medium'>{category.name}</p>
+                                                <p className='font-medium break-words'>{category.name}</p>
                                                 {category.isDefault && <p className='text-muted-foreground text-xs'>Default</p>}
                                             </div>
                                         </div>
@@ -255,14 +269,22 @@ export const CategoriesSettings = () => {
                                                     variant='ghost'
                                                     size='sm'
                                                     onClick={() => handleToggleVisibility(category._id, !category.isHidden)}
-                                                    title={category.isHidden ? 'Show category' : 'Hide category'}>
+                                                    aria-label={`${category.isHidden ? 'Show' : 'Hide'} ${category.name}`}
+                                                    title={category.isHidden ? 'Show category' : 'Hide category'}
+                                                    className='min-h-11 rounded-sm'>
                                                     {category.isHidden ? <Eye className='h-4 w-4' /> : <EyeOff className='h-4 w-4' />}
                                                 </Button>
                                             )}
 
                                             {/* Delete button for custom categories */}
                                             {!category.isDefault && (
-                                                <Button variant='ghost' size='sm' onClick={() => handleDeleteCategory(category._id)} title='Delete category'>
+                                                <Button
+                                                    variant='ghost'
+                                                    size='sm'
+                                                    onClick={() => handleDeleteCategory(category._id)}
+                                                    aria-label={`Delete ${category.name}`}
+                                                    title='Delete category'
+                                                    className='min-h-11 rounded-sm'>
                                                     <Trash2 className='text-destructive h-4 w-4' />
                                                 </Button>
                                             )}

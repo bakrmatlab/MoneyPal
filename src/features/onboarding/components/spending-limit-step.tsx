@@ -21,16 +21,14 @@ export function SpendingLimitStep({ onFinish, isPending }: SpendingLimitStepProp
     return (
         <form onSubmit={handleSubmit} className='flex flex-col gap-6'>
             <div className='text-center'>
-                <h2 className='mb-1 text-2xl font-bold tracking-tight'>Set a monthly budget</h2>
-                <p className='text-muted-foreground text-sm'>
-                    MoneyPal will track your spending against this limit. You can adjust it any time.
-                </p>
+                <h2 className='mb-1 text-2xl font-semibold tracking-tight'>Set a monthly budget</h2>
+                <p className='text-muted-foreground text-sm'>MoneyPal will track your spending against this limit. You can adjust it any time.</p>
             </div>
 
             <div className='flex flex-col gap-2'>
                 <Label htmlFor='monthly-budget'>Monthly budget</Label>
                 <div className='relative'>
-                    <span className='text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2 select-none text-sm'>$</span>
+                    <span className='text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2 text-sm select-none'>$</span>
                     <Input
                         id='monthly-budget'
                         type='number'
@@ -39,7 +37,7 @@ export function SpendingLimitStep({ onFinish, isPending }: SpendingLimitStepProp
                         placeholder='e.g., 2000'
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
-                        className='pl-7'
+                        className='h-11 min-w-0 rounded-sm pl-7 text-base'
                         autoFocus
                     />
                 </div>
@@ -47,11 +45,11 @@ export function SpendingLimitStep({ onFinish, isPending }: SpendingLimitStepProp
             </div>
 
             <div className='flex flex-col gap-3'>
-                <Button type='submit' size='lg' className='w-full' disabled={isPending}>
+                <Button type='submit' size='lg' className='min-h-11 w-full rounded-sm' disabled={isPending}>
                     {isPending && <Loader2 className='size-4 animate-spin' />}
                     {amount ? 'Save & Finish' : 'Finish'}
                 </Button>
-                <Button type='button' variant='ghost' size='sm' onClick={() => onFinish(undefined)} disabled={isPending}>
+                <Button type='button' variant='ghost' size='sm' onClick={() => onFinish(undefined)} disabled={isPending} className='min-h-11 rounded-sm'>
                     Skip
                 </Button>
             </div>

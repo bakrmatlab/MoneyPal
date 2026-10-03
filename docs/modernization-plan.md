@@ -68,7 +68,7 @@ Use the PR template for summary, before/after evidence, validation, and rollback
 - [ ] PR 5: [Transactions and E-Transfers (#7)](https://github.com/bakrmatlab/MoneyPal/pull/7) — implemented, draft; targets dashboard; [verification evidence](modernization-evidence/transactions.md)
 - [ ] PR 6: [Dialogs (#8)](https://github.com/bakrmatlab/MoneyPal/pull/8) — implemented, draft; targets transactions; [verification evidence](modernization-evidence/dialogs.md)
 - [ ] PR 7: [Analytics (#9)](https://github.com/bakrmatlab/MoneyPal/pull/9) — implemented, draft; targets dialogs; [verification evidence](modernization-evidence/analytics.md)
-- [ ] PR 8: Settings and onboarding
+- [ ] PR 8: Settings and onboarding — implemented, draft pending; targets analytics; [verification evidence](modernization-evidence/settings.md)
 - [ ] PR 9: Public, auth, and error pages
 
 Selected design: B / Balanced, approved by the user on October 3, 2026.
