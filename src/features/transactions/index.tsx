@@ -20,16 +20,16 @@ export const TransactionsPage = () => {
     return (
         <div className='container mx-auto max-w-7xl space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8 lg:px-8'>
             <div>
-                <h1 className='text-3xl font-bold tracking-tight sm:text-4xl'>Transactions</h1>
-                <p className='text-muted-foreground mt-2 text-sm sm:text-base'>View and manage all your transaction history</p>
+                <h1 className='text-3xl font-semibold tracking-tight'>Transactions</h1>
+                <p className='text-muted-foreground mt-2 text-sm sm:text-base'>Your financial activity, in one place.</p>
             </div>
 
-            <Card>
-                <CardHeader className='space-y-1.5 p-6'>
-                    <CardTitle className='text-lg sm:text-xl'>Filter Transactions</CardTitle>
+            <Card className='gap-0 rounded-sm shadow-none'>
+                <CardHeader className='space-y-2 border-b p-5 sm:p-6'>
+                    <CardTitle className='font-mono text-xs font-medium tracking-widest uppercase'>01 / Filters</CardTitle>
                     <CardDescription className='text-sm'>Filter by wallet, type, category, or date range</CardDescription>
                 </CardHeader>
-                <CardContent className='p-6 pt-0'>
+                <CardContent className='p-5 sm:p-6'>
                     <TransactionFilters
                         walletId={walletId}
                         setWalletId={setWalletId}
@@ -44,12 +44,12 @@ export const TransactionsPage = () => {
                 </CardContent>
             </Card>
 
-            <Card>
-                <CardHeader className='space-y-1.5 p-6'>
-                    <CardTitle className='text-lg sm:text-xl'>Transaction History</CardTitle>
+            <Card className='gap-0 rounded-sm shadow-none'>
+                <CardHeader className='space-y-2 border-b p-5 sm:p-6'>
+                    <CardTitle className='font-mono text-xs font-medium tracking-widest uppercase'>02 / Transaction history</CardTitle>
                     <CardDescription className='text-sm'>All your financial activities</CardDescription>
                 </CardHeader>
-                <CardContent className='p-6 pt-0'>
+                <CardContent className='p-5 sm:p-6'>
                     <TransactionList walletId={walletId} type={type} categoryId={categoryId} dateRange={dateRange} />
                 </CardContent>
             </Card>

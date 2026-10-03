@@ -53,10 +53,10 @@ export const TransactionFilters = ({
         <div className='space-y-4'>
             <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-4'>
                 {/* Wallet Filter */}
-                <div className='space-y-2'>
+                <div className='min-w-0 space-y-2'>
                     <Label htmlFor='wallet-filter'>Wallet</Label>
                     <Select value={walletId ?? 'all'} onValueChange={(v) => setWalletId(v === 'all' ? undefined : (v as Id<'wallets'>))}>
-                        <SelectTrigger id='wallet-filter'>
+                        <SelectTrigger id='wallet-filter' className='h-11 w-full min-w-0 rounded-sm'>
                             <SelectValue placeholder='All Wallets' />
                         </SelectTrigger>
                         <SelectContent>
@@ -71,12 +71,12 @@ export const TransactionFilters = ({
                 </div>
 
                 {/* Type Filter */}
-                <div className='space-y-2'>
+                <div className='min-w-0 space-y-2'>
                     <Label htmlFor='type-filter'>Type</Label>
                     <Select
                         value={type ?? 'all'}
                         onValueChange={(v) => handleTypeChange(v === 'all' ? undefined : (v as 'deposit' | 'withdrawal' | 'transfer' | 'e-transfer'))}>
-                        <SelectTrigger id='type-filter'>
+                        <SelectTrigger id='type-filter' className='h-11 w-full min-w-0 rounded-sm'>
                             <SelectValue placeholder='All Types' />
                         </SelectTrigger>
                         <SelectContent>
@@ -90,13 +90,13 @@ export const TransactionFilters = ({
                 </div>
 
                 {/* Category Filter */}
-                <div className='space-y-2'>
+                <div className='min-w-0 space-y-2'>
                     <Label htmlFor='category-filter'>Category</Label>
                     <Select
                         value={categoryId ?? 'all'}
                         onValueChange={(v) => setCategoryId(v === 'all' ? undefined : (v as Id<'categories'>))}
                         disabled={type === 'transfer' || type === 'e-transfer'}>
-                        <SelectTrigger id='category-filter'>
+                        <SelectTrigger id='category-filter' className='h-11 w-full min-w-0 rounded-sm'>
                             <SelectValue placeholder={type === 'transfer' || type === 'e-transfer' ? 'N/A for transfers' : 'All Categories'} />
                         </SelectTrigger>
                         <SelectContent>
@@ -111,10 +111,10 @@ export const TransactionFilters = ({
                 </div>
 
                 {/* Date Range Filter */}
-                <div className='space-y-2'>
+                <div className='min-w-0 space-y-2'>
                     <Label htmlFor='date-filter'>Date Range</Label>
                     <Select value={dateRange} onValueChange={setDateRange}>
-                        <SelectTrigger id='date-filter'>
+                        <SelectTrigger id='date-filter' className='h-11 w-full min-w-0 rounded-sm'>
                             <SelectValue placeholder='All Time' />
                         </SelectTrigger>
                         <SelectContent>
@@ -130,7 +130,7 @@ export const TransactionFilters = ({
 
             {/* Clear Filters Button */}
             <div className='flex justify-center sm:justify-end'>
-                <Button variant='outline' size='sm' onClick={onClearFilters} className='w-full sm:w-auto'>
+                <Button variant='outline' size='sm' onClick={onClearFilters} className='h-11 w-full rounded-sm sm:w-auto'>
                     <X className='mr-2 size-4' />
                     Clear Filters
                 </Button>

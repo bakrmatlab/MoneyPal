@@ -44,7 +44,11 @@ export const TransactionList = ({ walletId, type, categoryId, dateRange }: Trans
 
     const startTimestamp = getDateRangeTimestamp();
 
-    const { data: transactions = [], isLoading } = useQuery(
+    const {
+        data: transactions = [],
+        isLoading,
+        isError,
+    } = useQuery(
         convexQuery(api.transactions.getTransactions, {
             walletId,
             type,
@@ -56,24 +60,33 @@ export const TransactionList = ({ walletId, type, categoryId, dateRange }: Trans
 
     if (isLoading) {
         return (
-            <div className='space-y-2 md:space-y-3'>
+            <div className='divide-border divide-y' role='status' aria-label='Loading transactions'>
                 {[...Array(5)].map((_, i) => (
-                    <div key={i} className='flex items-center gap-4 rounded-lg border p-4'>
-                        <Skeleton className='size-10 rounded-full' />
-                        <div className='flex-1 space-y-2'>
-                            <Skeleton className='h-4 w-[200px]' />
-                            <Skeleton className='h-3 w-[150px]' />
+                    <div key={i} className='flex min-w-0 items-center gap-4 py-5'>
+                        <Skeleton className='size-10 rounded-sm' />
+                        <div className='min-w-0 flex-1 space-y-2'>
+                            <Skeleton className='h-4 w-full max-w-[200px]' />
+                            <Skeleton className='h-3 w-full max-w-[150px]' />
                         </div>
-                        <Skeleton className='h-6 w-20' />
+                        <Skeleton className='h-6 w-16 shrink-0' />
                     </div>
                 ))}
             </div>
         );
     }
 
+    if (isError) {
+        return (
+            <Alert variant='destructive' className='rounded-sm'>
+                <AlertCircle className='size-4' />
+                <AlertDescription>Unable to load transactions. Please try again later.</AlertDescription>
+            </Alert>
+        );
+    }
+
     if (transactions.length === 0) {
         return (
-            <Alert>
+            <Alert className='rounded-sm border-dashed bg-transparent py-6'>
                 <AlertCircle className='size-4' />
                 <AlertDescription>No transactions found. Try adjusting your filters or make your first transaction!</AlertDescription>
             </Alert>
@@ -81,7 +94,7 @@ export const TransactionList = ({ walletId, type, categoryId, dateRange }: Trans
     }
 
     return (
-        <div className='space-y-2'>
+        <div className='divide-border divide-y'>
             {transactions.map((transaction) => (
                 <TransactionItem key={transaction._id} transaction={transaction} />
             ))}
