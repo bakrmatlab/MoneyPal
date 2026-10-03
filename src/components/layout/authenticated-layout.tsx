@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Navigate, Outlet } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
+import { Navigate, Outlet } from '@tanstack/react-router';
 import { convexQuery, useConvexAuth } from '@convex-dev/react-query';
 import { api } from '@convex/_generated/api';
-import { useMutation } from 'convex/react';
+import { useMutation as useConvexMutation } from 'convex/react';
 import { LoadingPage } from '@/components/layout/loading-page';
 import { SkipToMain } from '@/components/skip-to-main';
 import { AppHeader } from './app-header';
@@ -23,7 +23,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
         enabled: isAuthenticated,
     });
 
-    const ensureUserExists = useMutation(api.users.ensureUserExists);
+    const ensureUserExists = useConvexMutation(api.users.ensureUserExists);
 
     // Create user record from JWT claims if the webhook hasn't fired yet
     useEffect(() => {
@@ -50,7 +50,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
     }
 
     return (
-        <div className='bg-background flex h-screen overflow-hidden'>
+        <div className='bg-background flex h-dvh overflow-hidden'>
             <SkipToMain />
             <AppSidebar
                 collapsed={sidebarCollapsed}
@@ -58,9 +58,11 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
                 mobileOpen={mobileMenuOpen}
                 onMobileOpenChange={setMobileMenuOpen}
             />
-            <div className='flex flex-1 flex-col overflow-hidden'>
+            <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
                 <AppHeader onMenuClick={() => setMobileMenuOpen(true)} />
-                <main className='flex-1 overflow-y-auto scroll-smooth'>{children ?? <Outlet />}</main>
+                <main id='content' tabIndex={-1} className='min-w-0 flex-1 overflow-y-auto scroll-smooth outline-none'>
+                    {children ?? <Outlet />}
+                </main>
             </div>
         </div>
     );

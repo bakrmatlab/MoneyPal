@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useUser as useClerkUser } from '@clerk/clerk-react';
-import { convexQuery } from '@convex-dev/react-query';
-import { useConvexAuth } from '@convex-dev/react-query';
+import { convexQuery, useConvexAuth } from '@convex-dev/react-query';
 import { api } from '@convex/_generated/api';
 import { Wallet, LogOut, Menu } from 'lucide-react';
 import { formatCurrency } from '@/lib/format';
@@ -33,9 +32,9 @@ export function AppHeader({ fixed, onMenuClick }: AppHeaderProps) {
     const totalBalance = wallets?.reduce((sum, wallet) => sum + wallet.balance, 0) ?? 0;
 
     return (
-        <Header fixed={fixed} className='bg-background border-b'>
+        <Header fixed={fixed} className='bg-background h-20 shrink-0 border-b'>
             {isMobile && isAuthenticated && (
-                <Button variant='ghost' size='icon' onClick={onMenuClick} className='-ml-2 shrink-0'>
+                <Button variant='ghost' size='icon' onClick={onMenuClick} aria-label='Open navigation' className='-ml-2 shrink-0'>
                     <Menu className='size-5' />
                 </Button>
             )}
@@ -52,7 +51,7 @@ export function AppHeader({ fixed, onMenuClick }: AppHeaderProps) {
                         {!isMobile && (
                             <div className='min-w-0'>
                                 <p className='truncate text-sm font-semibold'>{clerkUser?.fullName || 'User'}</p>
-                                <p className='text-muted-foreground truncate text-xs'>Welcome back 👋</p>
+                                <p className='text-muted-foreground truncate text-xs'>Your money, in focus.</p>
                             </div>
                         )}
                     </>
@@ -61,9 +60,9 @@ export function AppHeader({ fixed, onMenuClick }: AppHeaderProps) {
             <div className='ms-auto flex items-center gap-2 sm:gap-3 md:gap-4'>
                 {isAuthenticated && (
                     <>
-                        <div className={`flex items-center gap-2 sm:gap-3 ${!isMobile ? 'rounded-lg border px-3 py-1.5' : ''}`}>
+                        <div className={`flex items-center gap-2 sm:gap-3 ${!isMobile ? 'border-l pl-4' : ''}`}>
                             <div className='text-right'>
-                                {!isMobile && <div className='text-muted-foreground text-xs'>Total Balance</div>}
+                                {!isMobile && <div className='text-muted-foreground font-mono text-[10px] tracking-wider uppercase'>Total balance</div>}
                                 {isPending ? (
                                     <Skeleton className='h-5 w-20' />
                                 ) : (
@@ -73,7 +72,10 @@ export function AppHeader({ fixed, onMenuClick }: AppHeaderProps) {
                         </div>
                         <CreateWalletDialog
                             trigger={
-                                <Button size={isMobile ? 'icon' : 'sm'} className='shrink-0'>
+                                <Button
+                                    size={isMobile ? 'icon' : 'sm'}
+                                    aria-label='Create new wallet'
+                                    className='bg-brand text-brand-foreground hover:bg-brand/85 shrink-0 rounded-sm'>
                                     <Wallet className='size-4' />
                                     {!isMobile && <span className='ml-2'>New Wallet</span>}
                                 </Button>
@@ -81,9 +83,9 @@ export function AppHeader({ fixed, onMenuClick }: AppHeaderProps) {
                         />
                     </>
                 )}
-                {!isMobile && <ThemeSwitch />}
+                <ThemeSwitch />
                 {!isMobile && (
-                    <Button variant='outline' size='icon' onClick={() => setSignOutOpen(true)} className='shrink-0'>
+                    <Button variant='outline' size='icon' onClick={() => setSignOutOpen(true)} aria-label='Sign out' className='shrink-0 rounded-sm'>
                         <LogOut className='size-4' />
                     </Button>
                 )}
