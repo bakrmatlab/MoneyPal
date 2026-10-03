@@ -134,6 +134,8 @@ bun run knip           # Check for unused dependencies
 
 ## Documentation
 
+- [Visual modernization plan and PR flow](docs/modernization-plan.md)
+
 - [Convex Rules](docs/convex_rules.md) - Backend development guidelines
 - [Convex + TanStack Query](docs/convex-tanstack-query.md) - Integration patterns
 - [Frontend Guidelines](docs/frontend.md) - Frontend development standards
