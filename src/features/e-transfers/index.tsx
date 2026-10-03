@@ -16,13 +16,13 @@ export const ETransfersPage = () => {
     const { data: wallets } = useQuery(convexQuery(api.wallets.getMyWallets, {}));
     const defaultWallet = wallets?.[0];
 
-    const { data: eTransfers, isLoading } = useQuery(convexQuery(api.transactions.getETransfers, { type: activeTab }));
+    const { data: eTransfers, isLoading, isError } = useQuery(convexQuery(api.transactions.getETransfers, { type: activeTab }));
 
     return (
         <div className='container mx-auto max-w-7xl space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8 lg:px-8'>
-            <div className='flex items-center justify-between'>
+            <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
                 <div>
-                    <h1 className='text-3xl font-bold tracking-tight sm:text-4xl'>E-Transfers</h1>
+                    <h1 className='text-3xl font-semibold tracking-tight'>E-Transfers</h1>
                     <p className='text-muted-foreground mt-2 text-sm sm:text-base'>Send money to other MoneyPal users</p>
                 </div>
                 {defaultWallet && (
@@ -31,7 +31,7 @@ export const ETransfersPage = () => {
                         walletName={defaultWallet.name}
                         balance={defaultWallet.balance}
                         triggerButton={
-                            <Button size='lg' className='gap-2'>
+                            <Button size='lg' className='bg-brand text-brand-foreground hover:bg-brand/90 h-11 gap-2 rounded-sm'>
                                 <Send className='size-4' />
                                 Send E-Transfer
                             </Button>
@@ -40,31 +40,35 @@ export const ETransfersPage = () => {
                 )}
             </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Transfer History</CardTitle>
+            <Card className='gap-0 rounded-sm shadow-none'>
+                <CardHeader className='border-b p-5 sm:p-6'>
+                    <CardTitle className='font-mono text-xs font-medium tracking-widest uppercase'>01 / Transfer history</CardTitle>
                     <CardDescription>View sent and received e-transfers</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className='p-5 sm:p-6'>
                     <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'sent' | 'received')}>
-                        <TabsList className='grid w-full grid-cols-2'>
-                            <TabsTrigger value='sent' className='gap-2'>
+                        <TabsList className='bg-muted grid h-auto w-full grid-cols-2 rounded-sm p-1 sm:max-w-sm'>
+                            <TabsTrigger value='sent' className='h-11 gap-2 rounded-sm'>
                                 <ArrowUpFromLine className='size-4' />
                                 Sent
                             </TabsTrigger>
-                            <TabsTrigger value='received' className='gap-2'>
+                            <TabsTrigger value='received' className='h-11 gap-2 rounded-sm'>
                                 <ArrowDownToLine className='size-4' />
                                 Received
                             </TabsTrigger>
                         </TabsList>
 
                         <TabsContent value='sent' className='mt-6'>
-                            {isLoading ? (
+                            {isError ? (
+                                <p role='alert' className='text-destructive py-8'>
+                                    Unable to load e-transfers. Please try again later.
+                                </p>
+                            ) : isLoading ? (
                                 <div className='flex items-center justify-center py-12'>
                                     <Loader2 className='text-muted-foreground size-8 animate-spin' />
                                 </div>
                             ) : eTransfers && eTransfers.length > 0 ? (
-                                <div className='space-y-3'>
+                                <div className='divide-border divide-y'>
                                     {eTransfers.map((transfer) => (
                                         <ETransferCard key={transfer._id} transfer={transfer} type='sent' />
                                     ))}
@@ -78,12 +82,16 @@ export const ETransfersPage = () => {
                         </TabsContent>
 
                         <TabsContent value='received' className='mt-6'>
-                            {isLoading ? (
+                            {isError ? (
+                                <p role='alert' className='text-destructive py-8'>
+                                    Unable to load e-transfers. Please try again later.
+                                </p>
+                            ) : isLoading ? (
                                 <div className='flex items-center justify-center py-12'>
                                     <Loader2 className='text-muted-foreground size-8 animate-spin' />
                                 </div>
                             ) : eTransfers && eTransfers.length > 0 ? (
-                                <div className='space-y-3'>
+                                <div className='divide-border divide-y'>
                                     {eTransfers.map((transfer) => (
                                         <ETransferCard key={transfer._id} transfer={transfer} type='received' />
                                     ))}
@@ -139,22 +147,22 @@ const ETransferCard = ({ transfer, type }: ETransferCardProps) => {
     const toWallet = isSent ? transfer.recipientWallet?.name : transfer.wallet?.name;
 
     return (
-        <div className='border-border hover:bg-muted/50 flex items-center justify-between rounded-lg border p-4 transition-colors'>
-            <div className='flex items-center gap-4'>
-                <div className={`flex size-10 items-center justify-center rounded-full ${isSent ? 'bg-orange-500/10' : 'bg-green-500/10'}`}>
-                    {isSent ? <ArrowUpFromLine className='size-5 text-orange-500' /> : <ArrowDownToLine className='size-5 text-green-500' />}
+        <div className='flex min-w-0 flex-col gap-4 py-5 sm:flex-row sm:items-start sm:justify-between'>
+            <div className='flex min-w-0 flex-1 items-start gap-3'>
+                <div className={`flex size-10 shrink-0 items-center justify-center rounded-sm ${isSent ? 'bg-warning/10' : 'bg-success/10'}`}>
+                    {isSent ? <ArrowUpFromLine className='text-warning size-5' /> : <ArrowDownToLine className='text-success size-5' />}
                 </div>
-                <div>
-                    <div className='flex items-center gap-2'>
-                        <p className='font-medium'>
+                <div className='min-w-0 flex-1'>
+                    <div className='flex flex-wrap items-center gap-2'>
+                        <p className='font-medium break-words'>
                             {isSent ? 'To: ' : 'From: '}
                             {otherPartyName}
                         </p>
-                        <Badge variant='outline' className='text-xs'>
+                        <Badge variant='outline' className='rounded-sm text-xs'>
                             E-Transfer
                         </Badge>
                     </div>
-                    <div className='text-muted-foreground mt-1 flex items-center gap-2 text-sm'>
+                    <div className='text-muted-foreground mt-1 flex flex-wrap items-center gap-2 text-sm break-words'>
                         <span>{fromWallet ?? 'Wallet'}</span>
                         {toWallet && (
                             <>
@@ -163,12 +171,12 @@ const ETransferCard = ({ transfer, type }: ETransferCardProps) => {
                             </>
                         )}
                     </div>
-                    {transfer.description && <p className='text-muted-foreground mt-1 text-xs'>{transfer.description}</p>}
-                    <p className='text-muted-foreground mt-1 text-xs'>{date}</p>
+                    {transfer.description && <p className='text-muted-foreground mt-1 text-xs break-words'>{transfer.description}</p>}
+                    <p className='text-muted-foreground mt-1 text-xs break-words'>{date}</p>
                 </div>
             </div>
-            <div className='text-right'>
-                <p className={`text-lg font-semibold ${isSent ? 'text-orange-500' : 'text-green-500'}`}>
+            <div className='min-w-0 pl-13 sm:max-w-[40%] sm:pl-0 sm:text-right'>
+                <p className={`text-2xl font-medium break-all tabular-nums ${isSent ? 'text-warning' : 'text-success'}`}>
                     {isSent ? '-' : '+'}
                     {formatCurrency(transfer.amount)}
                 </p>
