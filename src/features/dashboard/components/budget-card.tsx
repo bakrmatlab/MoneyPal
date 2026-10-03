@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { convexQuery, useConvexAuth } from '@convex-dev/react-query';
-import { useMutation } from 'convex/react';
 import { api } from '@convex/_generated/api';
-import { PiggyBank, Pencil, Check, X } from 'lucide-react';
+import { useMutation } from 'convex/react';
+import { Pencil, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { getConvexErrorMessage } from '@/lib/convex-errors';
 import { formatCurrency } from '@/lib/format';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -30,12 +30,7 @@ export function BudgetCard() {
     const remaining = Math.max(0, amount - spent);
     const percentage = amount > 0 ? Math.min(100, (spent / amount) * 100) : 0;
 
-    const progressColor =
-        percentage >= 100
-            ? 'bg-destructive'
-            : percentage >= 80
-              ? 'bg-yellow-500'
-              : 'bg-primary';
+    const progressColor = percentage >= 100 ? 'bg-destructive' : percentage >= 80 ? 'bg-warning' : 'bg-primary';
 
     const handleEdit = () => {
         setInputValue(budget ? String(budget.amount) : '');
@@ -66,22 +61,18 @@ export function BudgetCard() {
     };
 
     return (
-        <Card className='hover:border-primary/50 group relative overflow-hidden transition-all duration-300 hover:shadow-lg'>
-            <div className='from-primary/5 absolute inset-0 bg-gradient-to-br to-transparent opacity-0 transition-opacity group-hover:opacity-100' />
-            <CardHeader className='relative pb-2'>
-                <div className='flex items-start justify-between'>
-                    <div className='bg-primary/10 ring-primary/20 mb-2 inline-flex size-10 items-center justify-center rounded-xl ring-2 transition-transform duration-300 group-hover:scale-110'>
-                        <PiggyBank className='text-primary size-5' />
-                    </div>
+        <Card className='min-w-0 gap-6 rounded-none border-0 border-t py-6 shadow-none sm:py-8 lg:border-t-0 lg:border-l lg:py-10'>
+            <CardHeader className='px-6 sm:px-8'>
+                <div className='flex items-center justify-between gap-3'>
+                    <h2 className='text-muted-foreground font-mono text-[11px] tracking-[0.14em] uppercase'>Monthly budget</h2>
                     {!isEditing && (
-                        <Button variant='ghost' size='icon' className='size-7' onClick={handleEdit}>
-                            <Pencil className='size-3.5' />
+                        <Button variant='ghost' size='icon' className='size-11 shrink-0 rounded-sm' onClick={handleEdit} aria-label='Edit monthly budget'>
+                            <Pencil className='size-4' />
                         </Button>
                     )}
                 </div>
-                <CardDescription className='font-medium'>Monthly Budget</CardDescription>
             </CardHeader>
-            <CardContent className='relative space-y-3'>
+            <CardContent className='space-y-4 px-6 sm:px-8'>
                 {isPending ? (
                     <>
                         <Skeleton className='h-8 w-28' />
@@ -99,7 +90,8 @@ export function BudgetCard() {
                                 placeholder='0.00'
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
-                                className='pl-7'
+                                className='rounded-sm pl-7'
+                                aria-label='Monthly budget amount'
                                 autoFocus
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') void handleSave();
@@ -112,25 +104,26 @@ export function BudgetCard() {
                                 <Check className='mr-1 size-3.5' />
                                 Save
                             </Button>
-                            <Button size='sm' variant='outline' onClick={handleCancel} disabled={isSaving}>
+                            <Button size='sm' variant='outline' onClick={handleCancel} disabled={isSaving} aria-label='Cancel budget edit'>
                                 <X className='size-3.5' />
                             </Button>
                         </div>
                     </div>
                 ) : budget ? (
                     <>
-                        <p className='text-3xl font-bold tracking-tight'>{formatCurrency(spent)}</p>
-                        <div className='relative h-2 w-full overflow-hidden rounded-full bg-secondary'>
-                            <div
-                                className={`h-full rounded-full transition-all ${progressColor}`}
-                                style={{ width: `${percentage}%` }}
-                            />
+                        <p className='text-primary text-3xl font-medium tracking-tight break-all tabular-nums sm:text-4xl'>{formatCurrency(spent)}</p>
+                        <div
+                            role='progressbar'
+                            aria-label='Monthly budget spent'
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            aria-valuenow={percentage}
+                            className='bg-secondary relative h-2 w-full overflow-hidden rounded-sm'>
+                            <div className={`h-full transition-[width] ${progressColor}`} style={{ width: `${percentage}%` }} />
                         </div>
-                        <p className='text-muted-foreground text-xs font-medium'>
+                        <p className='text-muted-foreground text-sm'>
                             {percentage >= 100 ? (
-                                <span className='text-destructive font-semibold'>
-                                    Over budget by {formatCurrency(spent - amount)}
-                                </span>
+                                <span className='text-destructive font-semibold'>Over budget by {formatCurrency(spent - amount)}</span>
                             ) : (
                                 <>
                                     {formatCurrency(remaining)} remaining of {formatCurrency(amount)}
