@@ -33,17 +33,17 @@ export const CreateWalletDialog = ({ trigger }: CreateWalletDialogProps) => {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {trigger || (
-                    <Button size='sm' className='gap-2'>
+                    <Button size='sm' className='min-h-11 gap-2 rounded-sm'>
                         <Plus className='size-4' />
                         New Wallet
                     </Button>
                 )}
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className='max-h-[85dvh] overflow-y-auto rounded-sm'>
                 <form onSubmit={handleSubmit}>
-                    <DialogHeader>
-                        <DialogTitle>Create New Wallet</DialogTitle>
-                        <DialogDescription>Add a new wallet to manage your funds.</DialogDescription>
+                    <DialogHeader className='border-b pb-5 text-left'>
+                        <DialogTitle className='text-xl font-semibold tracking-tight'>Create New Wallet</DialogTitle>
+                        <DialogDescription className='break-words'>Add a new wallet to manage your funds.</DialogDescription>
                     </DialogHeader>
                     <div className='py-4'>
                         <Label htmlFor='wallet-name'>Wallet Name (optional)</Label>
@@ -52,17 +52,17 @@ export const CreateWalletDialog = ({ trigger }: CreateWalletDialogProps) => {
                             placeholder='e.g., Savings, Travel Fund'
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className='mt-2'
+                            className='mt-2 h-11 rounded-sm text-base'
                             autoFocus
                         />
                     </div>
-                    <DialogFooter>
+                    <DialogFooter className='border-t pt-5'>
                         <DialogClose asChild>
-                            <Button type='button' variant='outline' disabled={isPending}>
+                            <Button type='button' variant='outline' disabled={isPending} className='min-h-11 rounded-sm'>
                                 Cancel
                             </Button>
                         </DialogClose>
-                        <Button type='submit' disabled={isPending}>
+                        <Button type='submit' disabled={isPending} className='min-h-11 rounded-sm'>
                             {isPending && <Loader2 className='size-4 animate-spin' />}
                             Create Wallet
                         </Button>

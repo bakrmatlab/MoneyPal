@@ -145,19 +145,19 @@ export const WalletSettingsDialog = ({ walletId, trigger }: WalletSettingsDialog
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                     {trigger || (
-                        <Button size='sm' variant='outline' className='gap-2'>
+                        <Button size='sm' variant='outline' className='min-h-11 gap-2 rounded-sm'>
                             <Settings className='size-4' />
                             Settings
                         </Button>
                     )}
                 </DialogTrigger>
-                <DialogContent className='max-w-md'>
+                <DialogContent className='max-h-[85dvh] max-w-md overflow-y-auto rounded-sm'>
                     <form onSubmit={handleSubmit}>
-                        <DialogHeader>
-                            <DialogTitle>Wallet Settings</DialogTitle>
-                            <DialogDescription>Customize your wallet appearance and settings.</DialogDescription>
+                        <DialogHeader className='border-b pb-5 text-left'>
+                            <DialogTitle className='text-xl font-semibold tracking-tight'>Wallet Settings</DialogTitle>
+                            <DialogDescription className='break-words'>Customize your wallet appearance and settings.</DialogDescription>
                         </DialogHeader>
-                        <div className='space-y-4 py-4'>
+                        <div className='space-y-5 py-5'>
                             {/* Wallet Name */}
                             <div>
                                 <Label htmlFor='wallet-name'>Wallet Name</Label>
@@ -166,7 +166,7 @@ export const WalletSettingsDialog = ({ walletId, trigger }: WalletSettingsDialog
                                     placeholder='e.g., Savings, Travel Fund'
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className='mt-2'
+                                    className='mt-2 h-11 rounded-sm text-base'
                                 />
                             </div>
 
@@ -174,7 +174,7 @@ export const WalletSettingsDialog = ({ walletId, trigger }: WalletSettingsDialog
                             <div>
                                 <Label htmlFor='currency'>Currency</Label>
                                 <Select value={currency} onValueChange={setCurrency}>
-                                    <SelectTrigger id='currency' className='mt-2'>
+                                    <SelectTrigger id='currency' className='mt-2 h-11 w-full min-w-0 rounded-sm'>
                                         <SelectValue placeholder='Select currency' />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -196,7 +196,7 @@ export const WalletSettingsDialog = ({ walletId, trigger }: WalletSettingsDialog
                                             <RadioGroupItem value={colorOption.value} id={`color-${colorOption.value}`} className='peer sr-only' />
                                             <Label
                                                 htmlFor={`color-${colorOption.value}`}
-                                                className={`peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-ring flex size-10 cursor-pointer items-center justify-center rounded-md border-2 border-transparent transition-all peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-offset-2 ${colorOption.class}`}
+                                                className={`peer-focus-visible:outline-ring peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-ring flex size-11 cursor-pointer items-center justify-center rounded-sm border-2 border-transparent transition-all peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-data-[state=checked]:ring-2 peer-data-[state=checked]:ring-offset-2 ${colorOption.class}`}
                                                 title={colorOption.label}
                                             />
                                         </div>
@@ -215,7 +215,7 @@ export const WalletSettingsDialog = ({ walletId, trigger }: WalletSettingsDialog
                                                 <RadioGroupItem value={iconOption.value} id={`icon-${iconOption.value}`} className='peer sr-only' />
                                                 <Label
                                                     htmlFor={`icon-${iconOption.value}`}
-                                                    className='border-muted bg-background hover:bg-muted peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-muted flex size-10 cursor-pointer items-center justify-center rounded-md border-2 transition-all'
+                                                    className='border-muted bg-background hover:bg-muted peer-focus-visible:outline-ring peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-muted flex size-11 cursor-pointer items-center justify-center rounded-sm border-2 transition-all peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2'
                                                     title={iconOption.label}>
                                                     <IconComponent className='size-5' />
                                                 </Label>
@@ -225,14 +225,14 @@ export const WalletSettingsDialog = ({ walletId, trigger }: WalletSettingsDialog
                                 </RadioGroup>
                             </div>
                         </div>
-                        <DialogFooter className='flex-col gap-2 sm:flex-col'>
+                        <DialogFooter className='flex-col gap-2 border-t pt-5 sm:flex-col'>
                             <div className='flex gap-2'>
                                 <DialogClose asChild>
-                                    <Button type='button' variant='outline' disabled={isPending} className='flex-1'>
+                                    <Button type='button' variant='outline' disabled={isPending} className='min-h-11 flex-1 rounded-sm'>
                                         Cancel
                                     </Button>
                                 </DialogClose>
-                                <Button type='submit' disabled={isPending} className='flex-1'>
+                                <Button type='submit' disabled={isPending} className='min-h-11 flex-1 rounded-sm'>
                                     {isPending && <Loader2 className='size-4 animate-spin' />}
                                     Save Changes
                                 </Button>
@@ -241,7 +241,7 @@ export const WalletSettingsDialog = ({ walletId, trigger }: WalletSettingsDialog
                                 <Button
                                     type='button'
                                     variant='outline'
-                                    className='flex-1 gap-2'
+                                    className='min-h-11 flex-1 gap-2 rounded-sm'
                                     onClick={() => setArchiveConfirmOpen(true)}
                                     disabled={isPending}>
                                     {wallet?.isArchived ? (
@@ -259,7 +259,7 @@ export const WalletSettingsDialog = ({ walletId, trigger }: WalletSettingsDialog
                                 <Button
                                     type='button'
                                     variant='destructive'
-                                    className='flex-1 gap-2'
+                                    className='min-h-11 flex-1 gap-2 rounded-sm'
                                     onClick={() => setDeleteConfirmOpen(true)}
                                     disabled={!canDelete || isPending}
                                     title={deleteDisabledReason ?? 'Permanently delete this wallet'}>

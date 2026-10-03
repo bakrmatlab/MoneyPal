@@ -10,7 +10,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TransactionDialogProps } from './types';
+import type { TransactionDialogProps } from './types';
 
 export const TransferDialog = ({ walletId, walletName, balance = 0 }: TransactionDialogProps) => {
     const [open, setOpen] = useState(false);
@@ -22,7 +22,7 @@ export const TransferDialog = ({ walletId, walletName, balance = 0 }: Transactio
 
     const { data: wallets } = useQuery(convexQuery(api.wallets.getMyWallets, {}));
 
-    const otherWallets = (wallets ?? []).filter((w: any) => String(w._id) !== String(walletId) && !w.isArchived);
+    const otherWallets = (wallets ?? []).filter((w) => String(w._id) !== String(walletId) && !w.isArchived);
     const hasOtherWallets = otherWallets.length > 0;
 
     const numAmount = parseFloat(amount) || 0;
@@ -52,18 +52,18 @@ export const TransferDialog = ({ walletId, walletName, balance = 0 }: Transactio
                 <Button
                     variant='outline'
                     size='sm'
-                    className='flex-1 gap-2'
+                    className='min-h-11 flex-1 gap-2 rounded-sm'
                     disabled={balance === 0 || !hasOtherWallets}
                     title={!hasOtherWallets ? 'Create another wallet to transfer funds' : undefined}>
                     <ArrowLeftRight className='size-4' />
                     Transfer
                 </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className='max-h-[85dvh] overflow-y-auto rounded-sm'>
                 <form onSubmit={handleSubmit}>
-                    <DialogHeader>
-                        <DialogTitle>Transfer Funds</DialogTitle>
-                        <DialogDescription>
+                    <DialogHeader className='border-b pb-5 text-left'>
+                        <DialogTitle className='text-xl font-semibold tracking-tight'>Transfer Funds</DialogTitle>
+                        <DialogDescription className='break-words'>
                             Transfer from {walletName ?? 'this wallet'}. Available: {formatCurrency(balance)}
                         </DialogDescription>
                     </DialogHeader>
@@ -72,11 +72,11 @@ export const TransferDialog = ({ walletId, walletName, balance = 0 }: Transactio
                         <Label htmlFor='to-wallet'>Destination Wallet</Label>
                         <div className='mt-2'>
                             <Select value={toWalletId ?? ''} onValueChange={(v) => setToWalletId(v || null)}>
-                                <SelectTrigger id='to-wallet' className='w-full'>
+                                <SelectTrigger id='to-wallet' className='h-11 w-full min-w-0 rounded-sm'>
                                     <SelectValue>{toWalletId ? undefined : 'Select wallet'}</SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {otherWallets.map((w: any) => (
+                                    {otherWallets.map((w) => (
                                         <SelectItem key={String(w._id)} value={String(w._id)}>
                                             {w.name ?? 'Unnamed Wallet'} — {formatCurrency(w.balance)}
                                         </SelectItem>
@@ -98,7 +98,7 @@ export const TransferDialog = ({ walletId, walletName, balance = 0 }: Transactio
                                 placeholder='0.00'
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
-                                className='pl-7'
+                                className='h-11 rounded-sm pl-7 text-base text-xl tabular-nums'
                                 autoFocus
                             />
                         </div>
@@ -113,17 +113,18 @@ export const TransferDialog = ({ walletId, walletName, balance = 0 }: Transactio
                                 placeholder='e.g., Moving savings, Splitting expenses'
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
+                                className='h-11 rounded-sm text-base'
                             />
                         </div>
                     </div>
 
-                    <DialogFooter>
+                    <DialogFooter className='border-t pt-5'>
                         <DialogClose asChild>
-                            <Button type='button' variant='outline' disabled={isPending}>
+                            <Button type='button' variant='outline' disabled={isPending} className='min-h-11 rounded-sm'>
                                 Cancel
                             </Button>
                         </DialogClose>
-                        <Button type='submit' disabled={isPending || !amount || numAmount <= 0 || isOverBalance || !toWalletId}>
+                        <Button type='submit' disabled={isPending || !amount || numAmount <= 0 || isOverBalance || !toWalletId} className='min-h-11 rounded-sm'>
                             {isPending && <Loader2 className='size-4 animate-spin' />}
                             Transfer
                         </Button>
