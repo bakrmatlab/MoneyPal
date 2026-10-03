@@ -10,7 +10,7 @@ Redesign the look and feel of existing MoneyPal screens. Preserve routes, capabi
 
 References: [Robinhood](https://robinhood.com/us/en/) and [Marathon](https://www.marathonthegame.com/).
 
-Start with 70% Robinhood clarity and 30% Marathon graphic character in the authenticated app. Give the landing page more graphic freedom. These ratios are a starting hypothesis, not an approved design.
+Start with 70% Robinhood clarity and 30% Marathon graphic character in the authenticated app. Give the landing page more graphic freedom. The user selected B / Balanced on October 3, 2026. Use the balanced experiment as the reference for production implementation.
 
 - Near-black and off-white surfaces with an electric lime brand accent.
 - Large, readable financial figures and aligned digits.
@@ -61,7 +61,7 @@ Use the PR template for summary, before/after evidence, validation, and rollback
 ## Tracker
 
 - [ ] PR 0: [Plan and review template (#2)](https://github.com/bakrmatlab/MoneyPal/pull/2) — targets redesign/moneypal
-- [ ] PR 1: Baseline and design experiment; direction selected
+- [x] PR 1: [Design experiment (#3)](https://github.com/bakrmatlab/MoneyPal/pull/3); B / Balanced selected. Authenticated baseline captures remain pending.
 - [ ] PR 2: Foundation
 - [ ] PR 3: Shell
 - [ ] PR 4: Dashboard and wallets
@@ -71,4 +71,11 @@ Use the PR template for summary, before/after evidence, validation, and rollback
 - [ ] PR 8: Settings and onboarding
 - [ ] PR 9: Public, auth, and error pages
 
-Selected design: pending PR 1 review.
+Selected design: B / Balanced, approved by the user on October 3, 2026.
+
+
+## Selected direction implementation
+
+Production branches start from the planning branch and exclude disposable prototype files. The first stack is foundation → shell → dashboard; each PR targets its predecessor until that predecessor merges into redesign/moneypal. Main remains untouched.
+
+Keep the saved theme preference and system default. The lime brand token is separate from the primary text/action token: light mode uses readable olive primary text, while lime call-to-action surfaces carry dark text. Financial success, warning, and error colors stay semantic. Do not change currency formatting or calculations as part of visual work.
