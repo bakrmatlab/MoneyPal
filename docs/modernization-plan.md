@@ -41,9 +41,9 @@ Every implementation PR includes its own empty/loading/error states and visual v
 
 ## Branch and merge flow
 
-1. Merge the planning PR first.
+1. Keep live main untouched. The integration branch is redesign/moneypal, created from main. Planning and implementation PRs target redesign/moneypal; only the final release PR targets main after the complete redesign is verified and the user explicitly approves release.
 2. Open the design experiment as a draft. Review the three directions and record the chosen version here before production styling begins. Keep disposable previews separate from production routes.
-3. Create each implementation branch from the latest main after its prerequisite merges. Prefer sequential PRs over long dependency stacks.
+3. Create each implementation branch from the latest redesign/moneypal after its prerequisite merges. Prefer sequential PRs over long dependency stacks. An early draft may target its prerequisite branch, then be retargeted to redesign/moneypal after that prerequisite merges.
 4. Open a draft early, link this plan, state the scope and predecessor, and attach evidence before marking ready.
 5. Review the visual result and preserved behavior. Resolve comments, then squash merge after explicit merge authorization. Do not auto-merge.
 6. Update the tracker in the same PR with its URL and completed scope. No empty placeholder PRs for future work.
@@ -60,7 +60,7 @@ Use the PR template for summary, before/after evidence, validation, and rollback
 
 ## Tracker
 
-- [ ] PR 0: Plan and review template
+- [ ] PR 0: [Plan and review template (#2)](https://github.com/bakrmatlab/MoneyPal/pull/2) — targets redesign/moneypal
 - [ ] PR 1: Baseline and design experiment; direction selected
 - [ ] PR 2: Foundation
 - [ ] PR 3: Shell
