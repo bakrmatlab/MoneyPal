@@ -1,6 +1,6 @@
 # MoneyPal visual modernization
 
-Status: planning; no application changes implemented.
+Status: balanced direction selected; foundation, shell, and dashboard implementation prepared for draft review. Remaining screens and release verification are pending.
 
 ## Objective and scope
 
@@ -61,7 +61,7 @@ Use the PR template for summary, before/after evidence, validation, and rollback
 ## Tracker
 
 - [ ] PR 0: [Plan and review template (#2)](https://github.com/bakrmatlab/MoneyPal/pull/2) — targets redesign/moneypal
-- [x] PR 1: [Design experiment (#3)](https://github.com/bakrmatlab/MoneyPal/pull/3); B / Balanced selected. Authenticated baseline captures remain pending.
+- [x] PR 1: [Design experiment (#3)](https://github.com/bakrmatlab/MoneyPal/pull/3); B / Balanced selected. Baseline comparisons now use actual components with synthetic fixtures; live authenticated verification remains pending.
 - [ ] PR 2: Foundation
 - [ ] PR 3: Shell
 - [ ] PR 4: Dashboard and wallets

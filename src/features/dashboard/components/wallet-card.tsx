@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { DepositDialog } from './deposit-dialog';
 import { TransferDialog } from './transfer-dialog';
-import { Wallet as WalletType } from './types';
+import type { Wallet as WalletType } from './types';
 import { WalletSettingsDialog } from './wallet-settings-dialog';
 import { WithdrawDialog } from './withdraw-dialog';
 
@@ -22,16 +22,16 @@ const WALLET_ICON_MAP = {
 };
 
 const WALLET_COLOR_MAP = {
-    slate: 'bg-slate-500/10 border-slate-500/20 group-hover:border-slate-500/30',
-    red: 'bg-red-500/10 border-red-500/20 group-hover:border-red-500/30',
-    orange: 'bg-orange-500/10 border-orange-500/20 group-hover:border-orange-500/30',
-    amber: 'bg-amber-500/10 border-amber-500/20 group-hover:border-amber-500/30',
-    green: 'bg-green-500/10 border-green-500/20 group-hover:border-green-500/30',
-    emerald: 'bg-emerald-500/10 border-emerald-500/20 group-hover:border-emerald-500/30',
-    blue: 'bg-blue-500/10 border-blue-500/20 group-hover:border-blue-500/30',
-    indigo: 'bg-indigo-500/10 border-indigo-500/20 group-hover:border-indigo-500/30',
-    purple: 'bg-purple-500/10 border-purple-500/20 group-hover:border-purple-500/30',
-    pink: 'bg-pink-500/10 border-pink-500/20 group-hover:border-pink-500/30',
+    slate: 'border-t-slate-500',
+    red: 'border-t-red-500',
+    orange: 'border-t-orange-500',
+    amber: 'border-t-amber-500',
+    green: 'border-t-green-500',
+    emerald: 'border-t-emerald-500',
+    blue: 'border-t-blue-500',
+    indigo: 'border-t-indigo-500',
+    purple: 'border-t-purple-500',
+    pink: 'border-t-pink-500',
 };
 
 const WALLET_ICON_COLOR_MAP = {
@@ -53,29 +53,27 @@ export const WalletCard = ({ wallet }: WalletCardProps) => {
     const iconColorClass = wallet.color ? WALLET_ICON_COLOR_MAP[wallet.color as keyof typeof WALLET_ICON_COLOR_MAP] : WALLET_ICON_COLOR_MAP.slate;
 
     return (
-        <Card className={`group relative overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${colorClass}`}>
-            <CardHeader className='relative space-y-2 p-5 sm:p-6'>
+        <Card className={`relative min-w-0 gap-5 overflow-hidden rounded-md border-t-2 py-6 shadow-none ${colorClass}`}>
+            <CardHeader className='space-y-2 px-5 sm:px-6'>
                 <div className='flex items-start justify-between gap-3'>
-                    <div className='flex flex-1 items-start gap-3'>
-                        <div className={`rounded-lg p-2 ${iconColorClass}`}>
+                    <div className='flex min-w-0 flex-1 items-start gap-3'>
+                        <div className={`shrink-0 rounded-sm p-1 ${iconColorClass}`}>
                             <IconComponent className='size-5' />
                         </div>
                         <div className='min-w-0 flex-1'>
-                            <CardTitle className='truncate text-base sm:text-lg'>{wallet.name ?? 'Unnamed Wallet'}</CardTitle>
+                            <CardTitle className='text-base leading-snug break-words sm:text-lg'>{wallet.name ?? 'Unnamed Wallet'}</CardTitle>
                             <CardDescription className='text-xs'>Created {formatDate(wallet._creationTime)}</CardDescription>
                         </div>
                     </div>
-                    <div className='flex items-center gap-2'>
-                        <Badge variant={wallet.balance > 0 ? 'default' : 'secondary'} className='shrink-0 px-2 text-xs'>
-                            {wallet.balance > 0 ? 'Active' : 'Empty'}
-                        </Badge>
+                    <div className='flex shrink-0 items-center gap-1'>
                         <WalletSettingsDialog
                             walletId={wallet._id}
                             trigger={
                                 <Button
                                     size='icon'
                                     variant='ghost'
-                                    className='size-8 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100'
+                                    className='size-11 rounded-sm'
+                                    aria-label={`Settings for ${wallet.name || 'unnamed wallet'}`}
                                     title='Wallet settings'>
                                     <Settings className='size-4' />
                                 </Button>
@@ -84,9 +82,15 @@ export const WalletCard = ({ wallet }: WalletCardProps) => {
                     </div>
                 </div>
             </CardHeader>
-            <CardContent className='relative space-y-4 p-5 pt-0 sm:p-6 sm:pt-0'>
-                <p className='text-2xl font-bold tracking-tight sm:text-3xl'>{formatCurrency(wallet.balance, wallet.currency || 'USD')}</p>
-                <div className='flex flex-wrap gap-2'>
+            <CardContent className='space-y-5 px-5 sm:px-6'>
+                <p className='text-3xl font-medium tracking-tight break-all tabular-nums'>{formatCurrency(wallet.balance, wallet.currency || 'USD')}</p>
+                <div className='text-muted-foreground flex items-center justify-between gap-3 font-mono text-[10px] tracking-wider'>
+                    <span>{wallet.currency || 'USD'}</span>
+                    <Badge variant='secondary' className='rounded-sm px-2 font-mono text-[10px]'>
+                        {wallet.balance > 0 ? 'Active' : 'Empty'}
+                    </Badge>
+                </div>
+                <div className='flex flex-wrap gap-2 border-t pt-5 [&>button]:min-h-11 [&>button]:rounded-sm [&>button]:px-3 [&>button]:text-xs'>
                     <DepositDialog walletId={wallet._id} walletName={wallet.name} />
                     <WithdrawDialog walletId={wallet._id} walletName={wallet.name} balance={wallet.balance} />
                     <TransferDialog walletId={wallet._id} walletName={wallet.name} balance={wallet.balance} />
