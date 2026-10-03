@@ -13,20 +13,20 @@ interface SpendingChartProps {
 const chartConfig = {
     income: {
         label: 'Income',
-        color: '#10b981',
+        color: 'var(--success)',
     },
     expenses: {
         label: 'Expenses',
-        color: '#ef4444',
+        color: 'var(--destructive)',
     },
 } satisfies ChartConfig;
 
 export const SpendingChart = ({ data, isLoading, dateRange }: SpendingChartProps) => {
     if (isLoading) {
         return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Spending Trends</CardTitle>
+            <Card className='min-w-0 rounded-sm shadow-none'>
+                <CardHeader className='border-b pb-5'>
+                    <CardTitle className='text-base font-semibold'>Spending Trends</CardTitle>
                     <CardDescription>Income and expenses over time</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -38,9 +38,9 @@ export const SpendingChart = ({ data, isLoading, dateRange }: SpendingChartProps
 
     if (!data || data.length === 0) {
         return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Spending Trends</CardTitle>
+            <Card className='min-w-0 rounded-sm shadow-none'>
+                <CardHeader className='border-b pb-5'>
+                    <CardTitle className='text-base font-semibold'>Spending Trends</CardTitle>
                     <CardDescription>Income and expenses over time</CardDescription>
                 </CardHeader>
                 <CardContent className='flex h-[300px] items-center justify-center'>
@@ -69,9 +69,9 @@ export const SpendingChart = ({ data, isLoading, dateRange }: SpendingChartProps
     }));
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Spending Trends</CardTitle>
+        <Card className='min-w-0 rounded-sm shadow-none'>
+            <CardHeader className='border-b pb-5'>
+                <CardTitle className='text-base font-semibold'>Spending Trends</CardTitle>
                 <CardDescription>Income and expenses over time</CardDescription>
             </CardHeader>
             <CardContent>
@@ -79,16 +79,11 @@ export const SpendingChart = ({ data, isLoading, dateRange }: SpendingChartProps
                     <ResponsiveContainer width='100%' height='100%'>
                         <LineChart data={chartData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
                             <CartesianGrid strokeDasharray='3 3' className='stroke-muted' />
-                            <XAxis
-                                dataKey='label'
-                                className='text-xs'
-                                tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                                tickLine={{ stroke: 'hsl(var(--border))' }}
-                            />
+                            <XAxis dataKey='label' className='text-xs' tick={{ fill: 'var(--muted-foreground)' }} tickLine={{ stroke: 'var(--border)' }} />
                             <YAxis
                                 className='text-xs'
-                                tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                                tickLine={{ stroke: 'hsl(var(--border))' }}
+                                tick={{ fill: 'var(--muted-foreground)' }}
+                                tickLine={{ stroke: 'var(--border)' }}
                                 tickFormatter={(value) => `$${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`}
                             />
                             <ChartTooltip
@@ -100,6 +95,7 @@ export const SpendingChart = ({ data, isLoading, dateRange }: SpendingChartProps
                                 }
                             />
                             <Line
+                                isAnimationActive={false}
                                 type='monotone'
                                 dataKey='income'
                                 stroke='var(--color-income)'
@@ -108,6 +104,7 @@ export const SpendingChart = ({ data, isLoading, dateRange }: SpendingChartProps
                                 activeDot={{ r: 6 }}
                             />
                             <Line
+                                isAnimationActive={false}
                                 type='monotone'
                                 dataKey='expenses'
                                 stroke='var(--color-expenses)'

@@ -196,19 +196,19 @@ export const AnalyticsPage = () => {
             {/* Header */}
             <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
                 <div>
-                    <h1 className='text-3xl font-bold tracking-tight sm:text-4xl'>Analytics</h1>
-                    <p className='text-muted-foreground mt-2 text-sm sm:text-base'>Comprehensive insights into your financial health</p>
+                    <h1 className='text-3xl font-semibold tracking-tight'>Analytics</h1>
+                    <p className='text-muted-foreground mt-2 text-sm sm:text-base'>Income, spending, and budgets, in focus.</p>
                 </div>
-                <Button onClick={handleExportData} variant='outline' className='self-start sm:self-auto'>
+                <Button onClick={handleExportData} variant='outline' className='min-h-11 self-start rounded-sm sm:self-auto'>
                     <Download className='mr-2 size-4' />
                     Export Data
                 </Button>
             </div>
 
             {/* Filters */}
-            <Card>
-                <CardHeader className='space-y-1.5 p-6'>
-                    <CardTitle className='text-lg sm:text-xl'>Filters</CardTitle>
+            <Card className='min-w-0 rounded-sm shadow-none'>
+                <CardHeader className='space-y-2 border-b p-5 sm:p-6'>
+                    <CardTitle className='text-base font-semibold'>Filters</CardTitle>
                     <CardDescription className='text-sm'>Customize your analytics view</CardDescription>
                 </CardHeader>
                 <CardContent className='p-6 pt-0'>
@@ -217,7 +217,7 @@ export const AnalyticsPage = () => {
                         <div className='space-y-2'>
                             <Label htmlFor='date-filter'>Date Range</Label>
                             <Select value={dateRange} onValueChange={setDateRange}>
-                                <SelectTrigger id='date-filter'>
+                                <SelectTrigger id='date-filter' className='h-11 w-full min-w-0 rounded-sm'>
                                     <SelectValue placeholder='Select period' />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -234,7 +234,7 @@ export const AnalyticsPage = () => {
                         <div className='space-y-2'>
                             <Label htmlFor='wallet-filter'>Wallet</Label>
                             <Select value={walletId ?? 'all'} onValueChange={(v) => setWalletId(v === 'all' ? undefined : (v as Id<'wallets'>))}>
-                                <SelectTrigger id='wallet-filter'>
+                                <SelectTrigger id='wallet-filter' className='h-11 w-full min-w-0 rounded-sm'>
                                     <SelectValue placeholder='All Wallets' />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -254,7 +254,7 @@ export const AnalyticsPage = () => {
             {/* KPI Summary Cards */}
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4'>
                 {/* Total Income Card */}
-                <Card>
+                <Card className='min-w-0 rounded-sm shadow-none'>
                     <CardHeader className='flex flex-row items-center justify-between space-y-0 p-6 pb-2'>
                         <CardTitle className='text-sm font-medium'>Total Income</CardTitle>
                         <TrendingUp className='text-muted-foreground size-4' />
@@ -264,7 +264,7 @@ export const AnalyticsPage = () => {
                             <Skeleton className='h-8 w-24' />
                         ) : (
                             <>
-                                <div className='text-2xl font-bold'>{formatCurrency(totalIncome)}</div>
+                                <div className='text-3xl font-medium break-all tabular-nums'>{formatCurrency(totalIncome)}</div>
                                 <p className='text-muted-foreground text-xs'>
                                     {dateRange === 'all'
                                         ? `Includes initial balance`
@@ -276,7 +276,7 @@ export const AnalyticsPage = () => {
                 </Card>
 
                 {/* Total Expenses Card */}
-                <Card>
+                <Card className='min-w-0 rounded-sm shadow-none'>
                     <CardHeader className='flex flex-row items-center justify-between space-y-0 p-6 pb-2'>
                         <CardTitle className='text-sm font-medium'>Total Expenses</CardTitle>
                         <TrendingDown className='text-muted-foreground size-4' />
@@ -286,7 +286,7 @@ export const AnalyticsPage = () => {
                             <Skeleton className='h-8 w-24' />
                         ) : (
                             <>
-                                <div className='text-2xl font-bold'>{formatCurrency(totalExpenses)}</div>
+                                <div className='text-3xl font-medium break-all tabular-nums'>{formatCurrency(totalExpenses)}</div>
                                 <p className='text-muted-foreground text-xs'>
                                     {stats?.withdrawalCount ?? 0} withdrawal{stats?.withdrawalCount !== 1 ? 's' : ''}
                                 </p>
@@ -296,7 +296,7 @@ export const AnalyticsPage = () => {
                 </Card>
 
                 {/* Net Change Card */}
-                <Card>
+                <Card className='min-w-0 rounded-sm shadow-none'>
                     <CardHeader className='flex flex-row items-center justify-between space-y-0 p-6 pb-2'>
                         <CardTitle className='text-sm font-medium'>{dateRange === 'all' ? 'Current Balance' : 'Net Change'}</CardTitle>
                         <DollarSign className='text-muted-foreground size-4' />
@@ -307,7 +307,7 @@ export const AnalyticsPage = () => {
                         ) : (
                             <>
                                 <div
-                                    className={`text-2xl font-bold ${dateRange === 'all' || totalIncome - totalExpenses >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                                    className={`text-3xl font-medium break-all tabular-nums ${dateRange === 'all' || totalIncome - totalExpenses >= 0 ? 'text-success' : 'text-destructive'}`}>
                                     {dateRange === 'all' ? '' : totalIncome - totalExpenses >= 0 ? '+' : ''}
                                     {formatCurrency(dateRange === 'all' ? currentBalance : totalIncome - totalExpenses)}
                                 </div>
@@ -320,7 +320,7 @@ export const AnalyticsPage = () => {
                 </Card>
 
                 {/* Transaction Count Card */}
-                <Card>
+                <Card className='min-w-0 rounded-sm shadow-none'>
                     <CardHeader className='flex flex-row items-center justify-between space-y-0 p-6 pb-2'>
                         <CardTitle className='text-sm font-medium'>Transactions</CardTitle>
                         <Activity className='text-muted-foreground size-4' />
@@ -330,7 +330,7 @@ export const AnalyticsPage = () => {
                             <Skeleton className='h-8 w-24' />
                         ) : (
                             <>
-                                <div className='text-2xl font-bold'>{transactionCount}</div>
+                                <div className='text-3xl font-medium break-all tabular-nums'>{transactionCount}</div>
                                 <p className='text-muted-foreground text-xs'>Total activities</p>
                             </>
                         )}
@@ -343,23 +343,21 @@ export const AnalyticsPage = () => {
                 <div className='grid grid-cols-1 gap-6 xl:grid-cols-2'>
                     {/* Current Month Progress */}
                     {currentBudget && (
-                        <Card>
+                        <Card className='min-w-0 rounded-sm shadow-none'>
                             <CardHeader className='flex flex-row items-center justify-between space-y-0 p-6 pb-2'>
-                                <CardTitle className='text-lg sm:text-xl'>This Month's Budget</CardTitle>
+                                <CardTitle className='text-base font-semibold'>This Month's Budget</CardTitle>
                             </CardHeader>
                             <CardContent className='px-6 pb-6'>
                                 <CardDescription className='mb-3 text-sm'>
                                     {formatCurrency(currentBudget.spent)} spent of {formatCurrency(currentBudget.amount)}
                                 </CardDescription>
                                 {(() => {
-                                    const pct = currentBudget.amount > 0
-                                        ? Math.min(100, (currentBudget.spent / currentBudget.amount) * 100)
-                                        : 0;
-                                    const color = pct >= 100 ? 'bg-destructive' : pct >= 80 ? 'bg-yellow-500' : 'bg-primary';
+                                    const pct = currentBudget.amount > 0 ? Math.min(100, (currentBudget.spent / currentBudget.amount) * 100) : 0;
+                                    const color = pct >= 100 ? 'bg-destructive' : pct >= 80 ? 'bg-warning' : 'bg-primary';
                                     return (
                                         <div className='space-y-2'>
-                                            <div className='relative h-3 w-full overflow-hidden rounded-full bg-secondary'>
-                                                <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${pct}%` }} />
+                                            <div className='bg-secondary relative h-3 w-full overflow-hidden rounded-sm'>
+                                                <div className={`h-full transition-all ${color}`} style={{ width: `${pct}%` }} />
                                             </div>
                                             <p className='text-muted-foreground text-sm'>
                                                 {pct >= 100

@@ -28,7 +28,7 @@ interface CategoryBreakdownProps {
     isLoading: boolean;
 }
 
-const CHART_COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
+const CHART_COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
 
 export const CategoryBreakdown = ({ data, topCategories, isLoading }: CategoryBreakdownProps) => {
     const navigate = useNavigate();
@@ -36,9 +36,9 @@ export const CategoryBreakdown = ({ data, topCategories, isLoading }: CategoryBr
 
     if (isLoading) {
         return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Category Breakdown</CardTitle>
+            <Card className='min-w-0 rounded-sm shadow-none'>
+                <CardHeader className='border-b pb-5'>
+                    <CardTitle className='text-base font-semibold'>Category Breakdown</CardTitle>
                     <CardDescription>Spending by category</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -50,9 +50,9 @@ export const CategoryBreakdown = ({ data, topCategories, isLoading }: CategoryBr
 
     if (!data || data.length === 0) {
         return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Category Breakdown</CardTitle>
+            <Card className='min-w-0 rounded-sm shadow-none'>
+                <CardHeader className='border-b pb-5'>
+                    <CardTitle className='text-base font-semibold'>Category Breakdown</CardTitle>
                     <CardDescription>Spending by category</CardDescription>
                 </CardHeader>
                 <CardContent className='flex h-[300px] items-center justify-center'>
@@ -108,9 +108,9 @@ export const CategoryBreakdown = ({ data, topCategories, isLoading }: CategoryBr
     };
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Category Breakdown</CardTitle>
+        <Card className='min-w-0 rounded-sm shadow-none'>
+            <CardHeader className='border-b pb-5'>
+                <CardTitle className='text-base font-semibold'>Category Breakdown</CardTitle>
                 <CardDescription>Top spending categories</CardDescription>
             </CardHeader>
             <CardContent>
@@ -121,6 +121,7 @@ export const CategoryBreakdown = ({ data, topCategories, isLoading }: CategoryBr
                             <ResponsiveContainer width='100%' height='100%'>
                                 <PieChart>
                                     <Pie
+                                        isAnimationActive={false}
                                         data={chartData}
                                         cx='50%'
                                         cy='50%'
@@ -145,11 +146,11 @@ export const CategoryBreakdown = ({ data, topCategories, isLoading }: CategoryBr
                                             <ChartTooltipContent
                                                 formatter={(value, name, props) => (
                                                     <div className='flex flex-col gap-1'>
-                                                        <div className='flex items-center gap-2'>
+                                                        <div className='flex min-w-0 flex-wrap items-center gap-2'>
                                                             <span>{props.payload.icon}</span>
                                                             <span className='font-medium'>{name}</span>
                                                         </div>
-                                                        <div className='text-sm'>Amount: {formatCurrency(value as number)}</div>
+                                                        <div className='text-sm break-words'>Amount: {formatCurrency(value as number)}</div>
                                                         <div className='text-muted-foreground text-xs'>
                                                             {props.payload.count} transaction{props.payload.count !== 1 ? 's' : ''} •{' '}
                                                             {props.payload.percentage.toFixed(1)}%
@@ -166,26 +167,27 @@ export const CategoryBreakdown = ({ data, topCategories, isLoading }: CategoryBr
 
                     {/* Top Categories List */}
                     <div className='space-y-2'>
-                        <h4 className='text-sm font-semibold'>Top Categories</h4>
+                        <h4 className='text-sm font-semibold break-all tabular-nums'>Top Categories</h4>
                         <div className='space-y-2'>
                             {topCategories?.slice(0, 5).map((category, index) => (
-                                <div
+                                <button
                                     key={category.categoryId}
-                                    className='hover:bg-accent flex cursor-pointer items-center justify-between rounded-lg border p-2 transition-colors'
+                                    type='button'
+                                    className='hover:bg-accent focus-visible:ring-ring flex min-h-11 w-full flex-wrap items-center justify-between gap-2 rounded-sm border p-3 text-left transition-colors focus-visible:ring-2'
                                     onClick={() => handlePieClick(category.categoryId)}>
-                                    <div className='flex items-center gap-2'>
+                                    <div className='flex min-w-0 flex-wrap items-center gap-2'>
                                         <div className='h-3 w-3 rounded-full' style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }} />
-                                        <span className='text-sm'>
+                                        <span className='text-sm break-words'>
                                             {category.categoryIcon} {category.categoryName}
                                         </span>
                                     </div>
-                                    <div className='flex items-center gap-2'>
+                                    <div className='flex min-w-0 flex-wrap items-center gap-2'>
                                         <Badge variant='secondary' className='text-xs'>
                                             {category.count}
                                         </Badge>
-                                        <span className='text-sm font-semibold'>{formatCurrency(category.total)}</span>
+                                        <span className='text-sm font-semibold break-all tabular-nums'>{formatCurrency(category.total)}</span>
                                     </div>
-                                </div>
+                                </button>
                             ))}
                         </div>
                     </div>

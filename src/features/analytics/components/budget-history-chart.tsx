@@ -21,11 +21,11 @@ const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Se
 const chartConfig = {
     Budget: {
         label: 'Budget',
-        color: '#6366f1',
+        color: 'var(--chart-3)',
     },
     Spent: {
         label: 'Spent',
-        color: '#f43f5e',
+        color: 'var(--destructive)',
     },
 } satisfies ChartConfig;
 
@@ -37,9 +37,9 @@ export function BudgetHistoryChart({ data, isLoading }: BudgetHistoryChartProps)
     }));
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle className='text-lg sm:text-xl'>Budget vs Actual</CardTitle>
+        <Card className='min-w-0 rounded-sm shadow-none'>
+            <CardHeader className='border-b pb-5'>
+                <CardTitle className='text-base font-semibold'>Budget vs Actual</CardTitle>
                 <CardDescription className='text-sm'>Monthly budget limit compared to actual spending</CardDescription>
             </CardHeader>
             <CardContent>
@@ -58,8 +58,8 @@ export function BudgetHistoryChart({ data, isLoading }: BudgetHistoryChartProps)
                                 <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 12 }} />
                                 <ChartTooltip content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />} />
                                 <Legend wrapperStyle={{ fontSize: '13px' }} />
-                                <Bar dataKey='Budget' fill='var(--color-Budget)' radius={[4, 4, 0, 0]} />
-                                <Bar dataKey='Spent' fill='var(--color-Spent)' radius={[4, 4, 0, 0]} />
+                                <Bar isAnimationActive={false} dataKey='Budget' fill='var(--color-Budget)' radius={[2, 2, 0, 0]} />
+                                <Bar isAnimationActive={false} dataKey='Spent' fill='var(--color-Spent)' radius={[2, 2, 0, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
                     </ChartContainer>
