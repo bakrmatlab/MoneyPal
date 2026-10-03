@@ -72,3 +72,5 @@ Use the PR template for summary, before/after evidence, validation, and rollback
 - [ ] PR 9: Public, auth, and error pages
 
 Selected design: pending PR 1 review.
+
+The first experiment is an isolated, offline dashboard preview at src/features/dashboard/prototype/index.html. Authenticated baseline screenshots are pending access to a configured app; the mockups use identical synthetic data and do not claim to be captures of current production. Keep the prototype on its experiment branch; carry only the selected decision and production-quality implementation into redesign/moneypal.

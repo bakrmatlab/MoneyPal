@@ -13,7 +13,8 @@
         "knip": "knip",
         "format": "prettier --write .",
         "convex": "convex dev",
-        "convex:deploy": "convex deploy"
+        "convex:deploy": "convex deploy",
+        "design:preview": "bun src/features/dashboard/prototype/preview-server.js"
     },
     "dependencies": {
         "@clerk/backend": "^2.24.0",
