@@ -13,20 +13,20 @@ interface IncomeExpenseChartProps {
 const chartConfig = {
     income: {
         label: 'Income',
-        color: '#10b981',
+        color: 'var(--success)',
     },
     expenses: {
         label: 'Expenses',
-        color: '#ef4444',
+        color: 'var(--destructive)',
     },
 } satisfies ChartConfig;
 
 export const IncomeExpenseChart = ({ data, isLoading, dateRange }: IncomeExpenseChartProps) => {
     if (isLoading) {
         return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Income vs Expenses</CardTitle>
+            <Card className='min-w-0 rounded-sm shadow-none'>
+                <CardHeader className='border-b pb-5'>
+                    <CardTitle className='text-base font-semibold'>Income vs Expenses</CardTitle>
                     <CardDescription>Comparison by period</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -38,9 +38,9 @@ export const IncomeExpenseChart = ({ data, isLoading, dateRange }: IncomeExpense
 
     if (!data || data.length === 0) {
         return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Income vs Expenses</CardTitle>
+            <Card className='min-w-0 rounded-sm shadow-none'>
+                <CardHeader className='border-b pb-5'>
+                    <CardTitle className='text-base font-semibold'>Income vs Expenses</CardTitle>
                     <CardDescription>Comparison by period</CardDescription>
                 </CardHeader>
                 <CardContent className='flex h-[300px] items-center justify-center'>
@@ -69,9 +69,9 @@ export const IncomeExpenseChart = ({ data, isLoading, dateRange }: IncomeExpense
     }));
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Income vs Expenses</CardTitle>
+        <Card className='min-w-0 rounded-sm shadow-none'>
+            <CardHeader className='border-b pb-5'>
+                <CardTitle className='text-base font-semibold'>Income vs Expenses</CardTitle>
                 <CardDescription>Comparison by period</CardDescription>
             </CardHeader>
             <CardContent>
@@ -79,16 +79,11 @@ export const IncomeExpenseChart = ({ data, isLoading, dateRange }: IncomeExpense
                     <ResponsiveContainer width='100%' height='100%'>
                         <BarChart data={chartData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
                             <CartesianGrid strokeDasharray='3 3' className='stroke-muted' />
-                            <XAxis
-                                dataKey='label'
-                                className='text-xs'
-                                tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                                tickLine={{ stroke: 'hsl(var(--border))' }}
-                            />
+                            <XAxis dataKey='label' className='text-xs' tick={{ fill: 'var(--muted-foreground)' }} tickLine={{ stroke: 'var(--border)' }} />
                             <YAxis
                                 className='text-xs'
-                                tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                                tickLine={{ stroke: 'hsl(var(--border))' }}
+                                tick={{ fill: 'var(--muted-foreground)' }}
+                                tickLine={{ stroke: 'var(--border)' }}
                                 tickFormatter={(value) => `$${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`}
                             />
                             <ChartTooltip
@@ -100,8 +95,8 @@ export const IncomeExpenseChart = ({ data, isLoading, dateRange }: IncomeExpense
                                 }
                             />
                             <Legend wrapperStyle={{ fontSize: '13px' }} />
-                            <Bar dataKey='income' fill='var(--color-income)' radius={[4, 4, 0, 0]} />
-                            <Bar dataKey='expenses' fill='var(--color-expenses)' radius={[4, 4, 0, 0]} />
+                            <Bar isAnimationActive={false} dataKey='income' fill='var(--color-income)' radius={[2, 2, 0, 0]} />
+                            <Bar isAnimationActive={false} dataKey='expenses' fill='var(--color-expenses)' radius={[2, 2, 0, 0]} />
                         </BarChart>
                     </ResponsiveContainer>
                 </ChartContainer>

@@ -17,7 +17,7 @@ interface TrendsChartProps {
 const chartConfig = {
     balance: {
         label: 'Balance',
-        color: '#8b5cf6',
+        color: 'var(--chart-4)',
     },
 } satisfies ChartConfig;
 
@@ -32,9 +32,9 @@ export const TrendsChart = ({ walletId, startDate, endDate }: TrendsChartProps) 
 
     if (isLoading) {
         return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Wallet Balance History</CardTitle>
+            <Card className='min-w-0 rounded-sm shadow-none'>
+                <CardHeader className='border-b pb-5'>
+                    <CardTitle className='text-base font-semibold'>Wallet Balance History</CardTitle>
                     <CardDescription>Track your wallet balance over time</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -46,9 +46,9 @@ export const TrendsChart = ({ walletId, startDate, endDate }: TrendsChartProps) 
 
     if (!balanceHistory || balanceHistory.length === 0) {
         return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Wallet Balance History</CardTitle>
+            <Card className='min-w-0 rounded-sm shadow-none'>
+                <CardHeader className='border-b pb-5'>
+                    <CardTitle className='text-base font-semibold'>Wallet Balance History</CardTitle>
                     <CardDescription>Track your wallet balance over time</CardDescription>
                 </CardHeader>
                 <CardContent className='flex h-[300px] items-center justify-center'>
@@ -70,9 +70,9 @@ export const TrendsChart = ({ walletId, startDate, endDate }: TrendsChartProps) 
     const isIncreasing = lastBalance >= firstBalance;
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Wallet Balance History</CardTitle>
+        <Card className='min-w-0 rounded-sm shadow-none'>
+            <CardHeader className='border-b pb-5'>
+                <CardTitle className='text-base font-semibold'>Wallet Balance History</CardTitle>
                 <CardDescription>Track your wallet balance over time</CardDescription>
             </CardHeader>
             <CardContent>
@@ -86,16 +86,11 @@ export const TrendsChart = ({ walletId, startDate, endDate }: TrendsChartProps) 
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray='3 3' className='stroke-muted' />
-                            <XAxis
-                                dataKey='label'
-                                className='text-xs'
-                                tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                                tickLine={{ stroke: 'hsl(var(--border))' }}
-                            />
+                            <XAxis dataKey='label' className='text-xs' tick={{ fill: 'var(--muted-foreground)' }} tickLine={{ stroke: 'var(--border)' }} />
                             <YAxis
                                 className='text-xs'
-                                tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                                tickLine={{ stroke: 'hsl(var(--border))' }}
+                                tick={{ fill: 'var(--muted-foreground)' }}
+                                tickLine={{ stroke: 'var(--border)' }}
                                 tickFormatter={(value) => `$${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`}
                             />
                             <ChartTooltip
@@ -103,11 +98,19 @@ export const TrendsChart = ({ walletId, startDate, endDate }: TrendsChartProps) 
                                     <ChartTooltipContent formatter={(value) => formatCurrency(value as number)} labelFormatter={(label) => `Date: ${label}`} />
                                 }
                             />
-                            <Area type='monotone' dataKey='balance' stroke='var(--color-balance)' strokeWidth={2} fillOpacity={1} fill='url(#colorBalance)' />
+                            <Area
+                                isAnimationActive={false}
+                                type='monotone'
+                                dataKey='balance'
+                                stroke='var(--color-balance)'
+                                strokeWidth={2}
+                                fillOpacity={1}
+                                fill='url(#colorBalance)'
+                            />
                         </AreaChart>
                     </ResponsiveContainer>
                 </ChartContainer>
-                <div className='mt-4 flex items-center justify-center gap-2'>
+                <div className='mt-4 flex flex-wrap items-center justify-center gap-2'>
                     <span className='text-muted-foreground text-sm'>{isIncreasing ? '📈 Growing' : '📉 Declining'}</span>
                     <span className='text-sm font-semibold'>
                         {isIncreasing ? '+' : ''}
