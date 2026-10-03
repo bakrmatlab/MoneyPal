@@ -62,9 +62,9 @@ Use the PR template for summary, before/after evidence, validation, and rollback
 
 - [ ] PR 0: [Plan and review template (#2)](https://github.com/bakrmatlab/MoneyPal/pull/2) — targets redesign/moneypal
 - [x] PR 1: [Design experiment (#3)](https://github.com/bakrmatlab/MoneyPal/pull/3); B / Balanced selected. Baseline comparisons now use actual components with synthetic fixtures; live authenticated verification remains pending.
-- [ ] PR 2: Foundation
-- [ ] PR 3: Shell
-- [ ] PR 4: Dashboard and wallets
+- [ ] PR 2: [Foundation (#4)](https://github.com/bakrmatlab/MoneyPal/pull/4) — implemented, draft; targets planning branch
+- [ ] PR 3: [Shell (#5)](https://github.com/bakrmatlab/MoneyPal/pull/5) — implemented, draft; targets foundation
+- [ ] PR 4: [Dashboard and wallets (#6)](https://github.com/bakrmatlab/MoneyPal/pull/6) — implemented, draft; targets shell; [verification evidence](modernization-evidence/README.md)
 - [ ] PR 5: Transactions and E-Transfers page
 - [ ] PR 6: Dialogs
 - [ ] PR 7: Analytics
