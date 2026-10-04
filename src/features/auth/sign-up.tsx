@@ -1,12 +1,13 @@
 import { SignUp } from '@clerk/clerk-react';
-import { PageTemplate } from '@/components/layout/page-template';
+import { authAppearance } from './auth-appearance';
+import { AuthPresentation } from './auth-presentation';
 
 export function SignUpPage() {
     return (
-        <PageTemplate>
-            <div className='flex h-full items-center justify-center'>
-                <SignUp forceRedirectUrl='/dashboard' />
-            </div>
-        </PageTemplate>
+        <AuthPresentation>
+            <>
+                <SignUp forceRedirectUrl='/dashboard' appearance={authAppearance} />
+            </>
+        </AuthPresentation>
     );
 }

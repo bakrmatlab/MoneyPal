@@ -69,7 +69,7 @@ Use the PR template for summary, before/after evidence, validation, and rollback
 - [ ] PR 6: [Dialogs (#8)](https://github.com/bakrmatlab/MoneyPal/pull/8) — implemented, draft; targets transactions; [verification evidence](modernization-evidence/dialogs.md)
 - [ ] PR 7: [Analytics (#9)](https://github.com/bakrmatlab/MoneyPal/pull/9) — implemented, draft; targets dialogs; [verification evidence](modernization-evidence/analytics.md)
 - [ ] PR 8: [Settings and onboarding (#10)](https://github.com/bakrmatlab/MoneyPal/pull/10) — implemented, draft; targets analytics; [verification evidence](modernization-evidence/settings.md)
-- [ ] PR 9: Public, auth, and error pages
+- [ ] PR 9: [Public, auth, and error pages (#11)](https://github.com/bakrmatlab/MoneyPal/pull/11) — implemented, draft; targets settings; [verification evidence](modernization-evidence/public-pages.md)
 
 Selected design: B / Balanced, approved by the user on October 3, 2026.
 
@@ -79,3 +79,7 @@ Selected design: B / Balanced, approved by the user on October 3, 2026.
 Production branches start from the planning branch and exclude disposable prototype files. The first stack is foundation → shell → dashboard; each PR targets its predecessor until that predecessor merges into redesign/moneypal. Main remains untouched.
 
 Keep the saved theme preference and system default. The lime brand token is separate from the primary text/action token: light mode uses readable olive primary text, while lime call-to-action surfaces carry dark text. Financial success, warning, and error colors stay semantic. Do not change currency formatting or calculations as part of visual work.
+
+## Remaining release work
+
+All planned visual implementation drafts are prepared. Before release: review each PR, resolve existing lint/type failures separately, configure a safe authenticated preview, verify complete backend and financial flows, complete keyboard/contrast/responsive/theme checks, and obtain explicit merge/release authorization. Neither the integration branch nor main has been merged or released.
